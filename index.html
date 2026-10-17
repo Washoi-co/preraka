@@ -486,12 +486,13 @@ a{color:inherit}
 <main class="screen" id="p-sp" role="tabpanel" aria-labelledby="tab-sp" hidden>
   <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 3847 1000" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">話す</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="sp">やり方</button></div>
   <h1 class="large">話す</h1>
-  <p class="sub">A-PUSHメソッド・選んで、声に出して3回</p>
+  <p class="sub">A-PUSHメソッド・質問に自分で答えて、声に出して3回</p>
   <div class="toggle-row">
     <div><b id="civ-label"></b><span id="civ-note"></span></div>
     <button class="switch" id="civ" role="switch" aria-checked="false"><i></i></button>
   </div>
   <div class="seg lv" id="sp-lv" role="group" aria-label="レベル"></div>
+  <div class="seg" id="sp-hint" role="group" aria-label="ヒント"><button data-h="0" aria-pressed="true">日本語のヒントあり</button><button data-h="1" aria-pressed="false">絵だけ</button></div>
   <div class="chips" id="sp-chips" role="group" aria-label="型を選ぶ"></div>
   <div class="card">
     <div class="bar"><i id="tbar"></i></div>
@@ -503,7 +504,7 @@ a{color:inherit}
         <div class="pic" id="pic" aria-hidden="true"></div>
         <p class="ja" id="qja"></p>
         <span class="cue" id="cue" hidden></span>
-        <div class="choices" id="choices"></div>
+        <div class="acts"><button class="primary" id="btn-show">答えを見る</button></div>
       </div>
       <div id="v-repeat" class="cin" style="padding:0" hidden>
         <p class="verdict" id="verdict"></p>
@@ -520,7 +521,7 @@ a{color:inherit}
         <div class="acts"><button class="primary" id="btn-next" disabled>次へ</button></div>
       </div>
       <div id="v-result" class="cin" style="padding:0" hidden>
-        <p class="big"><span id="rscore">0</span><em> / 5</em></p>
+        <p class="big">5<em> 問おわり</em></p>
         <p class="rmsg" id="rmsg"></p>
         <div class="recap" id="recap"></div>
         <div class="acts"><button class="primary" id="btn-again">もう5問</button><button class="ghost" id="btn-nextset">次の組へ</button></div>
@@ -1222,64 +1223,61 @@ const F={
   pp:v=>join(PP[head(v)]||v[3].split(" ")[0],rest(v))
 };
 const my=(x,to)=>x.replace(/\bmy\b/g,to);
-/* 質問（q）に答える（2026-10-18）。q：聞こえる質問　cue：答えの日本語のヒント　f(v)：答え　wr(v)：まちがいの答えの候補（2つ選ぶ） */
+/* 質問（q）に自分で答える（2026-10-18）。q：聞こえる質問　cue：答えの日本語のヒント　f(v)：答え */
 const FILL={When:[" after lunch","昼ごはんのあとに"],Where:[" over there","あそこで"],How:[" like this","こうやって"],Why:[" because my boss asked me to","上司に頼まれたので"]};
 function whSet(W,J,opt){
   const w=W.toLowerCase(),yo=x=>my(x,"your"),ou=x=>my(x,"our"),[A,AJ]=FILL[W],AW=A.replace("my boss asked me","our boss asked us");
-  const L3=[{q:v=>"Do you know "+w+" we should "+ou(F.base(v))+"?",cue:"はい。"+AJ+"〜すればいいです",f:v=>"Yes. We should "+ou(F.base(v))+AW+".",
-             wr:v=>["Yes. We should "+ou(F.past(v))+AW+".","Yes. We should to "+ou(F.base(v))+AW+".","Yes. We should "+ou(F.ing(v))+AW+"."]}];
-  if(opt.to)L3.push({q:v=>"Could you tell me "+w+" to "+ou(F.base(v))+"?",cue:"いいですよ。"+AJ+"〜してください",f:v=>"Sure. Please "+ou(F.base(v))+A+".",
-             wr:v=>["Sure. Please "+ou(F.past(v))+A+".","Sure. Please to "+ou(F.base(v))+A+".","Sure. Please "+ou(F.ing(v))+A+"."]});
-  else L3.push({q:v=>"Do you know "+w+" we have to "+ou(F.base(v))+"?",cue:"はい。"+AJ+"〜しなければなりません",f:v=>"Yes. We have to "+ou(F.base(v))+AW+".",
-             wr:v=>["Yes. We have to "+ou(F.past(v))+AW+".","Yes. We has to "+ou(F.base(v))+AW+".","Yes. We must to "+ou(F.base(v))+AW+"."]});
+  const L3=[{q:v=>"Do you know "+w+" we should "+ou(F.base(v))+"?",cue:"はい。"+AJ+"〜すればいいです",f:v=>"Yes. We should "+ou(F.base(v))+AW+"."}];
+  if(opt.to)L3.push({q:v=>"Could you tell me "+w+" to "+ou(F.base(v))+"?",cue:"いいですよ。"+AJ+"〜してください",f:v=>"Sure. Please "+ou(F.base(v))+A+"."});
+  else L3.push({q:v=>"Do you know "+w+" we have to "+ou(F.base(v))+"?",cue:"はい。"+AJ+"〜しなければなりません",f:v=>"Yes. We have to "+ou(F.base(v))+AW+"."});
   return {
-    1:[{q:v=>W+" do you "+yo(F.base(v))+"?",cue:AJ+"〜します",f:v=>"I "+F.base(v)+A+".",wr:v=>["I "+F.past(v)+A+".","I am "+F.base(v)+A+".","I "+F.s3(v)+A+"."]}],
-    2:[{q:v=>W+" did you "+yo(F.base(v))+"?",cue:AJ+"〜しました",f:v=>"I "+F.past(v)+A+".",wr:v=>["I "+F.base(v)+A+".","I did "+F.past(v)+A+".","I was "+F.base(v)+A+"."]},
-       {q:v=>W+" are you going to "+yo(F.base(v))+"?",cue:AJ+"〜するつもりです",f:v=>"I'm going to "+F.base(v)+A+".",wr:v=>["I'm going to "+F.past(v)+A+".","I going to "+F.base(v)+A+".","I'm go to "+F.base(v)+A+"."]},
-       opt.to?{q:v=>W+" can we "+ou(F.base(v))+"?",cue:AJ+"〜できます",f:v=>"We can "+ou(F.base(v))+AW+".",wr:v=>["We can "+ou(F.past(v))+AW+".","We can to "+ou(F.base(v))+AW+".","We cans "+ou(F.base(v))+AW+"."]}
-             :{q:v=>W+" do we have to "+ou(F.base(v))+"?",cue:AJ+"〜しなければなりません",f:v=>"We have to "+ou(F.base(v))+AW+".",wr:v=>["We have to "+ou(F.past(v))+AW+".","We has to "+ou(F.base(v))+AW+".","We must to "+ou(F.base(v))+AW+"."]}],
+    1:[{q:v=>W+" do you "+yo(F.base(v))+"?",cue:AJ+"〜します",f:v=>"I "+F.base(v)+A+"."}],
+    2:[{q:v=>W+" did you "+yo(F.base(v))+"?",cue:AJ+"〜しました",f:v=>"I "+F.past(v)+A+"."},
+       {q:v=>W+" are you going to "+yo(F.base(v))+"?",cue:AJ+"〜するつもりです",f:v=>"I'm going to "+F.base(v)+A+"."},
+       opt.to?{q:v=>W+" can we "+ou(F.base(v))+"?",cue:AJ+"〜できます",f:v=>"We can "+ou(F.base(v))+AW+"."}
+             :{q:v=>W+" do we have to "+ou(F.base(v))+"?",cue:AJ+"〜しなければなりません",f:v=>"We have to "+ou(F.base(v))+AW+"."}],
     3:L3
   };
 }
 const TPL={
-  who:{1:[{q:v=>"Who can "+F.base(v)+"?",cue:"ケビンが〜できます",f:v=>"Kevin can "+F.base(v)+".",wr:v=>["Kevin can "+F.past(v)+".","Kevin cans "+F.base(v)+".","Kevin can to "+F.base(v)+"."]}],
-       2:[{q:v=>"Who is going to "+F.base(v)+"?",cue:"ケビンが〜する予定です",f:v=>"Kevin is going to "+F.base(v)+".",wr:v=>["Kevin is going to "+F.past(v)+".","Kevin going to "+F.base(v)+".","Kevin is go to "+F.base(v)+"."]},
-          {q:v=>"Who "+F.past(v)+"?",cue:"ケビンが〜しました",f:v=>"Kevin "+F.past(v)+".",wr:v=>["Kevin "+F.base(v)+".","Kevin did "+F.past(v)+".","Kevin was "+F.base(v)+"."]}],
-       3:[{q:v=>"Do you know who is supposed to "+F.base(v)+"?",cue:"はい。ケビンが〜することになっています",f:v=>"Yes. Kevin is supposed to "+F.base(v)+".",wr:v=>["Yes. Kevin is supposed to "+F.past(v)+".","Yes. Kevin supposed to "+F.base(v)+".","Yes. Kevin is suppose to "+F.base(v)+"."]}]},
-  what:{1:[{q:v=>"What time do you "+my(F.base(v),"your")+"?",cue:"7時に〜します",f:v=>"I "+F.base(v)+" at seven.",wr:v=>["I "+F.past(v)+" at seven.","I am "+F.base(v)+" at seven.","I "+F.s3(v)+" at seven."]}],
-        2:[{q:v=>"What did you use to "+my(F.base(v),"your")+"?",cue:"これを使って〜しました",f:v=>"I used this to "+F.base(v)+".",wr:v=>["I used this to "+F.past(v)+".","I use this to "+F.past(v)+".","I used this for "+F.base(v)+"."]},
-           {q:v=>"What will we need to "+my(F.base(v),"our")+"?",cue:"〜するには、これが必要になります",f:v=>"We will need these to "+my(F.base(v),"our")+".",wr:v=>["We will need these to "+my(F.past(v),"our")+".","We will needs these to "+my(F.base(v),"our")+".","We will need these "+my(F.base(v),"our")+"."]}],
-        3:[{q:v=>"Do you know what we need to "+my(F.base(v),"our")+"?",cue:"はい。〜するには、これが要ります",f:v=>"Yes. We need this to "+my(F.base(v),"our")+".",wr:v=>["Yes. We need this to "+my(F.past(v),"our")+".","Yes. We needs this to "+my(F.base(v),"our")+".","Yes. We need this "+my(F.base(v),"our")+"."]}]},
+  who:{1:[{q:v=>"Who can "+F.base(v)+"?",cue:"ケビンが〜できます",f:v=>"Kevin can "+F.base(v)+"."}],
+       2:[{q:v=>"Who is going to "+F.base(v)+"?",cue:"ケビンが〜する予定です",f:v=>"Kevin is going to "+F.base(v)+"."},
+          {q:v=>"Who "+F.past(v)+"?",cue:"ケビンが〜しました",f:v=>"Kevin "+F.past(v)+"."}],
+       3:[{q:v=>"Do you know who is supposed to "+F.base(v)+"?",cue:"はい。ケビンが〜することになっています",f:v=>"Yes. Kevin is supposed to "+F.base(v)+"."}]},
+  what:{1:[{q:v=>"What time do you "+my(F.base(v),"your")+"?",cue:"7時に〜します",f:v=>"I "+F.base(v)+" at seven."}],
+        2:[{q:v=>"What did you use to "+my(F.base(v),"your")+"?",cue:"これを使って〜しました",f:v=>"I used this to "+F.base(v)+"."},
+           {q:v=>"What will we need to "+my(F.base(v),"our")+"?",cue:"〜するには、これが必要になります",f:v=>"We will need these to "+my(F.base(v),"our")+"."}],
+        3:[{q:v=>"Do you know what we need to "+my(F.base(v),"our")+"?",cue:"はい。〜するには、これが要ります",f:v=>"Yes. We need this to "+my(F.base(v),"our")+"."}]},
   when:whSet("When","いつ",{to:true}),
   where:whSet("Where","どこで",{to:true}),
   why:whSet("Why","なぜ",{to:false}),
   how:whSet("How","どうやって",{to:true}),
-  past:{1:[{q:v=>"What did you do yesterday?",cue:"昨日 〜した（過去形）",f:v=>"I "+F.past(v)+" yesterday.",wr:v=>["I "+F.base(v)+" yesterday.","I will "+F.base(v)+" yesterday.","I am "+F.base(v)+" yesterday."]}],
-        2:[{q:v=>"What did he do last week?",cue:"彼は先週 〜した",f:v=>"He "+my(F.past(v),"his")+" last week.",wr:v=>["He "+my(F.s3(v),"his")+" last week.","He was "+my(F.base(v),"his")+" last week.","He did "+my(F.past(v),"his")+" last week."]},
-           {q:v=>"What were you doing then?",cue:"そのとき 〜していた（過去進行形）",f:v=>"I was "+F.ing(v)+" then.",wr:v=>["I was "+F.base(v)+" then.","I "+F.ing(v)+" then.","I were "+F.ing(v)+" then."]}],
-        3:[{q:v=>"What had you already done when he arrived?",cue:"彼が来たとき、もう〜していた（過去完了）",f:v=>"I had already "+F.pp(v)+" when he arrived.",wr:v=>["I had already "+F.base(v)+" when he arrived.","I already "+F.pp(v)+" when he arrived.","I have already "+F.pp(v)+" when he arrived."]},
-           {q:v=>"What had you been doing for an hour?",cue:"1時間ずっと〜していた（過去完了進行形）",f:v=>"I had been "+F.ing(v)+" for an hour.",wr:v=>["I had been "+F.base(v)+" for an hour.","I had "+F.ing(v)+" for an hour.","I was been "+F.ing(v)+" for an hour."]}]},
-  present:{1:[{q:v=>"What do you do every day?",cue:"毎日 〜する（現在形）",f:v=>"I "+F.base(v)+" every day.",wr:v=>["I "+F.past(v)+" every day.","I am "+F.base(v)+" every day.","I "+F.ing(v)+" every day."]}],
-           2:[{q:v=>"What does he do every day?",cue:"彼は毎日 〜する（三単現）",f:v=>"He "+my(F.s3(v),"his")+" every day.",wr:v=>["He "+my(F.base(v),"his")+" every day.","He is "+my(F.base(v),"his")+" every day.","He do "+my(F.base(v),"his")+" every day."]},
-              {q:v=>"What are you doing now?",cue:"今 〜しているところ（現在進行形）",f:v=>"I am "+F.ing(v)+" now.",wr:v=>["I am "+F.base(v)+" now.","I "+F.ing(v)+" now.","I is "+F.ing(v)+" now."]}],
-           3:[{q:v=>"What have you just done?",cue:"ちょうど〜したところ（現在完了）",f:v=>"I have just "+F.pp(v)+".",wr:v=>["I have just "+F.base(v)+".","I has just "+F.pp(v)+".","I just have "+F.base(v)+"."]},
-              {q:v=>"What have you been doing since this morning?",cue:"朝からずっと〜している（現在完了進行形）",f:v=>"I have been "+F.ing(v)+" since this morning.",wr:v=>["I have been "+F.base(v)+" since this morning.","I am "+F.ing(v)+" since this morning.","I have "+F.ing(v)+" since this morning."]}]},
-  future:{1:[{q:v=>"What will you do tomorrow?",cue:"明日 〜する（will）",f:v=>"I will "+F.base(v)+" tomorrow.",wr:v=>["I will "+F.past(v)+" tomorrow.","I "+F.past(v)+" tomorrow.","I will to "+F.base(v)+" tomorrow."]}],
-          2:[{q:v=>"What are you going to do tomorrow?",cue:"明日 〜するつもり（be going to）",f:v=>"I'm going to "+F.base(v)+" tomorrow.",wr:v=>["I'm going to "+F.past(v)+" tomorrow.","I going to "+F.base(v)+" tomorrow.","I'm go to "+F.base(v)+" tomorrow."]},
-             {q:v=>"What will he do next week?",cue:"彼は来週 〜するでしょう",f:v=>"He will "+my(F.base(v),"his")+" next week.",wr:v=>["He will "+my(F.s3(v),"his")+" next week.","He wills "+my(F.base(v),"his")+" next week.","He will "+my(F.past(v),"his")+" next week."]}],
-          3:[{q:v=>"What will you have done by the time I get here?",cue:"あなたが着くまでに〜し終えているだろう（未来完了）",f:v=>"I will have "+F.pp(v)+" by the time you get here.",wr:v=>["I will have "+F.base(v)+" by the time you get here.","I will "+F.pp(v)+" by the time you get here.","I will had "+F.pp(v)+" by the time you get here."]},
-             {q:v=>"What will you be doing at this time tomorrow?",cue:"明日の今ごろは〜しているだろう（未来進行形）",f:v=>"I will be "+F.ing(v)+" at this time tomorrow.",wr:v=>["I will "+F.ing(v)+" at this time tomorrow.","I will be "+F.base(v)+" at this time tomorrow.","I will been "+F.ing(v)+" at this time tomorrow."]}]}
+  past:{1:[{q:v=>"What did you do yesterday?",cue:"昨日 〜した（過去形）",f:v=>"I "+F.past(v)+" yesterday."}],
+        2:[{q:v=>"What did he do last week?",cue:"彼は先週 〜した",f:v=>"He "+my(F.past(v),"his")+" last week."},
+           {q:v=>"What were you doing then?",cue:"そのとき 〜していた（過去進行形）",f:v=>"I was "+F.ing(v)+" then."}],
+        3:[{q:v=>"What had you already done when he arrived?",cue:"彼が来たとき、もう〜していた（過去完了）",f:v=>"I had already "+F.pp(v)+" when he arrived."},
+           {q:v=>"What had you been doing for an hour?",cue:"1時間ずっと〜していた（過去完了進行形）",f:v=>"I had been "+F.ing(v)+" for an hour."}]},
+  present:{1:[{q:v=>"What do you do every day?",cue:"毎日 〜する（現在形）",f:v=>"I "+F.base(v)+" every day."}],
+           2:[{q:v=>"What does he do every day?",cue:"彼は毎日 〜する（三単現）",f:v=>"He "+my(F.s3(v),"his")+" every day."},
+              {q:v=>"What are you doing now?",cue:"今 〜しているところ（現在進行形）",f:v=>"I am "+F.ing(v)+" now."}],
+           3:[{q:v=>"What have you just done?",cue:"ちょうど〜したところ（現在完了）",f:v=>"I have just "+F.pp(v)+"."},
+              {q:v=>"What have you been doing since this morning?",cue:"朝からずっと〜している（現在完了進行形）",f:v=>"I have been "+F.ing(v)+" since this morning."}]},
+  future:{1:[{q:v=>"What will you do tomorrow?",cue:"明日 〜する（will）",f:v=>"I will "+F.base(v)+" tomorrow."}],
+          2:[{q:v=>"What are you going to do tomorrow?",cue:"明日 〜するつもり（be going to）",f:v=>"I'm going to "+F.base(v)+" tomorrow."},
+             {q:v=>"What will he do next week?",cue:"彼は来週 〜するでしょう",f:v=>"He will "+my(F.base(v),"his")+" next week."}],
+          3:[{q:v=>"What will you have done by the time I get here?",cue:"あなたが着くまでに〜し終えているだろう（未来完了）",f:v=>"I will have "+F.pp(v)+" by the time you get here."},
+             {q:v=>"What will you be doing at this time tomorrow?",cue:"明日の今ごろは〜しているだろう（未来進行形）",f:v=>"I will be "+F.ing(v)+" at this time tomorrow."}]}
 };
 /* 関係代名詞（CFG.relative の団体だけ）。which の型は「the/a＋名詞」が目的語の動作だけ（ok） */
 const objOf=v=>rest(v).replace(/^an? /,"the "),pastHead=v=>v[3].split(" ")[0];
 const hasObj=v=>/^(the|an?) /.test(rest(v));
 TPL.rel={
-  1:[{q:v=>"Do you know anyone who can "+F.base(v)+"?",cue:"はい。〜できる人を知っています（who）",f:v=>"Yes. I know someone who can "+F.base(v)+".",wr:v=>["Yes. I know someone which can "+F.base(v)+".","Yes. I know someone who can "+F.past(v)+".","Yes. I know someone who can "+F.s3(v)+"."]},
-     {q:v=>"Who is that guy?",cue:"毎日〜している人です（who＋三単現）",f:v=>"He is the person who "+F.s3(v)+" every day.",wr:v=>["He is the person who "+F.base(v)+" every day.","He is the person which "+F.s3(v)+" every day.","He is the person who is "+F.base(v)+" every day."]}],
-  2:[{q:v=>"Who is that guy?",cue:"昨日〜した人です（who＋過去）",f:v=>"He is the person who "+F.past(v)+" yesterday.",wr:v=>["He is the person who "+F.base(v)+" yesterday.","He is the person which "+F.past(v)+" yesterday.","He is the person who did "+F.past(v)+" yesterday."]},
-     {q:v=>"What is this?",cue:"私が昨日〜した物です（which）",ok:hasObj,f:v=>"This is "+objOf(v)+" which I "+pastHead(v)+" yesterday.",wr:v=>["This is "+objOf(v)+" who I "+pastHead(v)+" yesterday.","This is "+objOf(v)+" which I "+head(v)+" yesterday.","This is "+objOf(v)+" which I "+pastHead(v)+" it yesterday."]}],
-  3:[{q:v=>"Who are you looking for?",cue:"〜したことがある人を探しています（who＋現在完了）",f:v=>"We're looking for someone who has "+F.pp(v)+" before.",wr:v=>["We're looking for someone who have "+F.pp(v)+" before.","We're looking for someone who has "+F.base(v)+" before.","We're looking for someone which has "+F.pp(v)+" before."]},
-     {q:v=>"What do you want to do next?",cue:"次にやりたいのは〜すること（what）",f:v=>"What I want to do next is "+F.base(v)+".",wr:v=>["What do I want to do next is "+F.base(v)+".","That I want to do next is "+F.base(v)+".","What I want to do next is "+F.past(v)+"."]}]
+  1:[{q:v=>"Do you know anyone who can "+F.base(v)+"?",cue:"はい。〜できる人を知っています（who）",f:v=>"Yes. I know someone who can "+F.base(v)+"."},
+     {q:v=>"Who is that guy?",cue:"毎日〜している人です（who＋三単現）",f:v=>"He is the person who "+F.s3(v)+" every day."}],
+  2:[{q:v=>"Who is that guy?",cue:"昨日〜した人です（who＋過去）",f:v=>"He is the person who "+F.past(v)+" yesterday."},
+     {q:v=>"What is this?",cue:"私が昨日〜した物です（which）",ok:hasObj,f:v=>"This is "+objOf(v)+" which I "+pastHead(v)+" yesterday."}],
+  3:[{q:v=>"Who are you looking for?",cue:"〜したことがある人を探しています（who＋現在完了）",f:v=>"We're looking for someone who has "+F.pp(v)+" before."},
+     {q:v=>"What do you want to do next?",cue:"次にやりたいのは〜すること（what）",f:v=>"What I want to do next is "+F.base(v)+"."}]
 };
 /* 意味が変になる組み合わせは出さない（2026-10-17）。例：Who got up? ／ How do you get up? ／ I have been getting up since this morning.
    型のグループ → 出さない動作（原形）。グループは型の日本語（cue）から決める（下の tagOf） */
@@ -1315,10 +1313,11 @@ const SETS=[
 ];
 if(CFG.relative)SETS.push({k:"rel",label:"関係代名詞"});
 const LEVELS=[{n:1,label:"1",sub:"中1"},{n:2,label:"2",sub:"中2〜3"},{n:3,label:"3",sub:"高校卒業"}];
-const LIMIT={1:20,2:25,3:30};
+const LIMIT={1:60,2:60,3:60};   /* 自分で答えを言う時間（1分） */
+let PIC=store.get("dk-pic",false);   /* 絵だけ：日本語のヒントを出さない */
 let CIV=store.get("dk-civ",false);
 let LV=store.get("dk-lv",1);if(![1,2,3].includes(LV))LV=1;
-let SI=0,queue=[],qi=0,score=0,log=[],taps=0,left=20,opts=[];
+let SI=0,queue=[],qi=0,log=[],taps=0,left=60;
 const curSet=()=>SETS[SI];
 const limit=()=>LIMIT[LV];
 function paintCiv(){
@@ -1326,6 +1325,8 @@ function paintCiv(){
   set$("civ-note",CIV?"ON："+CFG.field.chunkNote:"OFF：生活の動作だけ（基礎）");
 }
 $("civ").addEventListener("click",()=>{CIV=!CIV;store.set("dk-civ",CIV);paintCiv();startRound();});
+function renderHint(){$("sp-hint").querySelectorAll("[data-h]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.h===+PIC)));segSlide("sp-hint");}
+$("sp-hint").addEventListener("click",e=>{const b=e.target.closest("[data-h]");if(!b)return;PIC=b.dataset.h==="1";store.set("dk-pic",PIC);renderHint();startRound();});
 function renderLv(){$("sp-lv").innerHTML=LEVELS.map(l=>'<button data-lv="'+l.n+'" aria-pressed="'+(l.n===LV)+'"><b>'+l.label+'</b><small>'+l.sub+'</small></button>').join("");segSlide("sp-lv");}
 $("sp-lv").addEventListener("click",e=>{const b=e.target.closest("[data-lv]");if(!b)return;LV=+b.dataset.lv;store.set("dk-lv",LV);renderLv();startRound();});
 function renderChips(){$("sp-chips").innerHTML=SETS.map((s,i)=>'<button class="chip'+(i<6?" wh":"")+'" data-s="'+i+'" aria-pressed="'+(i===SI)+'">'+esc(s.label)+(s.ja?'<span class="n">'+s.ja+'</span>':'')+'</button>').join("");}
@@ -1335,54 +1336,43 @@ function makeQ(v,civ){
   let k=curSet().k;
   if(k==="mix")k=shuffle(["past","present","future"])[0];
   const ts=TPL[k][LV].filter(t=>fits(k,t,v));
-  if(!ts.length)return {w:[]};   /* この動作に合う型が無い→出さない（startRound で落とす） */
+  if(!ts.length)return null;   /* この動作に合う型が無い→出さない（startRound で落とす） */
   const t=shuffle(ts)[0];
   const a=t.f(v);
-  const w=shuffle([...new Set(t.wr(v))].filter(x=>x!==a)).slice(0,2);
-  return {v,civ,q:t.q(v),cue:t.cue,ja:v[2],a,w,full:a,fullja:v[2]+"｜"+t.cue};
+  return {v,civ,q:t.q(v),cue:t.cue,ja:v[2],a,full:a,fullja:v[2]+"｜"+t.cue};
 }
 function startRound(){
   const k=curSet().k;
   const ok=v=>!((k==="who"||k==="rel")&&/\bmy\b/.test(v[1]));   /* Who・関係代名詞には my の付く動作を出さない */
   const b=shuffle(BASIC.filter(ok)),c=shuffle(CIVIL.filter(ok));
-  const mk=(list,civ,n)=>list.map(v=>makeQ(v,civ)).filter(q=>q.w.length===2).slice(0,n);
+  const mk=(list,civ,n)=>list.map(v=>makeQ(v,civ)).filter(Boolean).slice(0,n);
   queue=shuffle(CIV?[...mk(c,true,3),...mk(b,false,2)]:mk(b,false,5));
-  qi=0;score=0;log=[];askQ();
+  qi=0;log=[];askQ();
 }
-function paintPips(){$("pips").innerHTML=[0,1,2,3,4].map(i=>{const l=log[i];return '<span class="pip'+(l?(l.right?" y":" n"):(i===qi?" cur":""))+'"></span>';}).join("");}
+function paintPips(){$("pips").innerHTML=[0,1,2,3,4].map(i=>{const l=log[i];return '<span class="pip'+(l?" y":(i===qi?" cur":""))+'"></span>';}).join("");}
 function askQ(){
   const q=queue[qi];
   paintPips();
-  set$("ask","質問に答えると？　レベル"+LV);
+  set$("ask","英語で答えると？　レベル"+LV+(PIC?"・絵だけ":""));
   set$("pic",q.v[0]);
+  $("qja").hidden=$("cue").hidden=PIC;
   $("qja").innerHTML=esc(q.ja)+(q.civ?'<span class="tag">'+esc(CFG.field.label)+'</span>':'');
-  $("cue").hidden=false;set$("cue",q.cue);
+  set$("cue",q.cue);
   $("stem").hidden=false;$("stem").innerHTML=esc(q.q)+' <button class="spk" data-say="'+esc(q.q)+'" aria-label="質問をもう一度聞く">▶</button>';speak(q.q);
-  opts=shuffle([q.a,...q.w]);
-  $("choices").innerHTML=opts.map((o,n)=>'<button class="ch" data-o="'+n+'"><span class="k">'+(n+1)+'</span><span>'+esc(o)+'</span></button>').join("");
   view("quiz");startTimer();
 }
 function startTimer(){
   left=limit();paintTimer();clearInterval(timer);
-  timer=setInterval(()=>{left--;paintTimer();if(left<=0){clearInterval(timer);answer(null);}},1000);
+  timer=setInterval(()=>{left--;paintTimer();if(left<=0){clearInterval(timer);reveal(true);}},1000);
 }
 function paintTimer(){const b=$("tbar");b.style.width=Math.max(0,left)/limit()*100+"%";b.classList.toggle("low",left<=5);set$("qleft",Math.max(0,left)+"s");}
 $("stem").addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(b)speak(b.dataset.say);});
-$("choices").addEventListener("click",e=>{const b=e.target.closest(".ch");if(!b||b.disabled)return;clearInterval(timer);answer(opts[+b.dataset.o]);});
-function answer(chosen){
-  const q=queue[qi],right=(chosen===q.a);
-  if(right)score++;
-  log.push({q,right});
-  document.querySelectorAll("#choices .ch").forEach(el=>{
-    el.disabled=true;const v=opts[+el.dataset.o];
-    if(v===q.a)el.classList.add("correct");else if(chosen!==null&&v===chosen)el.classList.add("wrong");else el.classList.add("dim");
-  });
-  setTimeout(()=>openRepeat(q,right,chosen===null),650);
-}
-function openRepeat(q,right,timedOut){
+$("btn-show").addEventListener("click",()=>{clearInterval(timer);reveal(false);});
+function reveal(timedOut){const q=queue[qi];log.push({q});openRepeat(q,timedOut);}
+function openRepeat(q,timedOut){
   $("tbar").style.width="100%";$("tbar").classList.remove("low");
-  set$("verdict",right?"正解":(timedOut?"時間切れ　正しい英語はこちら":"おしい　正しい英語はこちら"));
-  $("verdict").className="verdict "+(right?"y":"n");
+  set$("verdict",timedOut?"時間切れ　答えの例はこちら":"答えの例");
+  $("verdict").className="verdict y";
   set$("rpic",q.v[0]);
   set$("rq",q.q);set$("answer",q.full);$("answer").classList.remove("sm");
   set$("answerja",q.fullja);
@@ -1398,10 +1388,9 @@ $("dots").addEventListener("click",e=>{
 $("btn-next").addEventListener("click",()=>{if(qi>=4){showResult();return;}qi++;askQ();});
 function showResult(){
   clearInterval(timer);paintPips();
-  logEvent("スピーキング","Lv"+LV+"・"+curSet().label+(CIV?"・"+CFG.field.label+"ON":"・基礎")+"・"+score+"/5",1);
-  set$("rscore",score);
-  set$("rmsg",score===5?(CIV?"全問正解。次の型か、次のレベルへ。":"全問正解。慣れたら"+CFG.field.longLabel+"をONに。"):score>=3?"あと少し。もう5問いきましょう。":"この型はまだ練習が要ります。もう5問。");
-  $("recap").innerHTML=log.map(l=>'<div class="rrow"><span class="m">'+l.q.v[0]+'</span><span>'+esc(l.q.full)+'</span><span class="v '+(l.right?"y":"n")+'">'+(l.right?"○":"×")+'</span></div>').join("");
+  logEvent("スピーキング","Lv"+LV+"・"+curSet().label+(CIV?"・"+CFG.field.label+"ON":"・基礎")+(PIC?"・絵だけ":"")+"・5問",1);
+  set$("rmsg",PIC?"慣れたら次の型か、次のレベルへ。":"慣れたら「絵だけ」で。日本語なしで答えられたら本物です。");
+  $("recap").innerHTML=log.map(l=>'<div class="rrow"><span class="m">'+l.q.v[0]+'</span><span>'+esc(l.q.full)+'</span></div>').join("");
   view("result");
 }
 $("btn-again").addEventListener("click",startRound);
@@ -1556,7 +1545,7 @@ const GUIDE={
     {h:"英語も、同じにする。",img:"12",l:["Where did you…? と聞かれて答える。これを200回、300回と声に出す","型が口から勝手に出てくる","名詞の次は動詞、動詞の次は目的語。並びが体に入る"]},
     {h:"何が身につく？",l:["5W1H ＋ 基本の時制（過去・現在・未来）"+(CFG.relative?" ＋ 関係代名詞":""),"質問を聞いて、すぐに答えられる"],
      ex:[["Where did you go?","過去"],["What do you do?","現在"],["When will you start?","未来"]]},
-    {h:"やり方",img:"07",steps:["英語の質問を聞く（文字も出ます）","日本語のヒントに合う答えを選ぶ（20〜30秒）","答えを声に出して3回（ここが本番）"],
+    {h:"やり方",img:"07",steps:["英語の質問を聞く（文字も出ます）","1分以内に、自分で答えを言う","答えの例を見て、声に出して3回（ここが本番）"],
      l:["1ラウンド5問・約2分","レベル1から。慣れたら"+CFG.field.longLabel+"をON"]}
   ]},
   sh:{title:"シャドーイング",pages:[
@@ -1634,7 +1623,7 @@ $("inst-x").addEventListener("click",()=>{store.set("dk-install-hide",1);paintIn
 if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
 
 /* start */
-initStatic();paintCiv();renderLv();renderChips();startRound();renderDaily();setMode("card");buildDeck();
+initStatic();paintCiv();renderLv();renderHint();renderChips();startRound();renderDaily();setMode("card");buildDeck();
 NET.init();paintStatus();paintPlan();flush();paintInstall();
 const t0=store.get("dk-tab","home");
 if(!ME){openTab(TABS.includes(t0)?t0:"home",true);openProfile();}else openTab(TABS.includes(t0)?t0:"home");
