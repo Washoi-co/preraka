@@ -1,0 +1,1644 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F2F4F8">
+<meta name="color-scheme" content="light">
+<meta name="description" content="インド研修で使うビジネス英語を、声に出して練習するトレーニング。">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="研修英語">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
+<title>インド研修 ビジネス英語トレーニング</title>
+<style>
+/* 型：iPhoneのアプリに近い形。下に4つのタブ（今日＆計画・話す・シャドーイング・単語）、上は大きな見出し→スクロールですりガラスのバー。
+   お知らせと通知は「今日＆計画」から。色は団体の色1つ（--brand）＋白。暗い画面の設定では濃紺。文字は端末の文字（iPhoneならヒラギノ）。 */
+:root{
+  --brand:#C2410C;
+  --bg:#F2F4F8; --card:#FFFFFF; --ink:#0F1E3D; --mute:#667391; --line:rgba(15,30,61,.10); --line2:rgba(15,30,61,.17);
+  --soft:#FEEEE7; --soft2:#FDD6C7; --mid:#F89D77;
+  --on:#FFFFFF; --ok:#16A34A; --warn:#B45309; --ng:#DC2626; --bar:rgba(255,255,255,.72); --scrim:rgba(15,30,61,.32); --dark:#0F1E3D;
+  /* 本文・見出し＝Zen Kaku Gothic New／数字と英語＝Archivo。届かない時（オフライン）は端末の文字に戻る */
+  --f:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",system-ui,sans-serif;
+  --fd:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+  --en:"Archivo","Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  --r:16px; --spring:cubic-bezier(.2,.8,.2,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;overscroll-behavior:none;background:var(--bg)}
+body{margin:0;overscroll-behavior:none;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100dvh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:9;background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+button,a,[role="button"],.tap{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select{font:inherit;font-size:16px;color:inherit}
+:focus-visible{outline:3px solid var(--mid);outline-offset:2px;border-radius:8px}
+a{color:inherit}
+
+/* 画面 */
+.screen{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-bottom:calc(96px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;animation:in .28s var(--spring)}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px))) -4px;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px));min-height:52px;
+  display:flex;justify-content:space-between;align-items:center;gap:8px;transition:background .2s,box-shadow .2s}
+.nav.stuck{background:var(--bar);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 .5px 0 var(--line2)}
+.nav .mini{font-weight:700;font-size:17px;opacity:0;transition:opacity .2s;letter-spacing:-.01em}
+.nav.stuck .mini{opacity:1}
+/* A-PUSHのロゴ（どの団体のサイトでも一番上・左）。スクロールすると、ロゴがその画面の名前に入れ替わる */
+.navl{position:relative;display:flex;align-items:center;min-width:0;height:38px}
+.aplogo{display:block;height:20px;width:auto;color:#FF2D16;transition:opacity .2s}
+.nav.stuck .aplogo{opacity:0}
+.navl .mini{position:absolute;left:0;white-space:nowrap}
+.navr{display:flex;align-items:center;gap:8px}
+.pill{background:var(--soft);color:var(--brand);font-weight:600;font-size:14px;padding:7px 14px;border-radius:999px;transition:transform .1s ease-out}
+.bell{position:relative;width:38px;height:38px;border-radius:50%;background:var(--soft);color:var(--brand);display:grid;place-items:center;flex:none}
+.bell svg{width:21px;height:21px}
+.bell .badge{position:absolute;top:-2px;right:-2px;min-width:19px;height:19px;border-radius:99px;background:var(--ng);color:#fff;font-size:11px;font-weight:800;
+  display:grid;place-items:center;padding:0 5px;box-shadow:0 0 0 2px var(--bg)}
+.eyebrow{margin:6px 2px 0;font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--brand);text-transform:uppercase}
+.large{font-family:var(--fd);font-size:34px;font-weight:900;letter-spacing:-.028em;line-height:1.12;margin:0 2px;text-wrap:balance}
+.sub{color:var(--mute);font-size:15px;margin:-6px 2px 4px}
+.sub button{color:var(--brand);font-weight:600}
+.label{font-size:13px;color:var(--mute);margin:14px 4px -4px;font-weight:500}
+.hr{height:1px;background:var(--line2);margin:22px 2px 6px;border:0}
+.sect{font-family:var(--fd);font-size:25px;font-weight:900;letter-spacing:-.025em;margin:4px 2px 0}
+.note{margin:0 4px;font-size:12.5px;color:var(--mute)}
+
+/* 押した時の反応（指を離す前） */
+.press{transition:transform .1s ease-out,background-color .12s,opacity .12s}
+.press:active,.press.down{transform:scale(.97)}
+
+/* 共通の箱 */
+.group{background:var(--card);border-radius:var(--r);overflow:hidden}
+.row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:12px 14px;width:100%;text-align:left;min-height:60px}
+.row+.row{border-top:.5px solid var(--line2)}
+.row:active{background:var(--line)}
+.ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px;background:var(--soft)}
+.row b{font-weight:700;font-size:16px;display:block;line-height:1.3}
+.row small{color:var(--mute);font-size:13px;display:block}
+.chev{color:var(--mute);font-size:14px;font-weight:600;white-space:nowrap}
+.row.done .chev{color:var(--ok)}
+
+/* 今日 */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:var(--card);border-radius:20px;padding:18px}
+.ring{width:96px;height:96px}
+.ring circle{fill:none;stroke-width:11;stroke-linecap:round}
+.ring .t{stroke:var(--soft)}
+.ring .v{stroke:var(--brand);transition:stroke-dashoffset .9s var(--spring)}
+.hero b{font-family:var(--en);font-weight:900;font-size:28px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;display:block;line-height:1.2}
+.hero p{margin:2px 0 0;color:var(--mute);font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tiles div{background:var(--card);border-radius:14px;padding:10px 6px;text-align:center;font-size:12px;color:var(--mute)}
+.tiles b{display:block;font-family:var(--en);font-weight:900;font-size:24px;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1.25}
+.sum{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sum div{background:var(--card);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.sum span{font-size:11.5px;color:var(--mute);line-height:1.4}
+.sum b{font-size:17px;font-weight:700;color:var(--brand)}
+.inst{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--soft);border-radius:var(--r);padding:12px 12px 12px 14px}
+.inst-ic{width:30px;height:30px;border-radius:9px;background:var(--brand);color:var(--on);display:grid;place-items:center;font-weight:800}
+.inst p{margin:0;font-size:13.5px;line-height:1.55}
+.inst-x{color:var(--mute);font-size:20px;width:34px;height:34px}
+.inst .primary{grid-column:1/-1}
+.apush{display:grid;grid-template-columns:1fr auto;grid-template-areas:"k c" "n c";align-items:center;gap:2px 12px;text-decoration:none;color:#fff;background:var(--dark);border-radius:20px;padding:16px 18px;margin-top:8px}
+.ap-k{grid-area:k;font-size:12px;color:rgba(255,255,255,.75);font-weight:600}
+.ap-n{grid-area:n;font-family:var(--en);font-weight:900;font-size:28px;line-height:1.05;letter-spacing:-.015em}
+.ap-c{grid-area:c;font-size:13px;font-weight:600;background:var(--brand);color:var(--on);border-radius:99px;padding:9px 14px;white-space:nowrap}
+.foot{font-size:12px;color:var(--mute);padding:8px 4px 0;display:flex;flex-direction:column;gap:6px}
+.foot .by{letter-spacing:.12em;font-weight:600}
+
+/* 話す */
+.toggle-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--card);border-radius:var(--r);padding:12px 14px}
+.toggle-row div{display:flex;flex-direction:column;line-height:1.35;min-width:0}
+.toggle-row b{font-size:16px;font-weight:600}
+.toggle-row span{font-size:12.5px;color:var(--mute)}
+.switch{flex:none;width:51px;height:31px;border-radius:99px;background:var(--line2);position:relative;transition:background .2s}
+.switch i{position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:transform .3s var(--spring)}
+.switch[aria-checked="true"]{background:var(--ok)}
+.switch[aria-checked="true"] i{transform:translateX(20px)}
+.seg{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--line);border-radius:10px;padding:2px}
+.seg .sl{position:absolute;top:2px;bottom:2px;left:2px;border-radius:8px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.13),0 0 0 .5px rgba(0,0,0,.04);
+  transition:transform .32s var(--spring),width .32s var(--spring);pointer-events:none}
+.seg button{position:relative;z-index:1;border-radius:8px;padding:7px 4px;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.2;transition:color .2s,transform .1s ease-out}
+.seg button:active{transform:scale(.96)}
+.seg button[aria-pressed="true"]{color:var(--brand)}
+.seg.lv button{display:flex;flex-direction:column;align-items:center;padding:6px 4px}
+.seg.lv b{font-family:var(--en);font-weight:900;font-size:17px}
+.seg.lv small{font-size:11px;color:var(--mute);font-weight:500}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 4px;margin:0 -2px;scrollbar-width:none;scroll-snap-type:x proximity}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;scroll-snap-align:start;background:var(--card);border-radius:99px;padding:8px 14px;font-size:14px;font-weight:700;white-space:nowrap;box-shadow:0 0 0 .5px var(--line2) inset}
+.chip[aria-pressed="true"]{background:var(--brand);color:var(--on);box-shadow:none}
+.chip .n{font-size:11px;opacity:.7;margin-left:5px;font-weight:500}
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--soft);color:var(--brand);margin-left:6px;vertical-align:2px}
+
+/* 問題のカード */
+.card{background:var(--card);border-radius:22px;overflow:hidden}
+.bar{height:4px;background:var(--soft)}
+.bar i{display:block;height:100%;width:100%;background:var(--brand);transition:width 1s linear;border-radius:0 4px 4px 0}
+.bar i.low{background:var(--ink)}
+.cin{padding:18px 16px;display:flex;flex-direction:column;gap:12px}
+.meta{display:flex;justify-content:space-between;align-items:center;font-family:var(--en);font-size:13px;color:var(--mute);font-weight:700;font-variant-numeric:tabular-nums}
+.pips{display:flex;gap:5px}
+.pip{width:22px;height:5px;border-radius:3px;background:var(--line2)}
+.pip.y{background:var(--brand)} .pip.n{background:var(--mid)} .pip.cur{background:var(--ink)}
+.ask{margin:0;font-size:12.5px;font-weight:600;color:var(--mute)}
+.pic{font-size:clamp(54px,15vw,68px);line-height:1;text-align:center;padding:4px 0}
+.ja{margin:0;font-size:19px;font-weight:700;line-height:1.5;text-align:center;text-wrap:balance}
+.cue{align-self:center;max-width:100%;text-align:center;font-size:13px;font-weight:600;color:var(--brand);background:var(--soft);padding:5px 12px;border-radius:99px}
+.stem{margin:0;text-align:center;font-family:var(--en);font-size:19px;font-weight:700;line-height:1.4;text-wrap:balance}
+.stem .spk{width:28px;height:28px;vertical-align:middle;margin-left:4px}
+.choices{display:flex;flex-direction:column;gap:9px}
+.ch{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--card);border-radius:14px;padding:14px;font-family:var(--en);font-size:16px;line-height:1.45;font-weight:600;
+  box-shadow:0 0 0 1px var(--line2) inset;transition:transform .1s ease-out,background .15s,box-shadow .15s,color .15s}
+.ch:active:not(:disabled){transform:scale(.98);background:var(--soft)}
+.ch .k{flex:none;width:22px;height:22px;border-radius:7px;background:var(--soft);color:var(--brand);font-weight:700;font-size:12px;display:grid;place-items:center;margin-top:1px}
+.ch.correct{background:var(--brand);color:var(--on);box-shadow:none}
+.ch.correct .k{background:rgba(255,255,255,.22);color:var(--on)}
+.ch.wrong{color:var(--mute);text-decoration:line-through;box-shadow:0 0 0 1.5px var(--ink) inset;animation:shake .3s}
+.ch.dim{opacity:.4}
+.ch:disabled{cursor:default}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.verdict{margin:0;font-weight:800;font-size:16px;text-align:center}
+.verdict.y{color:var(--brand)} .verdict.n{color:var(--ink)}
+.answer{margin:0;font-family:var(--en);font-size:21px;font-weight:800;line-height:1.4;text-align:center;text-wrap:balance;letter-spacing:-.01em}
+.say{margin:0;font-size:13px;color:var(--mute);text-align:center}
+.dots{display:flex;justify-content:center;gap:14px}
+.dot{width:54px;height:54px;border-radius:50%;background:var(--soft);color:var(--brand);font-family:var(--en);font-weight:900;font-size:20px;transition:transform .1s ease-out,background .15s}
+.dot:active{transform:scale(.92)}
+.dot.on{background:var(--brand);color:var(--on)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.primary{flex:1;background:var(--brand);color:var(--on);border-radius:14px;padding:15px;font-weight:700;font-size:17px;transition:transform .1s ease-out,opacity .15s}
+.primary:active:not(:disabled){transform:scale(.97)}
+.primary:disabled{opacity:.3;cursor:default}
+.ghost{flex:1;background:var(--soft);border-radius:14px;padding:14px;font-weight:600;font-size:16px;color:var(--brand);transition:transform .1s ease-out}
+.ghost:active{transform:scale(.97)}
+.big{margin:0;text-align:center;font-family:var(--en);font-weight:900;font-size:72px;line-height:1;color:var(--brand);letter-spacing:-.03em}
+.big em{font-style:normal;font-size:28px;color:var(--mute)}
+.rmsg{margin:0;text-align:center;font-weight:700}
+.recap{display:flex;flex-direction:column}
+.rrow{display:grid;grid-template-columns:28px 1fr 22px;gap:8px;align-items:start;padding:9px 0;border-top:.5px solid var(--line2);font-size:14px}
+.rrow .m{font-size:20px;line-height:1.2}
+.rrow .v{font-weight:800;text-align:right} .rrow .v.y{color:var(--brand)} .rrow .v.n{color:var(--mute)}
+
+/* 単語 */
+.decks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.deck{display:flex;flex-direction:column;text-align:left;background:var(--card);border-radius:14px;padding:11px 12px;line-height:1.4;min-width:0;box-shadow:0 0 0 .5px var(--line2) inset;transition:transform .1s ease-out}
+.deck:active{transform:scale(.97)}
+.deck b{font-size:15px;font-weight:700}
+.deck span{font-size:11.5px;color:var(--mute)}
+.deck em{font-style:normal;color:var(--brand);font-weight:700}
+.deck[aria-pressed="true"]{background:var(--soft);box-shadow:0 0 0 2px var(--brand) inset}
+.daily{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border-radius:var(--r);padding:12px 14px}
+.daily span{display:flex;flex-direction:column;line-height:1.35} .daily b{font-size:15px;font-weight:600} .daily small{font-size:11.5px;color:var(--mute)}
+#w-daily{flex:1;min-width:220px}
+.today{display:flex;flex-direction:column;gap:6px;padding:0 4px}
+.today-t{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mute)} .today-t b{font-family:var(--en);font-weight:900;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.today .bar{border-radius:4px;overflow:hidden}
+.filters{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.filters .seg{min-width:140px}
+.wcount{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mute);font-weight:600}
+#w-done.due{background:var(--soft);color:var(--brand);padding:0 8px;border-radius:6px;font-weight:700}
+.wja{margin:0;text-align:center;font-family:var(--fd);font-size:clamp(28px,8vw,34px);font-weight:900;letter-spacing:-.025em;line-height:1.3;text-wrap:balance;padding:10px 0 2px}
+.wcat{align-self:center;font-size:12px;font-weight:600;background:var(--soft);color:var(--brand);border-radius:99px;padding:2px 10px}
+.wen{margin:0;text-align:center;font-family:var(--en);font-size:clamp(26px,7vw,30px);font-weight:800;line-height:1.3;color:var(--brand);letter-spacing:-.01em}
+.fin{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 0;text-align:center}
+.fin-mark{width:64px;height:64px;border-radius:50%;background:var(--brand);color:var(--on);display:grid;place-items:center;font-size:28px;font-weight:900}
+.fin-msg{margin:0;font-size:18px;font-weight:800}
+.fin .acts{width:100%}
+.list{display:flex;flex-direction:column;background:var(--card);border-radius:var(--r);overflow:hidden}
+.li{display:grid;grid-template-columns:1fr 1fr 34px;gap:10px;align-items:center;padding:10px 14px;font-size:15px}
+.li+.li{border-top:.5px solid var(--line2)}
+.li .e{font-family:var(--en);font-weight:700;color:var(--brand)}
+.li .ok{color:var(--brand);font-size:11px;font-weight:700}
+.spk{width:32px;height:32px;border-radius:50%;background:var(--soft);color:var(--brand);font-size:12px}
+.search{width:100%;border:0;background:var(--line);border-radius:11px;padding:10px 12px}
+
+/* シャドーイング */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.step{background:var(--card);border-radius:14px;padding:11px 12px;font-size:13.5px;display:flex;gap:9px;align-items:flex-start;line-height:1.5}
+.step b{flex:none;font-weight:700;font-size:13px;width:24px;height:24px;border-radius:50%;background:var(--brand);color:var(--on);display:grid;place-items:center}
+.shl{display:flex;flex-direction:column;gap:8px}
+.shl h3{margin:12px 4px 0;font-size:16px;font-weight:700;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.shl h3 span{font-size:12px;color:var(--mute);font-weight:500}
+.vid{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;background:var(--card);border-radius:14px;padding:11px 12px;text-decoration:none;color:var(--ink);transition:transform .1s ease-out}
+.vid:active{transform:scale(.98)}
+.vid .id{font-family:var(--en);font-weight:900;font-size:18px;background:var(--soft);color:var(--brand);border-radius:10px;text-align:center;padding:8px 0}
+.vid .t{font-weight:600;font-size:15px;line-height:1.4;min-width:0}
+.vid .t small{display:block;font-weight:500;color:var(--mute);font-size:12px}
+.vid .go{font-size:13px;color:var(--brand);font-weight:600}
+.credit{font-size:12px;color:var(--mute);margin:0 4px}
+
+/* 計画 */
+.calhd{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 10px}
+.calhd b{font-family:var(--fd);font-weight:900;font-size:18px;letter-spacing:-.01em}
+.calhd button{width:36px;height:36px;border-radius:50%;background:var(--soft);color:var(--brand);font-size:18px;font-weight:700}
+.calhd button:disabled{opacity:.3}
+.calbox{background:var(--card);border-radius:20px;padding:14px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .w{font-size:11px;color:var(--mute);text-align:center;font-weight:600}
+.cal .d{aspect-ratio:1;max-width:100%;display:grid;place-items:center;border-radius:50%;font-family:var(--en);font-weight:500;font-size:14px;font-variant-numeric:tabular-nums;color:var(--mute)}
+.cal .d.all{background:var(--brand);color:var(--on);font-weight:700}
+.cal .d.some{background:var(--soft2);color:var(--ink)}
+.cal .d.today{box-shadow:0 0 0 2px var(--ink) inset;color:var(--ink);font-weight:700}
+.cal .d.future{opacity:.45}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mute);margin-top:10px;padding:0 2px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px;background:var(--c)}
+.step2{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;min-height:56px}
+.step2+.step2{border-top:.5px solid var(--line2)}
+.step2 span{min-width:0}
+.step2 small{display:block;color:var(--mute);font-size:12px}
+.stepper{display:flex;align-items:center;background:var(--line);border-radius:9px;overflow:hidden;flex:none}
+.stepper button{width:42px;height:32px;font-size:20px;font-weight:500;color:var(--ink);transition:background .1s}
+.stepper button:active{background:var(--line2)}
+.stepper output{min-width:48px;height:32px;display:grid;place-items:center;font-family:var(--en);font-weight:700;font-variant-numeric:tabular-nums;background:var(--card);font-size:15px}
+.goaltext{width:100%;border:0;background:transparent;padding:12px 14px;resize:none;min-height:52px;line-height:1.5}
+.goaltext::placeholder{color:var(--mute)}
+.gmeta{padding:0 14px 12px;font-size:12.5px;color:var(--mute)}
+.fld{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;min-height:52px}
+.fld+.fld{border-top:.5px solid var(--line2)}
+.fld input,.fld select{border:0;background:var(--line);border-radius:9px;padding:6px 10px;min-width:96px;text-align:right}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two a{display:block;text-align:center;text-decoration:none;background:var(--card);color:var(--brand);border-radius:14px;padding:12px;font-weight:600;line-height:1.3;transition:transform .1s ease-out}
+.two a:active{transform:scale(.97)}
+.two small{display:block;color:var(--mute);font-weight:500;font-size:12px}
+.saved{font-size:13px;color:var(--ok);text-align:center;margin:0;min-height:1.2em}
+
+/* お知らせ */
+.msg{display:flex;flex-direction:column;gap:5px;background:var(--card);border-radius:14px;padding:13px 14px;text-align:left;width:100%}
+.msg+.msg{margin-top:8px}
+.msg.unread{box-shadow:0 0 0 2px var(--brand) inset}
+.msg .mh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;color:var(--mute);font-weight:600}
+.msg .mt{font-size:15px;line-height:1.6;white-space:pre-wrap}
+.msg .new{color:var(--ng);font-weight:800}
+.empty{text-align:center;color:var(--mute);font-size:14px;padding:26px 0}
+.sync{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;background:var(--soft);border-radius:var(--r);padding:11px 13px;font-size:13px;line-height:1.5}
+.sync.off{background:var(--line)}
+.sync .d{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.sync.off .d{background:var(--mute)}
+
+/* 下のタブバー（4つ） */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--bar);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 -.5px 0 var(--line2);
+  padding:6px max(4px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(4px,env(safe-area-inset-left,0px))}
+.tabbar div{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tab{display:grid;justify-items:center;gap:1px;font-size:10.5px;font-weight:700;color:var(--mute);padding:3px 0 2px;letter-spacing:-.02em;white-space:nowrap}
+.tab svg{width:27px;height:27px;transition:transform .15s ease-out}
+.tab:active svg{transform:scale(.88)}
+.tab[aria-selected="true"]{color:var(--brand)}
+
+/* 下から出るシート */
+.scrim{position:fixed;inset:0;z-index:30;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;margin:0 auto;max-width:560px;max-height:calc(100dvh - env(safe-area-inset-top,0px) - 24px);display:flex;flex-direction:column;
+  background:var(--card);border-radius:24px 24px 0 0;padding:0 20px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(110%);will-change:transform;visibility:hidden;box-shadow:0 -8px 40px rgba(0,0,0,.18)}
+.sheet.open{visibility:visible}
+.sh-top{padding:8px 0 4px;touch-action:none;cursor:grab}
+.grab{width:38px;height:5px;border-radius:5px;background:var(--line2);margin:0 auto 10px}
+.sh-head{display:flex;justify-content:space-between;align-items:center}
+.sh-title{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--brand)}
+.sh-x{width:32px;height:32px;border-radius:50%;background:var(--line);color:var(--mute);font-size:17px}
+.sh-body{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;padding:6px 0 4px}
+.g-body{min-height:290px;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.g-img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);background:#F4F7FB}
+.g-h{margin:0;font-family:var(--fd);font-size:clamp(25px,7vw,30px);font-weight:900;letter-spacing:-.025em;line-height:1.3;text-wrap:balance}
+.g-l{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.g-l li{font-size:16px;line-height:1.55;padding-left:18px;position:relative}
+.g-l li::before{content:"";position:absolute;left:2px;top:.6em;width:7px;height:7px;border-radius:50%;background:var(--brand)}
+.g-steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:8px}
+.g-steps li{counter-increment:s;display:flex;gap:12px;align-items:center;background:var(--bg);border-radius:14px;padding:12px;font-size:16px;font-weight:600;line-height:1.45}
+.g-steps li::before{content:counter(s);flex:none;width:30px;height:30px;border-radius:50%;background:var(--brand);color:var(--on);display:grid;place-items:center;font-weight:800}
+.g-ex{display:flex;flex-direction:column;gap:6px}
+.g-exr{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:11px 12px;text-align:left}
+.g-exr b{font-family:var(--en);font-weight:700;font-size:16px;color:var(--brand)}
+.g-exr span{font-size:12px;color:var(--mute);flex:none}
+.g-tip{margin:0;font-size:14px;font-weight:600;background:var(--soft);color:var(--brand);border-radius:12px;padding:10px 12px}
+.g-src{margin:0;font-size:11px;color:var(--mute)}
+.g-dots{display:flex;justify-content:center;gap:6px;padding:4px 0}
+.g-dots i{width:8px;height:8px;border-radius:4px;background:var(--line2);transition:width .3s var(--spring),background .2s}
+.g-dots i.on{background:var(--brand);width:22px}
+.gfig{margin:0;display:flex;flex-direction:column;gap:8px}
+.gfig figcaption{font-size:11px;color:var(--mute);text-align:right}
+.lbar{display:flex;flex-direction:column;gap:4px}
+.lb-l{font-size:12px;font-weight:700;color:var(--mute)}
+.lb{display:flex;height:40px;border-radius:10px;overflow:hidden;gap:2px}
+.lb i{font-style:normal;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:0 6px;white-space:nowrap;overflow:hidden}
+.lb .g{background:var(--line2);color:var(--ink)} .lb .b{background:var(--brand);color:var(--on)}
+
+/* はじめに（名前＋団体コード） */
+.pf-l{font-size:13px;font-weight:600;margin:4px 2px -4px}
+.pf-name{width:100%;border:0;background:var(--bg);border-radius:12px;padding:13px 14px}
+.pf-code{width:100%;border:0;background:var(--bg);border-radius:12px;padding:13px 14px;font-family:var(--en);font-size:22px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;text-align:center}
+.pf-found{display:flex;align-items:center;gap:10px;background:var(--soft);border-radius:12px;padding:11px 13px;font-size:14px;line-height:1.5}
+.pf-found b{font-weight:700}
+.pf-found.bad{background:var(--line);color:var(--mute)}
+.pf-found .m{font-size:18px}
+.pf-agree{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border-radius:12px;padding:12px 13px;font-size:13px;line-height:1.6}
+.pf-agree input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:var(--brand)}
+
+@media (hover:hover) and (pointer:fine){
+  .ch:hover:not(:disabled){box-shadow:0 0 0 1.5px var(--brand) inset}
+  .row:hover,.vid:hover,.deck:hover{filter:brightness(.98)}
+  .pill:hover,.ghost:hover{filter:brightness(.97)}
+}
+@media (prefers-reduced-motion: reduce){
+  .screen{animation:none}
+  .bar i,.switch,.switch i,.ch,.dot,.ring .v,.g-dots i{transition:none}
+  .ch.wrong{animation:none}
+}
+@media (prefers-reduced-transparency: reduce){
+  .nav.stuck,.tabbar,body::before{background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+
+/* 本コースのタブ：比べる表 */
+.cmp{background:var(--card);border-radius:var(--r);overflow:hidden}
+.cmp-h,.cmp-r{display:grid;grid-template-columns:6.6em 1fr 1fr;gap:8px;padding:11px 14px;align-items:start}
+.cmp-h{background:var(--soft);font-size:12px;font-weight:700;color:var(--mute)}
+.cmp-h span:last-child{color:var(--brand)}
+.cmp-r+.cmp-r{border-top:.5px solid var(--line2)}
+.cmp-r b{font-size:13px;font-weight:700;line-height:1.4}
+.cmp-r span{font-size:13px;line-height:1.5;color:var(--mute)}
+.cmp-r span:last-child{color:var(--ink);font-weight:600}
+.cmp-r .no{color:var(--line2);font-weight:700}
+.why{background:var(--dark);color:#fff;border-radius:20px;padding:20px 18px;display:flex;flex-direction:column;gap:10px}
+.why h2{text-wrap:balance;margin:0;font-family:var(--fd);font-size:25px;font-weight:900;letter-spacing:-.02em;line-height:1.3}
+.why p{margin:0;font-size:14.5px;line-height:1.75;color:rgba(255,255,255,.88)}
+.why .rh{display:flex;gap:6px;align-items:flex-end;height:34px;margin:4px 0 2px}
+.why .rh i{display:block;width:10px;border-radius:5px;background:var(--brand)}
+.why-top{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.why-me{display:flex;flex-direction:column;align-items:center;gap:8px}
+.why-face{width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.9)}
+.why-logo{display:block;height:13px;width:auto;color:#FF2D16}
+.why-ex{display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.08);border-radius:14px;padding:12px 14px}
+.why-ex span{font-family:var(--en);font-size:14px;color:rgba(255,255,255,.65)}
+.why-ex b{font-family:var(--en);font-size:20px;font-weight:900;letter-spacing:-.01em;color:#fff;white-space:nowrap}
+.why-ex b::before{content:"→ ";color:var(--mid,#7799F8)}
+.why-go{display:inline-block;margin-top:6px;font-size:17px;color:#fff}
+.why-l{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.why-play{flex:none;font:inherit;font-size:13px;font-weight:700;border:0;border-radius:99px;padding:7px 12px;cursor:pointer;background:rgba(255,255,255,.14);color:#fff}
+.why-play.on{background:var(--brand);color:#fff}
+.why-play:active{transform:scale(.95)}
+.why-ex small{font-size:12px;color:rgba(255,255,255,.6)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTplZGI5ZTU5Yy1mMWE4LTRkMmQtYTVmYS0yMzc3Y2JiYzVjNTkAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaKWi9Ygq95RkqOB6+wipwCkAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpiNWNhMWM3Ni1iMzA1LTQ2NzktYmY3Yi02MzZhZGE4MmQ0ZDhscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoZhimtyFWwcrEBEbQPVPjZAAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggftiKYEDgh/xcl6umwKWTzJH1v9DbHQWHAVjWRwIJHyekZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaMWB+3eRBLyr8Ykd+nZqVVAAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCBtkDtM9a3qZyTZURMnAIVji8q5PtlQrLaDi39OtHuRAWRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiGZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmVkYjllNTljLWYxYTgtNGQyZC1hNWZhLTIzNzdjYmJjNWM1OS9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjM3ZWViMjFmLThlZmYtNDY0Ni04MDg0LTZmZTJiYWYzNzFiN3JjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCB+2IpgQOCH/FyXq6bApZPMkfW/0NsdBYcBWNZHAgkfJ6JjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggLSLjq8thXOcKzt+bVMGQTEHKpbq3MCp7phw9sg+fSVSiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggrihaQ/dlZj6Fm2TVTGQKPg2H1AhrC1SvVdG2LExXC9V0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQNucsaWWfBxQyNxQy1pvYM22TN5p7B0NwYG+ByM1D+nVKc+q0QsX846wCLd4v4OB8j4uLrloC4mCKpppu4+C+UU=</c2pa:manifest></metadata><symbol id="aplogo" viewBox="0 0 3847 1000"><path d="M450 104 L846 896 L648 896 L450 500 L252 896 L54 896 Z"/><rect x="960" y="432" width="270" height="136"/><path d="M1354.0 844.0V156.0H1760.0Q1825.0 156.0 1874.5 185.5Q1924.0 215.0 1952.0 267.0Q1980.0 319.0 1980.0 388.0Q1980.0 459.0 1951.5 511.5Q1923.0 564.0 1873.5 593.0Q1824.0 622.0 1760.0 622.0H1575.0V844.0ZM1575.0 461.0H1686.0Q1721.0 461.0 1738.5 443.0Q1756.0 425.0 1756.0 390.0Q1756.0 366.0 1748.5 350.5Q1741.0 335.0 1725.5 327.0Q1710.0 319.0 1686.0 319.0H1575.0ZM2204.0 856.0Q2110.0 856.0 2065.0 804.0Q2020.0 752.0 2020.0 658.0V316.0H2219.0V634.0Q2219.0 650.0 2223.5 664.0Q2228.0 678.0 2236.0 688.0Q2244.0 698.0 2257.0 703.5Q2270.0 709.0 2286.0 709.0Q2311.0 709.0 2329.5 697.5Q2348.0 686.0 2358.5 667.0Q2369.0 648.0 2369.0 626.0V316.0H2568.0V844.0H2405.0L2395.0 764.0H2388.0Q2369.0 793.0 2339.5 814.0Q2310.0 835.0 2275.0 845.5Q2240.0 856.0 2204.0 856.0ZM2893.0 856.0Q2845.0 856.0 2797.5 846.5Q2750.0 837.0 2710.5 816.5Q2671.0 796.0 2647.0 764.0Q2623.0 732.0 2623.0 686.0V679.0Q2623.0 676.0 2624.0 672.0H2809.0Q2808.0 675.0 2808.0 678.0V683.0Q2809.0 701.0 2820.5 713.0Q2832.0 725.0 2851.0 731.0Q2870.0 737.0 2893.0 737.0Q2907.0 737.0 2926.5 735.0Q2946.0 733.0 2961.0 725.0Q2976.0 717.0 2976.0 698.0Q2976.0 681.0 2958.5 672.5Q2941.0 664.0 2912.5 658.5Q2884.0 653.0 2850.0 647.0Q2813.0 641.0 2775.5 631.5Q2738.0 622.0 2706.0 604.5Q2674.0 587.0 2654.5 558.0Q2635.0 529.0 2635.0 483.0Q2635.0 431.0 2656.5 396.0Q2678.0 361.0 2715.5 340.5Q2753.0 320.0 2800.5 311.5Q2848.0 303.0 2900.0 303.0Q2945.0 303.0 2989.5 311.5Q3034.0 320.0 3071.0 338.5Q3108.0 357.0 3130.0 387.0Q3152.0 417.0 3152.0 460.0V467.0Q3152.0 472.0 3151.0 474.0H2968.0V466.0Q2968.0 451.0 2957.5 441.5Q2947.0 432.0 2930.5 427.5Q2914.0 423.0 2897.0 423.0Q2891.0 423.0 2879.0 423.5Q2867.0 424.0 2854.5 427.0Q2842.0 430.0 2833.5 437.0Q2825.0 444.0 2825.0 457.0Q2825.0 469.0 2836.5 476.5Q2848.0 484.0 2867.5 488.5Q2887.0 493.0 2911.0 498.0Q2949.0 505.0 2993.0 511.5Q3037.0 518.0 3076.5 533.5Q3116.0 549.0 3141.0 580.5Q3166.0 612.0 3166.0 669.0Q3166.0 723.0 3144.0 759.5Q3122.0 796.0 3084.0 817.0Q3046.0 838.0 2996.5 847.0Q2947.0 856.0 2893.0 856.0ZM3220.0 844.0V119.0H3419.0V371.0H3426.0Q3443.0 349.0 3469.0 334.5Q3495.0 320.0 3525.0 312.0Q3555.0 304.0 3584.0 304.0Q3647.0 304.0 3687.5 327.5Q3728.0 351.0 3748.0 395.0Q3768.0 439.0 3768.0 502.0V844.0H3569.0V526.0Q3569.0 509.0 3564.5 495.5Q3560.0 482.0 3552.0 472.0Q3544.0 462.0 3531.5 456.5Q3519.0 451.0 3502.0 451.0Q3477.0 451.0 3458.5 462.5Q3440.0 474.0 3429.5 492.5Q3419.0 511.0 3419.0 534.0V844.0Z"/></symbol></svg>
+
+<!-- 今日＆計画 -->
+<main class="screen" id="p-home" role="tabpanel" aria-labelledby="tab-home">
+  <div class="nav">
+    <span class="navl"><svg class="aplogo" viewBox="0 0 3847 1000" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">今日</span></span>
+    <span class="navr">
+      <button class="pill" data-go="co">本コース</button>
+      <button class="bell" id="inbox-btn" aria-label="お知らせ">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.5 7.5-2.5 7.5h17S18 14.5 18 8.5"/><path d="M13.7 19.5a2 2 0 0 1-3.4 0"/></svg>
+        <span class="badge" id="inbox-n" hidden>0</span>
+      </button>
+      <button class="pill" id="me-edit">ログイン</button>
+    </span>
+  </div>
+  <p class="eyebrow" id="brand"></p>
+  <h1 class="large">今日</h1>
+  <p class="sub"><button id="me">ログイン</button></p>
+  <div class="inst" id="inst" hidden>
+    <span class="inst-ic" aria-hidden="true">↓</span>
+    <p id="inst-msg"></p>
+    <button class="inst-x" id="inst-x" aria-label="閉じる">×</button>
+    <button class="primary" id="inst-go" hidden>ホーム画面に追加</button>
+  </div>
+  <div class="hero">
+    <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="t" cx="50" cy="50" r="42"/><circle class="v" id="ring" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9" transform="rotate(-90 50 50)"/></svg>
+    <div><b id="h-num">0 / 3</b><p id="h-msg">今日のゴール</p></div>
+  </div>
+  <div class="tiles">
+    <div><b id="st-streak">0</b>日 連続</div>
+    <div><b id="st-week">0</b>日 今週</div>
+    <div><b id="st-words">0</b>語 今月</div>
+  </div>
+  <p class="label">今日やること</p>
+  <div class="group" id="today-list"></div>
+  <div class="group" id="notif-row" hidden>
+    <button class="row" id="notif-go"><span class="ic" aria-hidden="true">🔔</span><span><b id="notif-t">お知らせを受け取る</b><small id="notif-s">幹部からの連絡が、この端末に届きます</small></span><span class="chev" id="notif-c">許可する ›</span></button>
+  </div>
+  <p class="label">話せるようになるための、実践トレーニング</p>
+  <div class="sum">
+    <div><span>シャドーイング ＆ A-PUSH Method</span><b>英語の感覚</b></div>
+    <div><span>単語トレーニング</span><b>英語の知識</b></div>
+  </div>
+
+  <hr class="hr">
+  <h2 class="sect" id="plan-sec">計画</h2>
+  <p class="sub">ゴールを決めると、毎日のカレンダーが塗られていきます</p>
+  <div class="calbox">
+    <div class="calhd"><button id="cal-prev" aria-label="前の月">‹</button><b id="cal-title"></b><button id="cal-next" aria-label="次の月">›</button></div>
+    <div class="cal" id="cal-grid"></div>
+    <div class="legend"><span style="--c:var(--brand)">1日のゴール達成</span><span style="--c:var(--soft2)">少しやった</span></div>
+  </div>
+  <div class="tiles">
+    <div><b id="n-streak">0</b>日 連続達成</div>
+    <div><b id="n-month">0</b>日 今月の達成</div>
+    <div><b id="n-words">0</b>語 今月の新しい単語</div>
+  </div>
+  <p class="label">1日のゴール</p>
+  <div class="group">
+    <div class="step2"><span>スピーキング<small>1ラウンド＝5問・約2分</small></span><span class="stepper"><button data-goal="sp" data-d="-1" aria-label="減らす">−</button><output id="g-sp">1</output><button data-goal="sp" data-d="1" aria-label="増やす">＋</button></span></div>
+    <div class="step2"><span>シャドーイング<small>動画を開いた本数</small></span><span class="stepper"><button data-goal="sh" data-d="-1" aria-label="減らす">−</button><output id="g-sh">1</output><button data-goal="sh" data-d="1" aria-label="増やす">＋</button></span></div>
+    <div class="step2"><span>新しい単語<small>復習の語はいつも全部</small></span><span class="stepper"><button data-goal="wd" data-d="-5" aria-label="減らす">−</button><output id="g-wd">10</output><button data-goal="wd" data-d="5" aria-label="増やす">＋</button></span></div>
+  </div>
+  <p class="note" id="g-hint"></p>
+  <p class="label" id="g-month-label">今月のゴール</p>
+  <div class="group"><textarea class="goaltext" id="g-month" rows="2" placeholder="例：毎日休まず続ける／レベル2まで進む"></textarea></div>
+  <p class="label">3ヶ月のゴール</p>
+  <div class="group"><textarea class="goaltext" id="g-3m" rows="2" placeholder="例：現場の指示を英語で聞き返せる"></textarea><div class="gmeta" id="g-3m-meta"></div></div>
+  <p class="saved" id="saved" role="status"></p>
+  <p class="label">自分のカレンダーに入れる</p>
+  <div class="group">
+    <label class="fld" for="c-time">練習する時間<input type="time" id="c-time" value="21:00"></label>
+    <label class="fld" for="c-len">長さ<select id="c-len"><option value="15">15分</option><option value="20" selected>20分</option><option value="30">30分</option><option value="45">45分</option></select></label>
+  </div>
+  <div class="two">
+    <a id="c-ics" href="#">iPhone・Mac<small>カレンダー</small></a>
+    <a id="c-google" href="#" target="_blank" rel="noopener">Google<small>カレンダー</small></a>
+  </div>
+  <p class="note">毎日くり返す予定が入ります。予定の中に、このサイトへのリンクと今日の課題が入ります。</p>
+
+  <a class="apush" href="https://lp.apush.jp/" target="_blank" rel="noopener">
+    <span class="ap-k">3ヶ月、英語に集中</span>
+    <span class="ap-n">A-PUSH</span>
+    <span class="ap-c">無料体験＆学習相談 →</span>
+  </a>
+  <div class="sync off" id="sync"><span class="d" aria-hidden="true"></span><span id="sync-t"></span></div>
+  <footer class="foot">
+    <span><b>音について</b>　端末の読み上げ機能を使っています。端末や設定によっては鳴りません。マナーモードを切ってください。</span>
+    <span class="by">TRAINING BY A-PUSH</span>
+  </footer>
+</main>
+
+<!-- 話す -->
+<main class="screen" id="p-sp" role="tabpanel" aria-labelledby="tab-sp" hidden>
+  <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 3847 1000" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">話す</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="sp">やり方</button></div>
+  <h1 class="large">話す</h1>
+  <p class="sub">A-PUSHメソッド・選んで、声に出して3回</p>
+  <div class="toggle-row">
+    <div><b id="civ-label"></b><span id="civ-note"></span></div>
+    <button class="switch" id="civ" role="switch" aria-checked="false"><i></i></button>
+  </div>
+  <div class="seg lv" id="sp-lv" role="group" aria-label="レベル"></div>
+  <div class="chips" id="sp-chips" role="group" aria-label="型を選ぶ"></div>
+  <div class="card">
+    <div class="bar"><i id="tbar"></i></div>
+    <div class="cin">
+      <div id="v-quiz" class="cin" style="padding:0">
+        <div class="meta"><span class="pips" id="pips"></span><span id="qleft">20</span></div>
+        <p class="ask" id="ask"></p>
+        <p class="stem" id="stem" hidden></p>
+        <div class="pic" id="pic" aria-hidden="true"></div>
+        <p class="ja" id="qja"></p>
+        <span class="cue" id="cue" hidden></span>
+        <div class="choices" id="choices"></div>
+      </div>
+      <div id="v-repeat" class="cin" style="padding:0" hidden>
+        <p class="verdict" id="verdict"></p>
+        <div class="pic" id="rpic" aria-hidden="true"></div>
+        <p class="say en" id="rq"></p>
+        <p class="answer" id="answer"></p>
+        <p class="say" id="answerja"></p>
+        <p class="say">声に出して3回。タップすると音が鳴ります。</p>
+        <div class="dots" id="dots">
+          <button class="dot" data-d="0" aria-label="1回目">1</button>
+          <button class="dot" data-d="1" aria-label="2回目">2</button>
+          <button class="dot" data-d="2" aria-label="3回目">3</button>
+        </div>
+        <div class="acts"><button class="primary" id="btn-next" disabled>次へ</button></div>
+      </div>
+      <div id="v-result" class="cin" style="padding:0" hidden>
+        <p class="big"><span id="rscore">0</span><em> / 5</em></p>
+        <p class="rmsg" id="rmsg"></p>
+        <div class="recap" id="recap"></div>
+        <div class="acts"><button class="primary" id="btn-again">もう5問</button><button class="ghost" id="btn-nextset">次の組へ</button></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- シャドーイング -->
+<main class="screen" id="p-sh" role="tabpanel" aria-labelledby="tab-sh" hidden>
+  <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 3847 1000" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">シャドーイング</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="sh">やり方</button></div>
+  <h1 class="large">シャドーイング</h1>
+  <p class="sub">3回聞いて、質問に答える。</p>
+  <div class="shl" id="sh-list"></div>
+  <p class="credit">動画：VOA Learning English（learningenglish.voanews.com）・NASA Goddard Space Flight Center。いずれも公開素材を、出典を示して使っています。NASAがこのサイトを推薦しているものではありません。</p>
+</main>
+
+<!-- 単語 -->
+<main class="screen" id="p-wd" role="tabpanel" aria-labelledby="tab-wd" hidden>
+  <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 3847 1000" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">単語</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="wd">やり方</button></div>
+  <h1 class="large">単語</h1>
+  <p class="sub" id="w-sub"></p>
+  <div class="decks" id="w-decks" role="group" aria-label="単語帳を選ぶ"></div>
+  <div class="daily">
+    <span><b>1日の新しい単語</b><small>計画のゴールと同じ数</small></span>
+    <div class="seg" id="w-daily" role="group" aria-label="1日の新しい単語の数"></div>
+  </div>
+  <div class="today"><div class="today-t" id="w-today"></div><div class="bar"><i id="w-bar"></i></div></div>
+  <div class="filters">
+    <span class="note" id="w-decknote"></span>
+    <div class="seg" id="w-mode" role="group" aria-label="見せ方">
+      <button id="w-mode-card" aria-pressed="true">カード</button>
+      <button id="w-mode-list" aria-pressed="false">一覧</button>
+    </div>
+  </div>
+  <div id="w-card" class="card">
+    <div class="cin">
+      <div id="w-finish" class="fin" hidden>
+        <div class="fin-mark" aria-hidden="true">✓</div>
+        <p class="fin-msg" id="w-fin-msg"></p>
+        <p class="say" id="w-fin-sub"></p>
+        <div class="acts"><button class="ghost" id="w-more">あと5語やる</button></div>
+      </div>
+      <div class="cin" id="w-study" style="padding:0">
+        <div class="wcount"><span id="w-pos"></span><span id="w-done"></span></div>
+        <span class="wcat" id="w-catlabel"></span>
+        <p class="wja" id="w-ja"></p>
+        <p class="ask" style="text-align:center">この日本語の英語は？</p>
+        <div class="choices" id="w-choices"></div>
+        <div id="w-ans" class="cin" style="padding:0" hidden>
+          <p class="verdict" id="w-verdict"></p>
+          <p class="wen" id="w-en"></p>
+          <p class="say">声に出して3回。タップすると音が鳴ります。</p>
+          <div class="dots" id="w-dots">
+            <button class="dot" data-d="0" aria-label="1回目">1</button>
+            <button class="dot" data-d="1" aria-label="2回目">2</button>
+            <button class="dot" data-d="2" aria-label="3回目">3</button>
+          </div>
+          <div class="acts"><button class="primary" id="w-next" disabled>次へ</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="w-listwrap" class="cin" style="padding:0" hidden>
+    <input class="search" id="w-q" type="search" placeholder="日本語か英語でさがす" aria-label="さがす" enterkeyhint="search" autocapitalize="none" autocorrect="off">
+    <div class="list" id="w-list"></div>
+  </div>
+  <p class="note" id="w-fieldnote"></p>
+</main>
+
+<!-- 本コース（A-PUSH の本コースの説明と、このアプリとのちがい） -->
+<main class="screen" id="p-co" hidden>
+  <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 3847 1000" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">本コース</span></span></div>
+  <h1 class="large">本コース</h1>
+  <p class="sub">スピーキング特化英会話</p>
+  <div class="why">
+    <div class="why-top">
+      <div class="why-me"><img class="why-face" src="img/alex.jpg" alt="ネイティブ講師 アレックス先生" width="240" height="240"><svg class="why-logo" viewBox="0 0 3847 1000" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg></div>
+      <h2>ネイティブは、<br>リズムで話す。</h2>
+    </div>
+    <p>ネイティブと話すと「全く聞き取れない…」「ついていけない…」と感じるのは、彼らがスピード以上に、リズムで話しているから。</p>
+    <div class="why-ex">
+      <span>What are you doing?</span>
+      <div class="why-l"><b>Whaddaya doin'?</b><button class="why-play on" data-src="img/wayd.mp3" onclick="try{var a=window.__wayd||(window.__wayd=new Audio(this.dataset.src));a.currentTime=0;a.play()}catch(e){}" aria-label="ネイティブの速さで聞く">▶ 聞く</button></div>
+      <small>ワダヤ ドゥーイン</small>
+    </div>
+    <p>音と音がつながる「リンキングサウンド」というリズムです。機械の音声では、この感覚を育てるのは難しい。<br><b class="why-go">だから、ネイティブと話す。</b></p>
+  </div>
+  <div class="cmp">
+    <div class="cmp-h"><span></span><span>土木版</span><span>本コース</span></div>
+    <div class="cmp-r"><b>ネイティブ講師</b><span>—</span><span>マンツーマン</span></div><div class="cmp-r"><b>コーチング</b><span>—</span><span>あり</span></div><div class="cmp-r"><b>学習の管理</b><span>自分で</span><span>講師が見る</span></div><div class="cmp-r"><b>文法</b><span>25個（5W1H・時制・助動詞）</span><span>62個（上級コースの過去完了・仮定法などを含む）＋録音</span></div><div class="cmp-r"><b>シャドーイング</b><span>9本</span><span>50本</span></div><div class="cmp-r"><b>単語</b><span>土木・中3・高1</span><span>TOEIC・IELTS・TOEFL など18コース</span></div>
+  </div>
+  <div class="two">
+    <a href="https://reserva.be/washoiii/reserve?mode=service_staff&amp;search_evt_no=95eJwzNbY0tbQEAARxAUk" target="_blank" rel="noopener">体験会<small>無料</small></a>
+    <a href="https://calendar.app.google/kX21qNU7f9NdJtQY9" target="_blank" rel="noopener">面談<small>無料</small></a>
+  </div>
+  <a class="apush" href="https://lp.apush.jp/" target="_blank" rel="noopener">
+    <span class="ap-k">3ヶ月、英語に集中</span>
+    <span class="ap-n">A-PUSH</span>
+    <span class="ap-c">コースを見る →</span>
+  </a>
+</main>
+
+<nav class="tabbar" role="tablist" aria-label="トレーニング"><div>
+  <button class="tab" role="tab" id="tab-home" aria-controls="p-home" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.4"/><path d="M3.5 10h17M8.5 3v4M15.5 3v4"/><path d="M8.5 14.5l2 2 4-4"/></svg>今日＆計画</button>
+  <button class="tab" role="tab" id="tab-sp" aria-controls="p-sp" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17.5V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v6.5a3 3 0 0 1-3 3H9.5L5 20z"/><path d="M9 10.5h6"/></svg>話す</button>
+  <button class="tab" role="tab" id="tab-sh" aria-controls="p-sh" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3.5" y="13.5" width="4" height="6.5" rx="1.6"/><rect x="16.5" y="13.5" width="4" height="6.5" rx="1.6"/></svg>シャドーイング</button>
+  <button class="tab" role="tab" id="tab-wd" aria-controls="p-wd" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="12.5" height="14" rx="2.2"/><path d="M8 3.5h9.5a2.5 2.5 0 0 1 2.5 2.5v11"/></svg>単語</button>
+</div></nav>
+
+<div class="scrim" id="scrim"></div>
+
+<section class="sheet" id="guide" role="dialog" aria-modal="true" aria-labelledby="g-title">
+  <div class="sh-top"><div class="grab"></div><div class="sh-head"><span class="sh-title" id="g-title"></span><button class="sh-x" id="g-close" aria-label="閉じる">×</button></div></div>
+  <div class="sh-body" id="g-card">
+    <div class="g-body" id="g-body"></div>
+    <div class="g-dots" id="g-dots" aria-hidden="true"></div>
+    <div class="acts"><button class="ghost" id="g-prev">もどる</button><button class="primary" id="g-next">次へ</button></div>
+  </div>
+</section>
+
+<section class="sheet" id="inbox" role="dialog" aria-modal="true" aria-labelledby="ib-h">
+  <div class="sh-top"><div class="grab"></div><div class="sh-head"><span class="sh-title" id="ib-h">お知らせ</span><button class="sh-x" id="ib-x" aria-label="閉じる">×</button></div></div>
+  <div class="sh-body" id="ib-body"></div>
+</section>
+
+<section class="sheet" id="pf" role="dialog" aria-modal="true" aria-labelledby="pf-h">
+  <div class="sh-top"><div class="grab"></div><div class="sh-head"><span class="sh-title">ログイン</span><button class="sh-x" id="pf-x" aria-label="閉じる">×</button></div></div>
+  <form class="sh-body" id="pf-form">
+    <h2 class="g-h" id="pf-h">名前と団体コードでログイン</h2>
+    <label class="pf-l" for="pf-name">名前（呼び名でOK。幹部が見てわかる名前）</label>
+    <input class="pf-name" id="pf-name" autocomplete="nickname" maxlength="20" placeholder="例：はなこ" enterkeyhint="next">
+    <label class="pf-l" for="pf-code">団体コード（幹部からもらった4〜6文字）</label>
+    <input class="pf-code" id="pf-code" maxlength="6" placeholder="ABC123" inputmode="latin" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
+    <div class="pf-found" id="pf-found" hidden><span class="m" aria-hidden="true">✓</span><span id="pf-found-t"></span></div>
+    <label class="pf-agree" id="pf-agree" hidden><input type="checkbox" id="pf-ok"><span id="pf-agree-t"></span></label>
+    <p class="note" id="pf-note"></p>
+    <div class="acts"><button type="button" class="ghost" id="pf-cancel">あとで</button><button class="primary" id="pf-save" disabled>ログイン</button></div>
+  </form>
+</section>
+
+<script>
+const CFG={"id":"preraka","storePrefix":"pr-","site":{"title":"インド研修 ビジネス英語トレーニング","brand":"Business English","short":"研修英語","description":"インド研修で使うビジネス英語を、声に出して練習するトレーニング。","color":"#C2410C","colorDark":"#FB923C"},"field":{"label":"ビジネス","longLabel":"ビジネス英語","chunkNote":"仕事の動作30個が混ざります（5問中3問）","wordNote":"ビジネス単語の訳は目安です。現地で違う言い方をしていたら、リーダーに伝えてください。"},"groups":{"label":"研修","items":[["✈️","渡航前"],["🇮🇳","研修中"],["🎓","帰国した人"]]},"record":{"endpoint":"__ENDPOINT__","key":"__KEY__","note":"練習した日と内容が、名前と一緒に団体の幹部に見えます。見るのは団体の幹部だけです。"},"shadowingBase":"https://training.apush.jp/shadowing/","org":{"id":"preraka","name":"PRERAKA","code":"__ORG_CODE__"},"firebase":{"apiKey":"AIzaSyBunl7P06I7DEibz4xIhQmymPGMD58cKb8","authDomain":"apush-training.firebaseapp.com","projectId":"apush-training","storageBucket":"apush-training.firebasestorage.app","messagingSenderId":"950173330906","appId":"1:950173330906:web:6311e8d2f09effd53a24e3","vapidKey":"BDY7Nvc2B0QhVyWO6mK1tE5lHNmBRl7rOGTd2fN8OYtEDIMZk-EdNxwIj7CkkxUYszvURIHmaun03IlG5h0V9B4"},"decks":[{"id":"c1","name":"ビジネス単語 Lv1","note":"仕事で最初に要る250語","words":[{"ja":"会議","en":"meeting","tag":"会議・連絡"},{"ja":"顧客・取引先","en":"client","tag":"営業・取引"},{"ja":"予定・スケジュール","en":"schedule","tag":"仕事の進め方"},{"ja":"事務所・オフィス","en":"office","tag":"オフィス・道具"},{"ja":"上司","en":"boss","tag":"職種・役職"},{"ja":"同僚","en":"coworker","tag":"人事・組織"},{"ja":"チーム","en":"team","tag":"人事・組織"},{"ja":"部署・部門","en":"department","tag":"人事・組織"},{"ja":"仕事・職","en":"job","tag":"人事・組織"},{"ja":"電子メール","en":"email","tag":"会議・連絡"},{"ja":"電話・通話","en":"call","tag":"会議・連絡"},{"ja":"議題・協議事項","en":"agenda","tag":"会議・連絡"},{"ja":"発表・プレゼン","en":"presentation","tag":"会議・連絡"},{"ja":"請求書・送り状","en":"invoice","tag":"お金・経理"},{"ja":"支払い","en":"payment","tag":"お金・経理"},{"ja":"締め切り日・期日","en":"due date","tag":"仕事の進め方"},{"ja":"出張","en":"business trip","tag":"仕事の進め方"},{"ja":"名刺","en":"business card","tag":"オフィス・道具"},{"ja":"売上・販売","en":"sales","tag":"営業・取引"},{"ja":"研修・訓練","en":"training","tag":"人事・組織"},{"ja":"研修生・インターン","en":"intern","tag":"職種・役職"},{"ja":"インターンシップ・就業体験","en":"internship","tag":"人事・組織"},{"ja":"計画","en":"plan","tag":"仕事の進め方"},{"ja":"確認する・点検する","en":"check","tag":"動詞・表現"},{"ja":"予約する","en":"book","tag":"動詞・表現"},{"ja":"予定を変更する","en":"reschedule","tag":"動詞・表現"},{"ja":"延期する","en":"postpone","tag":"動詞・表現"},{"ja":"提出する","en":"submit","tag":"動詞・表現"},{"ja":"署名する","en":"sign","tag":"動詞・表現"},{"ja":"議事録","en":"minutes","tag":"会議・連絡"},{"ja":"最新情報・更新","en":"update","tag":"会議・連絡"},{"ja":"催促・確認の連絡","en":"reminder","tag":"会議・連絡"},{"ja":"意見・評価","en":"feedback","tag":"会議・連絡"},{"ja":"発表・お知らせ","en":"announcement","tag":"会議・連絡"},{"ja":"添付ファイル","en":"attachment","tag":"会議・連絡"},{"ja":"返答・反応","en":"response","tag":"会議・連絡"},{"ja":"メモ・注意書き","en":"note","tag":"会議・連絡"},{"ja":"社内メモ・連絡票","en":"memo","tag":"会議・連絡"},{"ja":"話し合い・議論","en":"discussion","tag":"会議・連絡"},{"ja":"要点・論点","en":"point","tag":"会議・連絡"},{"ja":"訪問","en":"visit","tag":"会議・連絡"},{"ja":"ビデオ通話","en":"video call","tag":"会議・連絡"},{"ja":"電話会議","en":"conference call","tag":"会議・連絡"},{"ja":"内線・延長","en":"extension","tag":"会議・連絡"},{"ja":"留守番電話","en":"voicemail","tag":"会議・連絡"},{"ja":"不在・外出中","en":"out of office","tag":"会議・連絡"},{"ja":"折り返し電話する","en":"call back","tag":"動詞・表現"},{"ja":"電話を切る","en":"hang up","tag":"動詞・表現"},{"ja":"（電話で）少々お待ちください","en":"hold on","tag":"動詞・表現"},{"ja":"配布資料","en":"handout","tag":"会議・連絡"},{"ja":"スライド","en":"slide","tag":"会議・連絡"},{"ja":"図表・グラフ","en":"chart","tag":"会議・連絡"},{"ja":"データ・資料","en":"data","tag":"仕事の進め方"},{"ja":"請求書・勘定","en":"bill","tag":"お金・経理"},{"ja":"給料・支払い","en":"pay","tag":"お金・経理"},{"ja":"賃金・時給","en":"wage","tag":"お金・経理"},{"ja":"賞与・ボーナス","en":"bonus","tag":"お金・経理"},{"ja":"口座・取引先","en":"account","tag":"お金・経理"},{"ja":"銀行","en":"bank","tag":"お金・経理"},{"ja":"現金","en":"cash","tag":"お金・経理"},{"ja":"クレジットカード","en":"credit card","tag":"お金・経理"},{"ja":"払い戻し・返金","en":"refund","tag":"お金・経理"},{"ja":"預金・手付金","en":"deposit","tag":"お金・経理"},{"ja":"残高・均衡","en":"balance","tag":"お金・経理"},{"ja":"合計","en":"total","tag":"お金・経理"},{"ja":"通貨","en":"currency","tag":"お金・経理"},{"ja":"為替レート","en":"exchange rate","tag":"お金・経理"},{"ja":"ルピー（インドの通貨）","en":"rupee","tag":"お金・経理"},{"ja":"送金・異動","en":"transfer","tag":"お金・経理"},{"ja":"料金・請求する","en":"charge","tag":"お金・経理"},{"ja":"保険","en":"insurance","tag":"お金・経理"},{"ja":"融資・ローン","en":"loan","tag":"お金・経理"},{"ja":"借金・負債","en":"debt","tag":"お金・経理"},{"ja":"損失","en":"loss","tag":"お金・経理"},{"ja":"手頃な価格の","en":"affordable","tag":"お金・経理"},{"ja":"年1回の・年次の","en":"annual","tag":"仕事の進め方"},{"ja":"毎月の・月1回の","en":"monthly","tag":"仕事の進め方"},{"ja":"毎週の・週1回の","en":"weekly","tag":"仕事の進め方"},{"ja":"購入","en":"purchase","tag":"営業・取引"},{"ja":"買い手・バイヤー","en":"buyer","tag":"営業・取引"},{"ja":"売り手・販売者","en":"seller","tag":"営業・取引"},{"ja":"供給業者・仕入れ先","en":"supplier","tag":"営業・取引"},{"ja":"販売業者・納入業者","en":"vendor","tag":"営業・取引"},{"ja":"提携先・共同経営者","en":"partner","tag":"営業・取引"},{"ja":"配達・納品","en":"delivery","tag":"営業・取引"},{"ja":"出荷・発送品","en":"shipment","tag":"営業・取引"},{"ja":"発送・配送","en":"shipping","tag":"営業・取引"},{"ja":"在庫・株","en":"stock","tag":"営業・取引"},{"ja":"競合他社・ライバル","en":"competitor","tag":"営業・取引"},{"ja":"競争","en":"competition","tag":"営業・取引"},{"ja":"苦情・クレーム","en":"complaint","tag":"営業・取引"},{"ja":"見積もり・引用","en":"quote","tag":"営業・取引"},{"ja":"保証・保証書","en":"warranty","tag":"営業・取引"},{"ja":"交換・両替","en":"exchange","tag":"営業・取引"},{"ja":"ブランド・銘柄","en":"brand","tag":"営業・取引"},{"ja":"商品・品物","en":"goods","tag":"営業・取引"},{"ja":"品目・項目","en":"item","tag":"営業・取引"},{"ja":"カタログ・商品目録","en":"catalog","tag":"営業・取引"},{"ja":"パンフレット・案内冊子","en":"brochure","tag":"営業・取引"},{"ja":"キャンペーン・宣伝活動","en":"campaign","tag":"営業・取引"},{"ja":"発売・開始","en":"launch","tag":"営業・取引"},{"ja":"市場","en":"market","tag":"営業・取引"},{"ja":"店・店舗","en":"store","tag":"営業・取引"},{"ja":"貿易・取引","en":"trade","tag":"営業・取引"},{"ja":"輸出","en":"export","tag":"営業・取引"},{"ja":"輸入","en":"import","tag":"営業・取引"},{"ja":"海外の・海外へ","en":"overseas","tag":"営業・取引"},{"ja":"署名","en":"signature","tag":"営業・取引"},{"ja":"顧客サービス","en":"customer service","tag":"営業・取引"},{"ja":"注文書","en":"order form","tag":"営業・取引"},{"ja":"本社","en":"headquarters","tag":"人事・組織"},{"ja":"支店・支社","en":"branch","tag":"人事・組織"},{"ja":"会社・事務所","en":"firm","tag":"人事・組織"},{"ja":"企業・法人","en":"corporation","tag":"人事・組織"},{"ja":"雇用主","en":"employer","tag":"人事・組織"},{"ja":"労働者・作業員","en":"worker","tag":"人事・組織"},{"ja":"職場","en":"workplace","tag":"人事・組織"},{"ja":"勤務シフト・交代制","en":"shift","tag":"人事・組織"},{"ja":"残業・時間外労働","en":"overtime","tag":"人事・組織"},{"ja":"休日・休み","en":"day off","tag":"人事・組織"},{"ja":"休暇","en":"vacation","tag":"人事・組織"},{"ja":"祝日・休日","en":"holiday","tag":"人事・組織"},{"ja":"休暇・休職","en":"leave","tag":"人事・組織"},{"ja":"病気休暇","en":"sick leave","tag":"人事・組織"},{"ja":"休憩","en":"break","tag":"人事・組織"},{"ja":"昼休み","en":"lunch break","tag":"人事・組織"},{"ja":"勤務時間","en":"working hours","tag":"人事・組織"},{"ja":"常勤の・正社員の","en":"full-time","tag":"人事・組織"},{"ja":"非常勤の・パートの","en":"part-time","tag":"人事・組織"},{"ja":"職務・義務","en":"duty","tag":"人事・組織"},{"ja":"新入社員・採用する","en":"recruit","tag":"人事・組織"},{"ja":"履歴書","en":"resume","tag":"人事・組織"},{"ja":"応募者","en":"applicant","tag":"人事・組織"},{"ja":"候補者","en":"candidate","tag":"人事・組織"},{"ja":"昇進・販売促進","en":"promotion","tag":"人事・組織"},{"ja":"退職・引退","en":"retirement","tag":"人事・組織"},{"ja":"新人・新入り","en":"newcomer","tag":"人事・組織"},{"ja":"社長","en":"president","tag":"職種・役職"},{"ja":"最高経営責任者","en":"CEO","tag":"職種・役職"},{"ja":"取締役・部長","en":"director","tag":"職種・役職"},{"ja":"監督者・上司","en":"supervisor","tag":"職種・役職"},{"ja":"研修生・見習い","en":"trainee","tag":"職種・役職"},{"ja":"助手・アシスタント","en":"assistant","tag":"職種・役職"},{"ja":"秘書","en":"secretary","tag":"職種・役職"},{"ja":"受付係","en":"receptionist","tag":"職種・役職"},{"ja":"技術者・エンジニア","en":"engineer","tag":"職種・役職"},{"ja":"会計士・経理担当者","en":"accountant","tag":"職種・役職"},{"ja":"事務員・店員","en":"clerk","tag":"職種・役職"},{"ja":"営業担当者","en":"sales representative","tag":"職種・役職"},{"ja":"長・最高責任者","en":"chief","tag":"職種・役職"},{"ja":"所有者・経営者","en":"owner","tag":"職種・役職"},{"ja":"創業者","en":"founder","tag":"職種・役職"},{"ja":"チームリーダー","en":"team leader","tag":"職種・役職"},{"ja":"技術者・技師","en":"technician","tag":"職種・役職"},{"ja":"デザイナー","en":"designer","tag":"職種・役職"},{"ja":"プログラマー","en":"programmer","tag":"職種・役職"},{"ja":"専門家・熟練者","en":"expert","tag":"職種・役職"},{"ja":"警備員","en":"security guard","tag":"職種・役職"},{"ja":"役員・担当官","en":"officer","tag":"職種・役職"},{"ja":"目標・対象","en":"target","tag":"仕事の進め方"},{"ja":"任務・割り当てられた仕事","en":"assignment","tag":"仕事の進め方"},{"ja":"仕事量","en":"workload","tag":"仕事の進め方"},{"ja":"チームワーク・協力","en":"teamwork","tag":"仕事の進め方"},{"ja":"優先事項","en":"priority","tag":"仕事の進め方"},{"ja":"手順・段階","en":"step","tag":"仕事の進め方"},{"ja":"段階","en":"stage","tag":"仕事の進め方"},{"ja":"指針・ガイドライン","en":"guideline","tag":"仕事の進め方"},{"ja":"指示・説明書","en":"instruction","tag":"仕事の進め方"},{"ja":"チェックリスト","en":"checklist","tag":"仕事の進め方"},{"ja":"記録","en":"record","tag":"仕事の進め方"},{"ja":"下書き・草案","en":"draft","tag":"仕事の進め方"},{"ja":"誤り・エラー","en":"error","tag":"仕事の進め方"},{"ja":"時間通りに","en":"on time","tag":"動詞・表現"},{"ja":"前もって・事前に","en":"in advance","tag":"動詞・表現"},{"ja":"～を担当して","en":"in charge of","tag":"動詞・表現"},{"ja":"手引き・マニュアル","en":"manual","tag":"オフィス・道具"},{"ja":"机","en":"desk","tag":"オフィス・道具"},{"ja":"ノートパソコン","en":"laptop","tag":"オフィス・道具"},{"ja":"プリンター","en":"printer","tag":"オフィス・道具"},{"ja":"コピー機","en":"copy machine","tag":"オフィス・道具"},{"ja":"ファイル・書類","en":"file","tag":"オフィス・道具"},{"ja":"フォルダー","en":"folder","tag":"オフィス・道具"},{"ja":"用紙・書式","en":"form","tag":"オフィス・道具"},{"ja":"ホッチキス","en":"stapler","tag":"オフィス・道具"},{"ja":"封筒","en":"envelope","tag":"オフィス・道具"},{"ja":"小包・包み","en":"package","tag":"オフィス・道具"},{"ja":"郵便物・メール","en":"mail","tag":"会議・連絡"},{"ja":"パスワード","en":"password","tag":"オフィス・道具"},{"ja":"ウェブサイト","en":"website","tag":"オフィス・道具"},{"ja":"表計算シート","en":"spreadsheet","tag":"オフィス・道具"},{"ja":"カレンダー・予定表","en":"calendar","tag":"オフィス・道具"},{"ja":"会議室","en":"meeting room","tag":"オフィス・道具"},{"ja":"受付・歓迎会","en":"reception","tag":"オフィス・道具"},{"ja":"ロビー","en":"lobby","tag":"オフィス・道具"},{"ja":"倉庫","en":"warehouse","tag":"オフィス・道具"},{"ja":"工場","en":"factory","tag":"オフィス・道具"},{"ja":"制服","en":"uniform","tag":"オフィス・道具"},{"ja":"身分証明書・社員証","en":"ID card","tag":"オフィス・道具"},{"ja":"名札・バッジ","en":"badge","tag":"オフィス・道具"},{"ja":"駐車場","en":"parking lot","tag":"オフィス・道具"},{"ja":"社員食堂・食堂","en":"canteen","tag":"オフィス・道具"},{"ja":"トイレ・化粧室","en":"restroom","tag":"オフィス・道具"},{"ja":"給湯室・食品庫","en":"pantry","tag":"オフィス・道具"},{"ja":"事務用品","en":"office supplies","tag":"オフィス・道具"},{"ja":"道具・ツール","en":"tool","tag":"オフィス・道具"},{"ja":"ソフトウェア","en":"software","tag":"オフィス・道具"},{"ja":"ネットワーク・人脈","en":"network","tag":"オフィス・道具"},{"ja":"コピー・複写","en":"photocopy","tag":"オフィス・道具"},{"ja":"転送する","en":"forward","tag":"動詞・表現"},{"ja":"添付する","en":"attach","tag":"動詞・表現"},{"ja":"印刷する","en":"print","tag":"動詞・表現"},{"ja":"（書類に）記入する","en":"fill out","tag":"動詞・表現"},{"ja":"提出する","en":"hand in","tag":"動詞・表現"},{"ja":"発送する・出荷する","en":"ship","tag":"動詞・表現"},{"ja":"～を楽しみにする","en":"look forward to","tag":"動詞・表現"},{"ja":"追って連絡する・フォローする","en":"follow up","tag":"動詞・表現"},{"ja":"（後で）～に連絡する","en":"get back to","tag":"動詞・表現"},{"ja":"設定する・設立する","en":"set up","tag":"動詞・表現"},{"ja":"登録する・申し込む","en":"sign up","tag":"動詞・表現"},{"ja":"ログインする","en":"log in","tag":"動詞・表現"},{"ja":"中止する","en":"call off","tag":"動詞・表現"},{"ja":"～に取り組む","en":"work on","tag":"動詞・表現"},{"ja":"引き継ぐ","en":"take over","tag":"動詞・表現"},{"ja":"記入する・代理を務める","en":"fill in","tag":"動詞・表現"},{"ja":"配る","en":"hand out","tag":"動詞・表現"},{"ja":"見直す・確認する","en":"go over","tag":"動詞・表現"},{"ja":"指摘する","en":"point out","tag":"動詞・表現"},{"ja":"挨拶する","en":"greet","tag":"動詞・表現"},{"ja":"協力する","en":"cooperate","tag":"動詞・表現"},{"ja":"思い出させる・念を押す","en":"remind","tag":"動詞・表現"},{"ja":"発表する・提示する","en":"present","tag":"動詞・表現"},{"ja":"率いる・導く","en":"lead","tag":"動詞・表現"},{"ja":"割り当てる","en":"assign","tag":"動詞・表現"},{"ja":"承認する","en":"approve","tag":"動詞・表現"},{"ja":"雇う","en":"employ","tag":"動詞・表現"},{"ja":"訓練する・研修する","en":"train","tag":"動詞・表現"},{"ja":"経営する・運営する","en":"run","tag":"動詞・表現"},{"ja":"うまくいく・解決する","en":"work out","tag":"動詞・表現"},{"ja":"辞める","en":"quit","tag":"動詞・表現"},{"ja":"歓迎する","en":"welcome","tag":"動詞・表現"},{"ja":"チームの一員","en":"team member","tag":"人事・組織"},{"ja":"通勤・通勤する","en":"commute","tag":"人事・組織"},{"ja":"営業時間・勤務時間","en":"office hours","tag":"人事・組織"},{"ja":"予定表・スケジュール","en":"timeline","tag":"仕事の進め方"},{"ja":"価格表","en":"price list","tag":"営業・取引"},{"ja":"クーポン・割引券","en":"coupon","tag":"営業・取引"},{"ja":"面接官","en":"interviewer","tag":"職種・役職"},{"ja":"プロジェクター","en":"projector","tag":"オフィス・道具"},{"ja":"ホワイトボード","en":"whiteboard","tag":"オフィス・道具"},{"ja":"スキャナー","en":"scanner","tag":"オフィス・道具"}]},{"id":"c2","name":"ビジネス単語 Lv2","note":"一歩進んだ250語","words":[{"ja":"収益・売上高","en":"revenue","tag":"お金・経理"},{"ja":"利害関係者","en":"stakeholder","tag":"人事・組織"},{"ja":"調達・購買","en":"procurement","tag":"営業・取引"},{"ja":"四半期の・四半期ごとの","en":"quarterly","tag":"お金・経理"},{"ja":"払い戻す・（経費を）精算する","en":"reimburse","tag":"お金・経理"},{"ja":"法令順守・コンプライアンス","en":"compliance","tag":"人事・組織"},{"ja":"交渉","en":"negotiation","tag":"営業・取引"},{"ja":"会計年度","en":"fiscal year","tag":"お金・経理"},{"ja":"会計・経理","en":"accounting","tag":"お金・経理"},{"ja":"監査","en":"audit","tag":"お金・経理"},{"ja":"投資","en":"investment","tag":"お金・経理"},{"ja":"投資家","en":"investor","tag":"お金・経理"},{"ja":"株主","en":"shareholder","tag":"お金・経理"},{"ja":"資産","en":"asset","tag":"お金・経理"},{"ja":"負債・法的責任","en":"liability","tag":"お金・経理"},{"ja":"配当","en":"dividend","tag":"お金・経理"},{"ja":"資本・首都","en":"capital","tag":"お金・経理"},{"ja":"資金・基金","en":"fund","tag":"お金・経理"},{"ja":"資金調達・資金提供","en":"funding","tag":"お金・経理"},{"ja":"資金繰り・キャッシュフロー","en":"cash flow","tag":"お金・経理"},{"ja":"売上高・離職率","en":"turnover","tag":"お金・経理"},{"ja":"利益幅・余白","en":"margin","tag":"お金・経理"},{"ja":"総計の・総～","en":"gross","tag":"お金・経理"},{"ja":"正味の・純～","en":"net","tag":"お金・経理"},{"ja":"間接費・諸経費","en":"overhead","tag":"お金・経理"},{"ja":"支出・経費","en":"expenditure","tag":"お金・経理"},{"ja":"手当・許容量","en":"allowance","tag":"お金・経理"},{"ja":"給与支払い・給与台帳","en":"payroll","tag":"お金・経理"},{"ja":"控除・差し引き","en":"deduction","tag":"お金・経理"},{"ja":"分割払い・1回分","en":"installment","tag":"お金・経理"},{"ja":"未払いの・傑出した","en":"outstanding","tag":"お金・経理"},{"ja":"期限切れの・延滞した","en":"overdue","tag":"お金・経理"},{"ja":"金利","en":"interest rate","tag":"お金・経理"},{"ja":"インフレ・物価上昇","en":"inflation","tag":"お金・経理"},{"ja":"手数料・歩合","en":"commission","tag":"お金・経理"},{"ja":"引換券・証票","en":"voucher","tag":"お金・経理"},{"ja":"小口現金","en":"petty cash","tag":"お金・経理"},{"ja":"元帳・台帳","en":"ledger","tag":"お金・経理"},{"ja":"貸借対照表","en":"balance sheet","tag":"お金・経理"},{"ja":"財務諸表","en":"financial statement","tag":"お金・経理"},{"ja":"簿記","en":"bookkeeping","tag":"お金・経理"},{"ja":"費用対効果の高い","en":"cost-effective","tag":"お金・経理"},{"ja":"10万（インドの数の単位）","en":"lakh","tag":"お金・経理"},{"ja":"1000万（インドの数の単位）","en":"crore","tag":"お金・経理"},{"ja":"収益・所得","en":"earnings","tag":"お金・経理"},{"ja":"年金","en":"pension","tag":"お金・経理"},{"ja":"株主資本・公平性","en":"equity","tag":"お金・経理"},{"ja":"入札","en":"tender","tag":"営業・取引"},{"ja":"入札・付け値","en":"bid","tag":"営業・取引"},{"ja":"見積もり・見積書","en":"quotation","tag":"営業・取引"},{"ja":"合併","en":"merger","tag":"営業・取引"},{"ja":"買収・獲得","en":"acquisition","tag":"営業・取引"},{"ja":"事業・ベンチャー","en":"venture","tag":"営業・取引"},{"ja":"提携・共同経営","en":"partnership","tag":"営業・取引"},{"ja":"同盟・提携","en":"alliance","tag":"営業・取引"},{"ja":"物流・ロジスティクス","en":"logistics","tag":"営業・取引"},{"ja":"供給網・サプライチェーン","en":"supply chain","tag":"営業・取引"},{"ja":"在庫・在庫目録","en":"inventory","tag":"営業・取引"},{"ja":"流通・分配","en":"distribution","tag":"営業・取引"},{"ja":"流通業者・販売代理店","en":"distributor","tag":"営業・取引"},{"ja":"卸売り","en":"wholesale","tag":"営業・取引"},{"ja":"小売り","en":"retail","tag":"営業・取引"},{"ja":"小売業者","en":"retailer","tag":"営業・取引"},{"ja":"製造業者・メーカー","en":"manufacturer","tag":"営業・取引"},{"ja":"製造業・製造","en":"manufacturing","tag":"営業・取引"},{"ja":"商品","en":"merchandise","tag":"営業・取引"},{"ja":"商品・日用品","en":"commodity","tag":"営業・取引"},{"ja":"消費者","en":"consumer","tag":"営業・取引"},{"ja":"顧客層・常連客","en":"clientele","tag":"営業・取引"},{"ja":"見込み客・見通し","en":"prospect","tag":"営業・取引"},{"ja":"市場調査","en":"market research","tag":"営業・取引"},{"ja":"マーケティング・販売戦略","en":"marketing","tag":"営業・取引"},{"ja":"市場占有率","en":"market share","tag":"営業・取引"},{"ja":"部門・業界","en":"sector","tag":"営業・取引"},{"ja":"競争力のある・競争の激しい","en":"competitive","tag":"営業・取引"},{"ja":"利益になる・もうかる","en":"profitable","tag":"営業・取引"},{"ja":"持続可能な","en":"sustainable","tag":"営業・取引"},{"ja":"国内の","en":"domestic","tag":"営業・取引"},{"ja":"多国籍の","en":"multinational","tag":"営業・取引"},{"ja":"税関","en":"customs","tag":"営業・取引"},{"ja":"関税","en":"tariff","tag":"営業・取引"},{"ja":"条項","en":"clause","tag":"営業・取引"},{"ja":"契約条件・利用規約","en":"terms and conditions","tag":"営業・取引"},{"ja":"修正・改正","en":"amendment","tag":"営業・取引"},{"ja":"更新","en":"renewal","tag":"営業・取引"},{"ja":"満了・期限切れ","en":"expiration","tag":"営業・取引"},{"ja":"子会社","en":"subsidiary","tag":"人事・組織"},{"ja":"系列会社・関連会社","en":"affiliate","tag":"人事・組織"},{"ja":"企業・事業","en":"enterprise","tag":"人事・組織"},{"ja":"新興企業・スタートアップ","en":"startup","tag":"人事・組織"},{"ja":"企業の・法人の","en":"corporate","tag":"人事・組織"},{"ja":"管理・運営","en":"administration","tag":"人事・組織"},{"ja":"取締役会","en":"board of directors","tag":"人事・組織"},{"ja":"委員会","en":"committee","tag":"人事・組織"},{"ja":"部門・事業部","en":"division","tag":"人事・組織"},{"ja":"階層・序列","en":"hierarchy","tag":"人事・組織"},{"ja":"規制・規則","en":"regulation","tag":"人事・組織"},{"ja":"評価・査定","en":"appraisal","tag":"人事・組織"},{"ja":"人事評価・業績評価","en":"performance review","tag":"人事・組織"},{"ja":"報奨・動機づけ","en":"incentive","tag":"人事・組織"},{"ja":"報酬・補償","en":"compensation","tag":"人事・組織"},{"ja":"特典・役得","en":"perk","tag":"人事・組織"},{"ja":"試用期間・見習い期間","en":"probation","tag":"人事・組織"},{"ja":"採用・人材募集","en":"recruitment","tag":"人事・組織"},{"ja":"職員・人事部","en":"personnel","tag":"人事・組織"},{"ja":"人事・人事部","en":"human resources","tag":"人事・組織"},{"ja":"労働力・全従業員","en":"workforce","tag":"人事・組織"},{"ja":"人員数","en":"headcount","tag":"人事・組織"},{"ja":"一時解雇・人員整理","en":"layoff","tag":"人事・組織"},{"ja":"辞職・辞表","en":"resignation","tag":"人事・組織"},{"ja":"移転・転勤","en":"relocation","tag":"人事・組織"},{"ja":"新人受け入れ研修","en":"onboarding","tag":"人事・組織"},{"ja":"新人研修・オリエンテーション","en":"orientation","tag":"人事・組織"},{"ja":"資格・能力","en":"qualification","tag":"人事・組織"},{"ja":"指導者・助言者","en":"mentor","tag":"職種・役職"},{"ja":"重役・幹部","en":"executive","tag":"職種・役職"},{"ja":"議長・会長","en":"chairperson","tag":"職種・役職"},{"ja":"副社長","en":"vice president","tag":"職種・役職"},{"ja":"調整役・コーディネーター","en":"coordinator","tag":"職種・役職"},{"ja":"コンサルタント・顧問","en":"consultant","tag":"職種・役職"},{"ja":"請負業者","en":"contractor","tag":"職種・役職"},{"ja":"フリーランス・個人事業主","en":"freelancer","tag":"職種・役職"},{"ja":"監査役・監査人","en":"auditor","tag":"職種・役職"},{"ja":"分析者・アナリスト","en":"analyst","tag":"職種・役職"},{"ja":"代表者・担当者","en":"representative","tag":"職種・役職"},{"ja":"連絡係・連携","en":"liaison","tag":"職種・役職"},{"ja":"部下","en":"subordinate","tag":"職種・役職"},{"ja":"上司・上役","en":"superior","tag":"職種・役職"},{"ja":"相手方・同じ立場の人","en":"counterpart","tag":"職種・役職"},{"ja":"広報担当者","en":"spokesperson","tag":"職種・役職"},{"ja":"専門家","en":"specialist","tag":"職種・役職"},{"ja":"操作員・オペレーター","en":"operator","tag":"職種・役職"},{"ja":"海外駐在員","en":"expatriate","tag":"職種・役職"},{"ja":"機密の・内密の","en":"confidential","tag":"会議・連絡"},{"ja":"覚書・社内連絡","en":"memorandum","tag":"会議・連絡"},{"ja":"通信・文書のやり取り","en":"correspondence","tag":"会議・連絡"},{"ja":"問い合わせ","en":"inquiry","tag":"会議・連絡"},{"ja":"同封物","en":"enclosure","tag":"会議・連絡"},{"ja":"受取人","en":"recipient","tag":"会議・連絡"},{"ja":"出席者","en":"attendee","tag":"会議・連絡"},{"ja":"進行役","en":"facilitator","tag":"会議・連絡"},{"ja":"合意・総意","en":"consensus","tag":"会議・連絡"},{"ja":"説明会・状況説明","en":"briefing","tag":"会議・連絡"},{"ja":"セミナー・研修会","en":"seminar","tag":"会議・連絡"},{"ja":"研修会・ワークショップ","en":"workshop","tag":"会議・連絡"},{"ja":"大会・慣習","en":"convention","tag":"会議・連絡"},{"ja":"基調講演","en":"keynote","tag":"会議・連絡"},{"ja":"会場","en":"venue","tag":"会議・連絡"},{"ja":"概要・あらまし","en":"outline","tag":"会議・連絡"},{"ja":"意見を出し合う","en":"brainstorm","tag":"会議・連絡"},{"ja":"旅程・旅行日程","en":"itinerary","tag":"仕事の進め方"},{"ja":"宿泊施設","en":"accommodation","tag":"仕事の進め方"},{"ja":"ビザ・査証","en":"visa","tag":"仕事の進め方"},{"ja":"時間帯（タイムゾーン）","en":"time zone","tag":"仕事の進め方"},{"ja":"生産性","en":"productivity","tag":"仕事の進め方"},{"ja":"作業の流れ","en":"workflow","tag":"仕事の進め方"},{"ja":"障害・ボトルネック","en":"bottleneck","tag":"仕事の進め方"},{"ja":"未処理の仕事・受注残","en":"backlog","tag":"仕事の進め方"},{"ja":"不測の事態","en":"contingency","tag":"仕事の進め方"},{"ja":"実行・実施","en":"implementation","tag":"仕事の進め方"},{"ja":"実行・遂行","en":"execution","tag":"仕事の進め方"},{"ja":"結果・成果","en":"outcome","tag":"仕事の進め方"},{"ja":"評価・査定","en":"assessment","tag":"仕事の進め方"},{"ja":"仕様・仕様書","en":"specification","tag":"仕事の進め方"},{"ja":"試作品","en":"prototype","tag":"仕事の進め方"},{"ja":"予測・見通し","en":"forecast","tag":"仕事の進め方"},{"ja":"予測・見積もり","en":"projection","tag":"仕事の進め方"},{"ja":"戦略","en":"strategy","tag":"仕事の進め方"},{"ja":"新たな取り組み・主導権","en":"initiative","tag":"仕事の進め方"},{"ja":"目標・目的","en":"objective","tag":"仕事の進め方"},{"ja":"節目・重要な段階","en":"milestone","tag":"仕事の進め方"},{"ja":"成果物","en":"deliverable","tag":"仕事の進め方"},{"ja":"基準・指標","en":"benchmark","tag":"仕事の進め方"},{"ja":"指標・測定基準","en":"metrics","tag":"仕事の進め方"},{"ja":"業務・事業運営","en":"operations","tag":"仕事の進め方"},{"ja":"保留中の・未決の","en":"pending","tag":"仕事の進め方"},{"ja":"仮の・暫定的な","en":"tentative","tag":"仕事の進め方"},{"ja":"義務的な・必須の","en":"mandatory","tag":"仕事の進め方"},{"ja":"任意の","en":"optional","tag":"仕事の進め方"},{"ja":"実現可能な","en":"feasible","tag":"仕事の進め方"},{"ja":"予備の・準備の","en":"preliminary","tag":"仕事の進め方"},{"ja":"時間を守る","en":"punctual","tag":"仕事の進め方"},{"ja":"改良・アップグレード","en":"upgrade","tag":"オフィス・道具"},{"ja":"保守・維持管理","en":"maintenance","tag":"オフィス・道具"},{"ja":"基盤・インフラ","en":"infrastructure","tag":"オフィス・道具"},{"ja":"敷地・構内","en":"premises","tag":"オフィス・道具"},{"ja":"文房具","en":"stationery","tag":"オフィス・道具"},{"ja":"器具・家電","en":"appliance","tag":"オフィス・道具"},{"ja":"データベース","en":"database","tag":"オフィス・道具"},{"ja":"ひな形・テンプレート","en":"template","tag":"オフィス・道具"},{"ja":"配分する・割り当てる","en":"allocate","tag":"動詞・表現"},{"ja":"任せる・委任する","en":"delegate","tag":"動詞・表現"},{"ja":"促進する・円滑にする","en":"facilitate","tag":"動詞・表現"},{"ja":"実行する・実施する","en":"implement","tag":"動詞・表現"},{"ja":"協力する・共同で行う","en":"collaborate","tag":"動詞・表現"},{"ja":"調整する","en":"coordinate","tag":"動詞・表現"},{"ja":"合理化する・効率化する","en":"streamline","tag":"動詞・表現"},{"ja":"優先順位をつける","en":"prioritize","tag":"動詞・表現"},{"ja":"外部委託する","en":"outsource","tag":"動詞・表現"},{"ja":"拡大する","en":"expand","tag":"動詞・表現"},{"ja":"早める・促進する","en":"expedite","tag":"動詞・表現"},{"ja":"最終決定する・仕上げる","en":"finalize","tag":"動詞・表現"},{"ja":"認可する・権限を与える","en":"authorize","tag":"動詞・表現"},{"ja":"支持する・裏書きする","en":"endorse","tag":"動詞・表現"},{"ja":"確認する・検証する","en":"verify","tag":"動詞・表現"},{"ja":"明確にする","en":"clarify","tag":"動詞・表現"},{"ja":"詳しく説明する","en":"elaborate","tag":"動詞・表現"},{"ja":"要約する","en":"summarize","tag":"動詞・表現"},{"ja":"明示する・指定する","en":"specify","tag":"動詞・表現"},{"ja":"知らせる・通知する","en":"notify","tag":"動詞・表現"},{"ja":"認める・受け取りを知らせる","en":"acknowledge","tag":"動詞・表現"},{"ja":"同封する","en":"enclose","tag":"動詞・表現"},{"ja":"照合する・和解させる","en":"reconcile","tag":"動詞・表現"},{"ja":"評価する・査定する","en":"assess","tag":"動詞・表現"},{"ja":"評価する","en":"evaluate","tag":"動詞・表現"},{"ja":"分析する","en":"analyze","tag":"動詞・表現"},{"ja":"監視する・観察する","en":"monitor","tag":"動詞・表現"},{"ja":"監督する","en":"oversee","tag":"動詞・表現"},{"ja":"引き受ける・着手する","en":"undertake","tag":"動詞・表現"},{"ja":"開始する・始める","en":"initiate","tag":"動詞・表現"},{"ja":"終了する・解約する","en":"terminate","tag":"動詞・表現"},{"ja":"統合する・まとめる","en":"consolidate","tag":"動詞・表現"},{"ja":"多様化する","en":"diversify","tag":"動詞・表現"},{"ja":"最適化する","en":"optimize","tag":"動詞・表現"},{"ja":"最大化する","en":"maximize","tag":"動詞・表現"},{"ja":"最小限にする","en":"minimize","tag":"動詞・表現"},{"ja":"高める・強化する","en":"enhance","tag":"動詞・表現"},{"ja":"押し上げる・増やす","en":"boost","tag":"動詞・表現"},{"ja":"生み出す・発生させる","en":"generate","tag":"動詞・表現"},{"ja":"保持する・引き留める","en":"retain","tag":"動詞・表現"},{"ja":"解雇する・退ける","en":"dismiss","tag":"動詞・表現"},{"ja":"収容する・対応する","en":"accommodate","tag":"動詞・表現"},{"ja":"予期する・見込む","en":"anticipate","tag":"動詞・表現"},{"ja":"補償する・埋め合わせる","en":"compensate","tag":"動詞・表現"},{"ja":"免除する・放棄する","en":"waive","tag":"動詞・表現"},{"ja":"招集する・開く","en":"convene","tag":"動詞・表現"},{"ja":"休会する・延期する","en":"adjourn","tag":"動詞・表現"},{"ja":"連絡を取る","en":"touch base","tag":"動詞・表現"},{"ja":"連絡を取る・働きかける","en":"reach out","tag":"動詞・表現"},{"ja":"～を代表して・～の代わりに","en":"on behalf of","tag":"動詞・表現"},{"ja":"～のために・～が原因で","en":"due to","tag":"動詞・表現"},{"ja":"～の点で","en":"in terms of","tag":"動詞・表現"},{"ja":"～に関して","en":"regarding","tag":"動詞・表現"},{"ja":"前倒しにする（インド英語）","en":"prepone","tag":"動詞・表現"},{"ja":"手に入れる・取得する","en":"obtain","tag":"動詞・表現"},{"ja":"果たす・満たす","en":"fulfill","tag":"動詞・表現"},{"ja":"進める・続行する","en":"proceed","tag":"動詞・表現"},{"ja":"ノルマ・割り当て","en":"quota","tag":"営業・取引"},{"ja":"委託販売・積荷","en":"consignment","tag":"営業・取引"},{"ja":"担保","en":"collateral","tag":"お金・経理"}]},{"id":"b3","name":"基本英単語 中3","note":"中学3年の範囲・250語","words":[{"ja":"受け入れる","en":"accept","tag":"動詞"},{"ja":"同意する・賛成する","en":"agree","tag":"動詞"},{"ja":"許可する・許す","en":"allow","tag":"動詞"},{"ja":"現れる・〜のように見える","en":"appear","tag":"動詞"},{"ja":"所属する","en":"belong","tag":"動詞"},{"ja":"借りる","en":"borrow","tag":"動詞"},{"ja":"建てる","en":"build","tag":"動詞"},{"ja":"引き起こす","en":"cause","tag":"動詞"},{"ja":"祝う","en":"celebrate","tag":"動詞"},{"ja":"選ぶ","en":"choose","tag":"動詞"},{"ja":"集める","en":"collect","tag":"動詞"},{"ja":"意思を伝え合う・連絡を取る","en":"communicate","tag":"動詞"},{"ja":"比べる","en":"compare","tag":"動詞"},{"ja":"続ける","en":"continue","tag":"動詞"},{"ja":"数える・頼りにする","en":"count","tag":"動詞"},{"ja":"覆う・扱う","en":"cover","tag":"動詞"},{"ja":"作り出す・創造する","en":"create","tag":"動詞"},{"ja":"渡る・横切る","en":"cross","tag":"動詞"},{"ja":"決める","en":"decide","tag":"動詞"},{"ja":"配達する・届ける","en":"deliver","tag":"動詞"},{"ja":"頼る・〜次第である","en":"depend","tag":"動詞"},{"ja":"説明する・描写する","en":"describe","tag":"動詞"},{"ja":"破壊する","en":"destroy","tag":"動詞"},{"ja":"発達させる・開発する","en":"develop","tag":"動詞"},{"ja":"消える","en":"disappear","tag":"動詞"},{"ja":"発見する","en":"discover","tag":"動詞"},{"ja":"話し合う","en":"discuss","tag":"動詞"},{"ja":"寄付する","en":"donate","tag":"動詞"},{"ja":"励ます・勧める","en":"encourage","tag":"動詞"},{"ja":"説明する","en":"explain","tag":"動詞"},{"ja":"表現する","en":"express","tag":"動詞"},{"ja":"失敗する・落ちる","en":"fail","tag":"動詞"},{"ja":"満たす・記入する","en":"fill","tag":"動詞"},{"ja":"知る・見つけ出す","en":"find out","tag":"動詞"},{"ja":"修理する・固定する","en":"fix","tag":"動詞"},{"ja":"従う・ついていく","en":"follow","tag":"動詞"},{"ja":"あきらめる","en":"give up","tag":"動詞"},{"ja":"育てる・成長する","en":"grow","tag":"動詞"},{"ja":"成長する・大人になる","en":"grow up","tag":"動詞"},{"ja":"推測する","en":"guess","tag":"動詞"},{"ja":"雇う","en":"hire","tag":"動詞"},{"ja":"持つ・開催する","en":"hold","tag":"動詞"},{"ja":"傷つける・痛む","en":"hurt","tag":"動詞"},{"ja":"想像する","en":"imagine","tag":"動詞"},{"ja":"改善する・上達する","en":"improve","tag":"動詞"},{"ja":"含む","en":"include","tag":"動詞"},{"ja":"紹介する","en":"introduce","tag":"動詞"},{"ja":"発明する","en":"invent","tag":"動詞"},{"ja":"招待する","en":"invite","tag":"動詞"},{"ja":"参加する・加わる","en":"join","tag":"動詞"},{"ja":"貸す","en":"lend","tag":"動詞"},{"ja":"世話をする","en":"look after","tag":"動詞"},{"ja":"失う・負ける","en":"lose","tag":"動詞"},{"ja":"意味する","en":"mean","tag":"動詞"},{"ja":"言及する・触れる","en":"mention","tag":"動詞"},{"ja":"逃す・恋しく思う","en":"miss","tag":"動詞"},{"ja":"気づく","en":"notice","tag":"動詞"},{"ja":"申し出る・提供する","en":"offer","tag":"動詞"},{"ja":"注文する・命令する","en":"order","tag":"動詞"},{"ja":"演じる・行う","en":"perform","tag":"動詞"},{"ja":"拾う・迎えに行く","en":"pick up","tag":"動詞"},{"ja":"準備する","en":"prepare","tag":"動詞"},{"ja":"守る・保護する","en":"protect","tag":"動詞"},{"ja":"上げる・育てる","en":"raise","tag":"動詞"},{"ja":"着く・届く","en":"reach","tag":"動詞"},{"ja":"気づく・実現する","en":"realize","tag":"動詞"},{"ja":"受け取る","en":"receive","tag":"動詞"},{"ja":"勧める・推薦する","en":"recommend","tag":"動詞"},{"ja":"リサイクルする","en":"recycle","tag":"動詞"},{"ja":"減らす","en":"reduce","tag":"動詞"},{"ja":"繰り返す","en":"repeat","tag":"動詞"},{"ja":"返事をする","en":"reply","tag":"動詞"},{"ja":"報告する","en":"report","tag":"動詞"},{"ja":"救助する","en":"rescue","tag":"動詞"},{"ja":"尊敬する・尊重する","en":"respect","tag":"動詞"},{"ja":"戻る・返す","en":"return","tag":"動詞"},{"ja":"救う・節約する","en":"save","tag":"動詞"},{"ja":"共有する・分け合う","en":"share","tag":"動詞"},{"ja":"解決する・解く","en":"solve","tag":"動詞"},{"ja":"広げる・広がる","en":"spread","tag":"動詞"},{"ja":"提案する","en":"suggest","tag":"動詞"},{"ja":"支える・支援する","en":"support","tag":"動詞"},{"ja":"生き残る","en":"survive","tag":"動詞"},{"ja":"翻訳する・通訳する","en":"translate","tag":"動詞"},{"ja":"信頼する","en":"trust","tag":"動詞"},{"ja":"無駄にする","en":"waste","tag":"動詞"},{"ja":"願う","en":"wish","tag":"動詞"},{"ja":"心配する","en":"worry","tag":"動詞"},{"ja":"事故","en":"accident","tag":"名詞"},{"ja":"行動","en":"action","tag":"名詞"},{"ja":"活動","en":"activity","tag":"名詞"},{"ja":"助言・アドバイス","en":"advice","tag":"名詞"},{"ja":"地域・分野","en":"area","tag":"名詞"},{"ja":"観客・聴衆","en":"audience","tag":"名詞"},{"ja":"仕事・商売","en":"business","tag":"名詞"},{"ja":"世紀","en":"century","tag":"名詞"},{"ja":"挑戦・難題","en":"challenge","tag":"名詞"},{"ja":"機会・チャンス","en":"chance","tag":"名詞"},{"ja":"性格・登場人物","en":"character","tag":"名詞"},{"ja":"選択","en":"choice","tag":"名詞"},{"ja":"地域社会","en":"community","tag":"名詞"},{"ja":"会社・仲間","en":"company","tag":"名詞"},{"ja":"文化","en":"culture","tag":"名詞"},{"ja":"習慣・慣習","en":"custom","tag":"名詞"},{"ja":"客・顧客","en":"customer","tag":"名詞"},{"ja":"危険","en":"danger","tag":"名詞"},{"ja":"違い","en":"difference","tag":"名詞"},{"ja":"方向・指示","en":"direction","tag":"名詞"},{"ja":"災害","en":"disaster","tag":"名詞"},{"ja":"割引","en":"discount","tag":"名詞"},{"ja":"距離","en":"distance","tag":"名詞"},{"ja":"努力","en":"effort","tag":"名詞"},{"ja":"電気","en":"electricity","tag":"名詞"},{"ja":"緊急事態・非常時","en":"emergency","tag":"名詞"},{"ja":"エネルギー・元気","en":"energy","tag":"名詞"},{"ja":"環境","en":"environment","tag":"名詞"},{"ja":"行事・出来事","en":"event","tag":"名詞"},{"ja":"経験","en":"experience","tag":"名詞"},{"ja":"事実","en":"fact","tag":"名詞"},{"ja":"祭り","en":"festival","tag":"名詞"},{"ja":"熱","en":"fever","tag":"名詞"},{"ja":"未来・将来","en":"future","tag":"名詞"},{"ja":"目標・ゴール","en":"goal","tag":"名詞"},{"ja":"政府","en":"government","tag":"名詞"},{"ja":"客・招待客","en":"guest","tag":"名詞"},{"ja":"健康","en":"health","tag":"名詞"},{"ja":"重要性","en":"importance","tag":"名詞"},{"ja":"情報","en":"information","tag":"名詞"},{"ja":"発明","en":"invention","tag":"名詞"},{"ja":"島","en":"island","tag":"名詞"},{"ja":"言語","en":"language","tag":"名詞"},{"ja":"法律","en":"law","tag":"名詞"},{"ja":"指導者・リーダー","en":"leader","tag":"名詞"},{"ja":"機械","en":"machine","tag":"名詞"},{"ja":"薬・医学","en":"medicine","tag":"名詞"},{"ja":"一員・メンバー","en":"member","tag":"名詞"},{"ja":"記憶・思い出","en":"memory","tag":"名詞"},{"ja":"伝言・メッセージ","en":"message","tag":"名詞"},{"ja":"間違い","en":"mistake","tag":"名詞"},{"ja":"自然","en":"nature","tag":"名詞"},{"ja":"近所の人・隣人","en":"neighbor","tag":"名詞"},{"ja":"意見","en":"opinion","tag":"名詞"},{"ja":"痛み","en":"pain","tag":"名詞"},{"ja":"乗客","en":"passenger","tag":"名詞"},{"ja":"平和","en":"peace","tag":"名詞"},{"ja":"期間・時代","en":"period","tag":"名詞"},{"ja":"プラスチック・ビニール","en":"plastic","tag":"名詞"},{"ja":"汚染","en":"pollution","tag":"名詞"},{"ja":"人口","en":"population","tag":"名詞"},{"ja":"力・電力","en":"power","tag":"名詞"},{"ja":"値段","en":"price","tag":"名詞"},{"ja":"製品","en":"product","tag":"名詞"},{"ja":"目的","en":"purpose","tag":"名詞"},{"ja":"理由","en":"reason","tag":"名詞"},{"ja":"領収書・レシート","en":"receipt","tag":"名詞"},{"ja":"結果","en":"result","tag":"名詞"},{"ja":"役割","en":"role","tag":"名詞"},{"ja":"規則・ルール","en":"rule","tag":"名詞"},{"ja":"安全","en":"safety","tag":"名詞"},{"ja":"状況","en":"situation","tag":"名詞"},{"ja":"技術・技能","en":"skill","tag":"名詞"},{"ja":"社会","en":"society","tag":"名詞"},{"ja":"解決策","en":"solution","tag":"名詞"},{"ja":"演説・スピーチ","en":"speech","tag":"名詞"},{"ja":"精神・気力","en":"spirit","tag":"名詞"},{"ja":"職員・スタッフ","en":"staff","tag":"名詞"},{"ja":"成功","en":"success","tag":"名詞"},{"ja":"制度・システム","en":"system","tag":"名詞"},{"ja":"科学技術","en":"technology","tag":"名詞"},{"ja":"話題","en":"topic","tag":"名詞"},{"ja":"伝統","en":"tradition","tag":"名詞"},{"ja":"ごみ","en":"trash","tag":"名詞"},{"ja":"困難・面倒","en":"trouble","tag":"名詞"},{"ja":"型・種類","en":"type","tag":"名詞"},{"ja":"ボランティア","en":"volunteer","tag":"名詞"},{"ja":"できる","en":"able","tag":"形容詞"},{"ja":"恐れて・心配して","en":"afraid","tag":"形容詞"},{"ja":"一人で・孤独な","en":"alone","tag":"形容詞"},{"ja":"驚くほどすばらしい","en":"amazing","tag":"形容詞"},{"ja":"落ち着いた","en":"calm","tag":"形容詞"},{"ja":"注意深い","en":"careful","tag":"形容詞"},{"ja":"安い","en":"cheap","tag":"形容詞"},{"ja":"明らかな・澄んだ","en":"clear","tag":"形容詞"},{"ja":"快適な","en":"comfortable","tag":"形容詞"},{"ja":"共通の・よくある","en":"common","tag":"形容詞"},{"ja":"便利な","en":"convenient","tag":"形容詞"},{"ja":"危険な","en":"dangerous","tag":"形容詞"},{"ja":"空の","en":"empty","tag":"形容詞"},{"ja":"十分な","en":"enough","tag":"形容詞"},{"ja":"等しい・平等な","en":"equal","tag":"形容詞"},{"ja":"優れた","en":"excellent","tag":"形容詞"},{"ja":"高価な","en":"expensive","tag":"形容詞"},{"ja":"外国の","en":"foreign","tag":"形容詞"},{"ja":"親しみやすい","en":"friendly","tag":"形容詞"},{"ja":"地球規模の","en":"global","tag":"形容詞"},{"ja":"健康な","en":"healthy","tag":"形容詞"},{"ja":"役に立つ","en":"helpful","tag":"形容詞"},{"ja":"正直な","en":"honest","tag":"形容詞"},{"ja":"不可能な","en":"impossible","tag":"形容詞"},{"ja":"国際的な","en":"international","tag":"形容詞"},{"ja":"地元の・地域の","en":"local","tag":"形容詞"},{"ja":"主な","en":"main","tag":"形容詞"},{"ja":"現代の","en":"modern","tag":"形容詞"},{"ja":"自然の・当然の","en":"natural","tag":"形容詞"},{"ja":"必要な","en":"necessary","tag":"形容詞"},{"ja":"緊張した・不安な","en":"nervous","tag":"形容詞"},{"ja":"完璧な","en":"perfect","tag":"形容詞"},{"ja":"礼儀正しい","en":"polite","tag":"形容詞"},{"ja":"可能な","en":"possible","tag":"形容詞"},{"ja":"誇りに思う","en":"proud","tag":"形容詞"},{"ja":"公共の","en":"public","tag":"形容詞"},{"ja":"静かな","en":"quiet","tag":"形容詞"},{"ja":"安全な","en":"safe","tag":"形容詞"},{"ja":"深刻な・まじめな","en":"serious","tag":"形容詞"},{"ja":"似ている","en":"similar","tag":"形容詞"},{"ja":"簡単な・質素な","en":"simple","tag":"形容詞"},{"ja":"賢い","en":"smart","tag":"形容詞"},{"ja":"成功した","en":"successful","tag":"形容詞"},{"ja":"ひどい","en":"terrible","tag":"形容詞"},{"ja":"伝統的な","en":"traditional","tag":"形容詞"},{"ja":"役に立つ","en":"useful","tag":"形容詞"},{"ja":"さまざまな","en":"various","tag":"形容詞"},{"ja":"心配した","en":"worried","tag":"形容詞"},{"ja":"海外で・海外へ","en":"abroad","tag":"副詞"},{"ja":"実際に・実は","en":"actually","tag":"副詞"},{"ja":"ほとんど","en":"almost","tag":"副詞"},{"ja":"すでに","en":"already","tag":"副詞"},{"ja":"もはや・これ以上","en":"anymore","tag":"副詞"},{"ja":"とにかく","en":"anyway","tag":"副詞"},{"ja":"確かに・もちろん","en":"certainly","tag":"副詞"},{"ja":"特に","en":"especially","tag":"副詞"},{"ja":"〜でさえ","en":"even","tag":"副詞"},{"ja":"これまでに","en":"ever","tag":"副詞"},{"ja":"ついに・最後に","en":"finally","tag":"副詞"},{"ja":"永遠に","en":"forever","tag":"副詞"},{"ja":"しかしながら","en":"however","tag":"副詞"},{"ja":"代わりに","en":"instead","tag":"副詞"},{"ja":"ほぼ","en":"nearly","tag":"副詞"},{"ja":"おそらく","en":"perhaps","tag":"副詞"},{"ja":"たぶん","en":"probably","tag":"副詞"},{"ja":"かなり","en":"quite","tag":"副詞"},{"ja":"最近","en":"recently","tag":"副詞"},{"ja":"いつか","en":"someday","tag":"副詞"},{"ja":"突然","en":"suddenly","tag":"副詞"},{"ja":"まだ・もう","en":"yet","tag":"副詞"},{"ja":"〜だけれども","en":"although","tag":"その他"},{"ja":"〜の間で","en":"among","tag":"その他"},{"ja":"〜以来・〜なので","en":"since","tag":"その他"},{"ja":"〜を通って・〜を通じて","en":"through","tag":"その他"},{"ja":"〜なしで","en":"without","tag":"その他"}]},{"id":"b4","name":"基本英単語 高1","note":"高校1年の範囲・250語","words":[{"ja":"達成する","en":"achieve","tag":"動詞"},{"ja":"調整する","en":"adjust","tag":"動詞"},{"ja":"認める","en":"admit","tag":"動詞"},{"ja":"余裕がある","en":"afford","tag":"動詞"},{"ja":"謝る","en":"apologize","tag":"動詞"},{"ja":"申し込む・応用する","en":"apply","tag":"動詞"},{"ja":"感謝する・正しく評価する","en":"appreciate","tag":"動詞"},{"ja":"議論する・主張する","en":"argue","tag":"動詞"},{"ja":"手配する・並べる","en":"arrange","tag":"動詞"},{"ja":"手伝う・援助する","en":"assist","tag":"動詞"},{"ja":"出席する","en":"attend","tag":"動詞"},{"ja":"引きつける","en":"attract","tag":"動詞"},{"ja":"避ける","en":"avoid","tag":"動詞"},{"ja":"取り消す・キャンセルする","en":"cancel","tag":"動詞"},{"ja":"実行する","en":"carry out","tag":"動詞"},{"ja":"主張する・要求する","en":"claim","tag":"動詞"},{"ja":"思いつく","en":"come up with","tag":"動詞"},{"ja":"競争する","en":"compete","tag":"動詞"},{"ja":"不満を言う","en":"complain","tag":"動詞"},{"ja":"完成させる・終える","en":"complete","tag":"動詞"},{"ja":"確認する","en":"confirm","tag":"動詞"},{"ja":"よく考える・検討する","en":"consider","tag":"動詞"},{"ja":"連絡する","en":"contact","tag":"動詞"},{"ja":"含む","en":"contain","tag":"動詞"},{"ja":"貢献する","en":"contribute","tag":"動詞"},{"ja":"納得させる","en":"convince","tag":"動詞"},{"ja":"扱う・対処する","en":"deal","tag":"動詞"},{"ja":"減る・減らす","en":"decrease","tag":"動詞"},{"ja":"遅らせる","en":"delay","tag":"動詞"},{"ja":"否定する","en":"deny","tag":"動詞"},{"ja":"値する","en":"deserve","tag":"動詞"},{"ja":"疑う","en":"doubt","tag":"動詞"},{"ja":"稼ぐ・得る","en":"earn","tag":"動詞"},{"ja":"強調する","en":"emphasize","tag":"動詞"},{"ja":"確実にする","en":"ensure","tag":"動詞"},{"ja":"見積もる","en":"estimate","tag":"動詞"},{"ja":"期待する・予期する","en":"expect","tag":"動詞"},{"ja":"探検する・調べる","en":"explore","tag":"動詞"},{"ja":"理解する・解決する","en":"figure out","tag":"動詞"},{"ja":"合う・適合する","en":"fit","tag":"動詞"},{"ja":"集中する","en":"focus","tag":"動詞"},{"ja":"得る・増す","en":"gain","tag":"動詞"},{"ja":"うまくやっていく","en":"get along","tag":"動詞"},{"ja":"扱う・処理する","en":"handle","tag":"動詞"},{"ja":"無視する","en":"ignore","tag":"動詞"},{"ja":"増える・増やす","en":"increase","tag":"動詞"},{"ja":"示す","en":"indicate","tag":"動詞"},{"ja":"影響を与える","en":"influence","tag":"動詞"},{"ja":"知らせる","en":"inform","tag":"動詞"},{"ja":"主張する・言い張る","en":"insist","tag":"動詞"},{"ja":"意図する・つもりである","en":"intend","tag":"動詞"},{"ja":"巻き込む・含む","en":"involve","tag":"動詞"},{"ja":"管理する・何とかやり遂げる","en":"manage","tag":"動詞"},{"ja":"測る","en":"measure","tag":"動詞"},{"ja":"交渉する","en":"negotiate","tag":"動詞"},{"ja":"起こる","en":"occur","tag":"動詞"},{"ja":"反対する","en":"oppose","tag":"動詞"},{"ja":"組織する・準備する","en":"organize","tag":"動詞"},{"ja":"参加する","en":"participate","tag":"動詞"},{"ja":"説得する","en":"persuade","tag":"動詞"},{"ja":"〜の方を好む","en":"prefer","tag":"動詞"},{"ja":"ふりをする","en":"pretend","tag":"動詞"},{"ja":"防ぐ","en":"prevent","tag":"動詞"},{"ja":"生産する","en":"produce","tag":"動詞"},{"ja":"促進する・昇進させる","en":"promote","tag":"動詞"},{"ja":"提案する","en":"propose","tag":"動詞"},{"ja":"提供する","en":"provide","tag":"動詞"},{"ja":"延期する","en":"put off","tag":"動詞"},{"ja":"認識する・見分ける","en":"recognize","tag":"動詞"},{"ja":"断る","en":"refuse","tag":"動詞"},{"ja":"頼る","en":"rely","tag":"動詞"},{"ja":"残る・〜のままである","en":"remain","tag":"動詞"},{"ja":"取り除く","en":"remove","tag":"動詞"},{"ja":"取り替える","en":"replace","tag":"動詞"},{"ja":"代表する・表す","en":"represent","tag":"動詞"},{"ja":"依頼する・要請する","en":"request","tag":"動詞"},{"ja":"必要とする","en":"require","tag":"動詞"},{"ja":"応答する・反応する","en":"respond","tag":"動詞"},{"ja":"見直す・復習する","en":"review","tag":"動詞"},{"ja":"なくなる・使い果たす","en":"run out","tag":"動詞"},{"ja":"探し求める","en":"seek","tag":"動詞"},{"ja":"選ぶ","en":"select","tag":"動詞"},{"ja":"仕える・食事を出す","en":"serve","tag":"動詞"},{"ja":"苦しむ","en":"suffer","tag":"動詞"},{"ja":"供給する","en":"supply","tag":"動詞"},{"ja":"思う・仮定する","en":"suppose","tag":"動詞"},{"ja":"扱う・治療する","en":"treat","tag":"動詞"},{"ja":"断る","en":"turn down","tag":"動詞"},{"ja":"能力","en":"ability","tag":"名詞"},{"ja":"利点","en":"advantage","tag":"名詞"},{"ja":"広告","en":"advertisement","tag":"名詞"},{"ja":"合意・同意","en":"agreement","tag":"名詞"},{"ja":"量・額","en":"amount","tag":"名詞"},{"ja":"申し込み・アプリ","en":"application","tag":"名詞"},{"ja":"予約・約束","en":"appointment","tag":"名詞"},{"ja":"注意","en":"attention","tag":"名詞"},{"ja":"態度","en":"attitude","tag":"名詞"},{"ja":"利益・恩恵","en":"benefit","tag":"名詞"},{"ja":"予算","en":"budget","tag":"名詞"},{"ja":"経歴・職業","en":"career","tag":"名詞"},{"ja":"同僚","en":"colleague","tag":"名詞"},{"ja":"状態・条件","en":"condition","tag":"名詞"},{"ja":"会議","en":"conference","tag":"名詞"},{"ja":"契約","en":"contract","tag":"名詞"},{"ja":"費用","en":"cost","tag":"名詞"},{"ja":"危機","en":"crisis","tag":"名詞"},{"ja":"締め切り","en":"deadline","tag":"名詞"},{"ja":"決定・決心","en":"decision","tag":"名詞"},{"ja":"需要・要求","en":"demand","tag":"名詞"},{"ja":"詳細","en":"detail","tag":"名詞"},{"ja":"装置・機器","en":"device","tag":"名詞"},{"ja":"書類・文書","en":"document","tag":"名詞"},{"ja":"経済","en":"economy","tag":"名詞"},{"ja":"効果・影響","en":"effect","tag":"名詞"},{"ja":"要素","en":"element","tag":"名詞"},{"ja":"従業員","en":"employee","tag":"名詞"},{"ja":"設備・機器","en":"equipment","tag":"名詞"},{"ja":"証拠","en":"evidence","tag":"名詞"},{"ja":"費用・出費","en":"expense","tag":"名詞"},{"ja":"施設","en":"facility","tag":"名詞"},{"ja":"要因","en":"factor","tag":"名詞"},{"ja":"特徴","en":"feature","tag":"名詞"},{"ja":"料金・手数料","en":"fee","tag":"名詞"},{"ja":"機能","en":"function","tag":"名詞"},{"ja":"習慣・癖","en":"habit","tag":"名詞"},{"ja":"収入","en":"income","tag":"名詞"},{"ja":"産業","en":"industry","tag":"名詞"},{"ja":"けが","en":"injury","tag":"名詞"},{"ja":"面接・インタビュー","en":"interview","tag":"名詞"},{"ja":"問題・論点","en":"issue","tag":"名詞"},{"ja":"知識","en":"knowledge","tag":"名詞"},{"ja":"不足","en":"lack","tag":"名詞"},{"ja":"管理者・経営者","en":"manager","tag":"名詞"},{"ja":"材料・資料","en":"material","tag":"名詞"},{"ja":"方法","en":"method","tag":"名詞"},{"ja":"気分","en":"mood","tag":"名詞"},{"ja":"物体・目的","en":"object","tag":"名詞"},{"ja":"機会","en":"opportunity","tag":"名詞"},{"ja":"方針・政策","en":"policy","tag":"名詞"},{"ja":"位置・地位","en":"position","tag":"名詞"},{"ja":"圧力・プレッシャー","en":"pressure","tag":"名詞"},{"ja":"過程・手順","en":"process","tag":"名詞"},{"ja":"利益","en":"profit","tag":"名詞"},{"ja":"進歩・進展","en":"progress","tag":"名詞"},{"ja":"計画・事業","en":"project","tag":"名詞"},{"ja":"提案","en":"proposal","tag":"名詞"},{"ja":"質・品質","en":"quality","tag":"名詞"},{"ja":"量","en":"quantity","tag":"名詞"},{"ja":"範囲","en":"range","tag":"名詞"},{"ja":"反応","en":"reaction","tag":"名詞"},{"ja":"評判","en":"reputation","tag":"名詞"},{"ja":"研究・調査","en":"research","tag":"名詞"},{"ja":"予約","en":"reservation","tag":"名詞"},{"ja":"資源","en":"resource","tag":"名詞"},{"ja":"責任","en":"responsibility","tag":"名詞"},{"ja":"危険・リスク","en":"risk","tag":"名詞"},{"ja":"給料","en":"salary","tag":"名詞"},{"ja":"見本・サンプル","en":"sample","tag":"名詞"},{"ja":"安全・警備","en":"security","tag":"名詞"},{"ja":"サービス・業務","en":"service","tag":"名詞"},{"ja":"不足","en":"shortage","tag":"名詞"},{"ja":"源・情報源","en":"source","tag":"名詞"},{"ja":"基準・水準","en":"standard","tag":"名詞"},{"ja":"ストレス","en":"stress","tag":"名詞"},{"ja":"構造","en":"structure","tag":"名詞"},{"ja":"話題・科目","en":"subject","tag":"名詞"},{"ja":"症状","en":"symptom","tag":"名詞"},{"ja":"仕事・課題","en":"task","tag":"名詞"},{"ja":"税金","en":"tax","tag":"名詞"},{"ja":"温度・体温","en":"temperature","tag":"名詞"},{"ja":"期間・用語","en":"term","tag":"名詞"},{"ja":"交通機関・輸送","en":"transportation","tag":"名詞"},{"ja":"傾向・流行","en":"trend","tag":"名詞"},{"ja":"価値","en":"value","tag":"名詞"},{"ja":"多様性・種類","en":"variety","tag":"名詞"},{"ja":"版・バージョン","en":"version","tag":"名詞"},{"ja":"正確な","en":"accurate","tag":"形容詞"},{"ja":"活動的な・積極的な","en":"active","tag":"形容詞"},{"ja":"追加の","en":"additional","tag":"形容詞"},{"ja":"適切な","en":"appropriate","tag":"形容詞"},{"ja":"気づいている","en":"aware","tag":"形容詞"},{"ja":"基本的な","en":"basic","tag":"形容詞"},{"ja":"短い・簡潔な","en":"brief","tag":"形容詞"},{"ja":"能力がある","en":"capable","tag":"形容詞"},{"ja":"確かな・ある","en":"certain","tag":"形容詞"},{"ja":"複雑な","en":"complex","tag":"形容詞"},{"ja":"自信のある","en":"confident","tag":"形容詞"},{"ja":"現在の","en":"current","tag":"形容詞"},{"ja":"効率的な","en":"efficient","tag":"形容詞"},{"ja":"不可欠な","en":"essential","tag":"形容詞"},{"ja":"正確な","en":"exact","tag":"形容詞"},{"ja":"余分な・追加の","en":"extra","tag":"形容詞"},{"ja":"公平な","en":"fair","tag":"形容詞"},{"ja":"柔軟な","en":"flexible","tag":"形容詞"},{"ja":"正式な・堅苦しい","en":"formal","tag":"形容詞"},{"ja":"一般的な","en":"general","tag":"形容詞"},{"ja":"感謝している","en":"grateful","tag":"形容詞"},{"ja":"独立した","en":"independent","tag":"形容詞"},{"ja":"個々の・個人の","en":"individual","tag":"形容詞"},{"ja":"ありそうな","en":"likely","tag":"形容詞"},{"ja":"主要な・大きな","en":"major","tag":"形容詞"},{"ja":"否定的な","en":"negative","tag":"形容詞"},{"ja":"明らかな","en":"obvious","tag":"形容詞"},{"ja":"最初の・独創的な","en":"original","tag":"形容詞"},{"ja":"忍耐強い","en":"patient","tag":"形容詞"},{"ja":"身体の・物理的な","en":"physical","tag":"形容詞"},{"ja":"前向きな・肯定的な","en":"positive","tag":"形容詞"},{"ja":"実用的な","en":"practical","tag":"形容詞"},{"ja":"前の・以前の","en":"previous","tag":"形容詞"},{"ja":"私的な・個人の","en":"private","tag":"形容詞"},{"ja":"専門的な・プロの","en":"professional","tag":"形容詞"},{"ja":"妥当な・手頃な","en":"reasonable","tag":"形容詞"},{"ja":"定期的な・通常の","en":"regular","tag":"形容詞"},{"ja":"くつろいだ","en":"relaxed","tag":"形容詞"},{"ja":"責任がある","en":"responsible","tag":"形容詞"},{"ja":"失礼な","en":"rude","tag":"形容詞"},{"ja":"敏感な・繊細な","en":"sensitive","tag":"形容詞"},{"ja":"具体的な・特定の","en":"specific","tag":"形容詞"},{"ja":"突然の","en":"sudden","tag":"形容詞"},{"ja":"典型的な","en":"typical","tag":"形容詞"},{"ja":"動揺した・腹を立てた","en":"upset","tag":"形容詞"},{"ja":"緊急の","en":"urgent","tag":"形容詞"},{"ja":"価値のある","en":"valuable","tag":"形容詞"},{"ja":"進んで〜する","en":"willing","tag":"形容詞"},{"ja":"どうやら","en":"apparently","tag":"副詞"},{"ja":"基本的に","en":"basically","tag":"副詞"},{"ja":"その上","en":"besides","tag":"副詞"},{"ja":"完全に","en":"completely","tag":"副詞"},{"ja":"直接に","en":"directly","tag":"副詞"},{"ja":"結局・最終的に","en":"eventually","tag":"副詞"},{"ja":"正確に・まさに","en":"exactly","tag":"副詞"},{"ja":"幸運にも","en":"fortunately","tag":"副詞"},{"ja":"一般的に","en":"generally","tag":"副詞"},{"ja":"徐々に","en":"gradually","tag":"副詞"},{"ja":"すぐに","en":"immediately","tag":"副詞"},{"ja":"その間に","en":"meanwhile","tag":"副詞"},{"ja":"主に・大部分は","en":"mostly","tag":"副詞"},{"ja":"近頃は","en":"nowadays","tag":"副詞"},{"ja":"さもなければ","en":"otherwise","tag":"副詞"},{"ja":"きちんと・適切に","en":"properly","tag":"副詞"},{"ja":"むしろ・かなり","en":"rather","tag":"副詞"},{"ja":"定期的に","en":"regularly","tag":"副詞"},{"ja":"めったに〜ない","en":"seldom","tag":"副詞"},{"ja":"したがって","en":"therefore","tag":"副詞"},{"ja":"完全に・まったく","en":"totally","tag":"副詞"},{"ja":"残念ながら","en":"unfortunately","tag":"副詞"},{"ja":"〜を越えて","en":"beyond","tag":"その他"},{"ja":"〜にもかかわらず","en":"despite","tag":"その他"},{"ja":"〜でない限り","en":"unless","tag":"その他"},{"ja":"〜かどうか","en":"whether","tag":"その他"}]},{"id":"h1","name":"高校英単語 初級","note":"高校1年・英検®準2級の範囲・300語","words":[{"ja":"〜のように見える","en":"seem","tag":"動詞"},{"ja":"費やす","en":"spend","tag":"動詞"},{"ja":"燃える・燃やす","en":"burn","tag":"動詞"},{"ja":"横になる・うそをつく","en":"lie","tag":"動詞"},{"ja":"上がる","en":"rise","tag":"動詞"},{"ja":"入る","en":"enter","tag":"動詞"},{"ja":"加える","en":"add","tag":"動詞"},{"ja":"投げる","en":"throw","tag":"動詞"},{"ja":"引く","en":"pull","tag":"動詞"},{"ja":"押す","en":"push","tag":"動詞"},{"ja":"触れる","en":"touch","tag":"動詞"},{"ja":"探す","en":"search","tag":"動詞"},{"ja":"所有する","en":"own","tag":"動詞"},{"ja":"戦う","en":"fight","tag":"動詞"},{"ja":"目を覚ます","en":"wake","tag":"動詞"},{"ja":"ひどく嫌う","en":"hate","tag":"動詞"},{"ja":"隠す","en":"hide","tag":"動詞"},{"ja":"成功する","en":"succeed","tag":"動詞"},{"ja":"つなぐ","en":"connect","tag":"動詞"},{"ja":"存在する","en":"exist","tag":"動詞"},{"ja":"驚かせる","en":"surprise","tag":"動詞"},{"ja":"くつろぐ","en":"relax","tag":"動詞"},{"ja":"休む","en":"rest","tag":"動詞"},{"ja":"流れる","en":"flow","tag":"動詞"},{"ja":"不思議に思う","en":"wonder","tag":"動詞"},{"ja":"叫ぶ","en":"shout","tag":"動詞"},{"ja":"警告する","en":"warn","tag":"動詞"},{"ja":"沸騰する・ゆでる","en":"boil","tag":"動詞"},{"ja":"集める","en":"gather","tag":"動詞"},{"ja":"設計する","en":"design","tag":"動詞"},{"ja":"判断する","en":"judge","tag":"動詞"},{"ja":"決定する","en":"determine","tag":"動詞"},{"ja":"証明する","en":"prove","tag":"動詞"},{"ja":"回復する","en":"recover","tag":"動詞"},{"ja":"観察する","en":"observe","tag":"動詞"},{"ja":"調べる","en":"examine","tag":"動詞"},{"ja":"特定する","en":"identify","tag":"動詞"},{"ja":"予測する","en":"predict","tag":"動詞"},{"ja":"出版する","en":"publish","tag":"動詞"},{"ja":"修理する","en":"repair","tag":"動詞"},{"ja":"賃借りする","en":"rent","tag":"動詞"},{"ja":"結婚する","en":"marry","tag":"動詞"},{"ja":"逃げる","en":"escape","tag":"動詞"},{"ja":"分ける","en":"divide","tag":"動詞"},{"ja":"混ぜる","en":"mix","tag":"動詞"},{"ja":"植える","en":"plant","tag":"動詞"},{"ja":"押し付ける・押す","en":"press","tag":"動詞"},{"ja":"注ぐ","en":"pour","tag":"動詞"},{"ja":"ほめる","en":"praise","tag":"動詞"},{"ja":"祈る","en":"pray","tag":"動詞"},{"ja":"衝突する","en":"crash","tag":"動詞"},{"ja":"かける・つるす","en":"hang","tag":"動詞"},{"ja":"持ち上げる","en":"lift","tag":"動詞"},{"ja":"置く・横たえる","en":"lay","tag":"動詞"},{"ja":"振る・揺れる","en":"shake","tag":"動詞"},{"ja":"盗む","en":"steal","tag":"動詞"},{"ja":"掃く","en":"sweep","tag":"動詞"},{"ja":"奮闘する","en":"struggle","tag":"動詞"},{"ja":"満足させる","en":"satisfy","tag":"動詞"},{"ja":"後悔する","en":"regret","tag":"動詞"},{"ja":"拒否する","en":"reject","tag":"動詞"},{"ja":"解放する・発売する","en":"release","tag":"動詞"},{"ja":"明らかにする","en":"reveal","tag":"動詞"},{"ja":"脅す","en":"threaten","tag":"動詞"},{"ja":"投票する","en":"vote","tag":"動詞"},{"ja":"手を振る","en":"wave","tag":"動詞"},{"ja":"ささやく","en":"whisper","tag":"動詞"},{"ja":"包む","en":"wrap","tag":"動詞"},{"ja":"結ぶ","en":"tie","tag":"動詞"},{"ja":"転がる","en":"roll","tag":"動詞"},{"ja":"急ぐ","en":"rush","tag":"動詞"},{"ja":"沈む","en":"sink","tag":"動詞"},{"ja":"浮かぶ","en":"float","tag":"動詞"},{"ja":"溶ける","en":"melt","tag":"動詞"},{"ja":"凍る","en":"freeze","tag":"動詞"},{"ja":"においがする","en":"smell","tag":"動詞"},{"ja":"味がする","en":"taste","tag":"動詞"},{"ja":"輝く","en":"shine","tag":"動詞"},{"ja":"攻撃する","en":"attack","tag":"動詞"},{"ja":"守る","en":"defend","tag":"動詞"},{"ja":"称賛する・感心する","en":"admire","tag":"動詞"},{"ja":"助言する","en":"advise","tag":"動詞"},{"ja":"発表する","en":"announce","tag":"動詞"},{"ja":"ふるまう","en":"behave","tag":"動詞"},{"ja":"責める","en":"blame","tag":"動詞"},{"ja":"呼吸する","en":"breathe","tag":"動詞"},{"ja":"計算する","en":"calculate","tag":"動詞"},{"ja":"集中する","en":"concentrate","tag":"動詞"},{"ja":"成り立つ","en":"consist","tag":"動詞"},{"ja":"訂正する","en":"correct","tag":"動詞"},{"ja":"損害を与える","en":"damage","tag":"動詞"},{"ja":"定義する","en":"define","tag":"動詞"},{"ja":"反対する","en":"disagree","tag":"動詞"},{"ja":"教育する","en":"educate","tag":"動詞"},{"ja":"選挙で選ぶ","en":"elect","tag":"動詞"},{"ja":"可能にする","en":"enable","tag":"動詞"},{"ja":"引きずる","en":"drag","tag":"動詞"},{"ja":"強いる","en":"force","tag":"動詞"},{"ja":"従う","en":"obey","tag":"動詞"},{"ja":"爆発する","en":"explode","tag":"動詞"},{"ja":"借りがある","en":"owe","tag":"動詞"},{"ja":"許可する","en":"permit","tag":"動詞"},{"ja":"発音する","en":"pronounce","tag":"動詞"},{"ja":"罰する","en":"punish","tag":"動詞"},{"ja":"反映する・反射する","en":"reflect","tag":"動詞"},{"ja":"悲鳴を上げる","en":"scream","tag":"動詞"},{"ja":"囲む","en":"surround","tag":"動詞"},{"ja":"飲み込む","en":"swallow","tag":"動詞"},{"ja":"破る・裂く","en":"tear","tag":"動詞"},{"ja":"傾向がある","en":"tend","tag":"動詞"},{"ja":"侵略する","en":"invade","tag":"動詞"},{"ja":"歩き回る","en":"wander","tag":"動詞"},{"ja":"曲げる","en":"bend","tag":"動詞"},{"ja":"かむ","en":"bite","tag":"動詞"},{"ja":"埋める","en":"bury","tag":"動詞"},{"ja":"追いかける","en":"chase","tag":"動詞"},{"ja":"応援する","en":"cheer","tag":"動詞"},{"ja":"登る","en":"climb","tag":"動詞"},{"ja":"組み合わせる","en":"combine","tag":"動詞"},{"ja":"混乱させる","en":"confuse","tag":"動詞"},{"ja":"心","en":"mind","tag":"名詞"},{"ja":"興味","en":"interest","tag":"名詞"},{"ja":"人間","en":"human","tag":"名詞"},{"ja":"瞬間","en":"moment","tag":"名詞"},{"ja":"眺め・見解","en":"view","tag":"名詞"},{"ja":"水準","en":"level","tag":"名詞"},{"ja":"戦争","en":"war","tag":"名詞"},{"ja":"教育","en":"education","tag":"名詞"},{"ja":"関係","en":"relationship","tag":"名詞"},{"ja":"真実","en":"truth","tag":"名詞"},{"ja":"考え","en":"thought","tag":"名詞"},{"ja":"感覚","en":"sense","tag":"名詞"},{"ja":"行動・ふるまい","en":"behavior","tag":"名詞"},{"ja":"会話","en":"conversation","tag":"名詞"},{"ja":"記事","en":"article","tag":"名詞"},{"ja":"イメージ","en":"image","tag":"名詞"},{"ja":"根","en":"root","tag":"名詞"},{"ja":"平均","en":"average","tag":"名詞"},{"ja":"割合","en":"rate","tag":"名詞"},{"ja":"程度・度","en":"degree","tag":"名詞"},{"ja":"谷","en":"valley","tag":"名詞"},{"ja":"運動","en":"exercise","tag":"名詞"},{"ja":"世代","en":"generation","tag":"名詞"},{"ja":"成長","en":"growth","tag":"名詞"},{"ja":"強さ・力","en":"strength","tag":"名詞"},{"ja":"国家","en":"nation","tag":"名詞"},{"ja":"市民","en":"citizen","tag":"名詞"},{"ja":"犯罪","en":"crime","tag":"名詞"},{"ja":"病気","en":"disease","tag":"名詞"},{"ja":"脳","en":"brain","tag":"名詞"},{"ja":"血","en":"blood","tag":"名詞"},{"ja":"気候","en":"climate","tag":"名詞"},{"ja":"感情","en":"emotion","tag":"名詞"},{"ja":"自信","en":"confidence","tag":"名詞"},{"ja":"信念","en":"belief","tag":"名詞"},{"ja":"議論・主張","en":"argument","tag":"名詞"},{"ja":"群衆","en":"crowd","tag":"名詞"},{"ja":"敵","en":"enemy","tag":"名詞"},{"ja":"舌","en":"tongue","tag":"名詞"},{"ja":"説明","en":"explanation","tag":"名詞"},{"ja":"学年・成績","en":"grade","tag":"名詞"},{"ja":"羽","en":"feather","tag":"名詞"},{"ja":"形","en":"shape","tag":"名詞"},{"ja":"場面","en":"scene","tag":"名詞"},{"ja":"得点","en":"score","tag":"名詞"},{"ja":"秘密","en":"secret","tag":"名詞"},{"ja":"視力・光景","en":"sight","tag":"名詞"},{"ja":"沈黙","en":"silence","tag":"名詞"},{"ja":"嵐","en":"storm","tag":"名詞"},{"ja":"表面","en":"surface","tag":"名詞"},{"ja":"調査","en":"survey","tag":"名詞"},{"ja":"才能","en":"talent","tag":"名詞"},{"ja":"暗闇","en":"darkness","tag":"名詞"},{"ja":"理論","en":"theory","tag":"名詞"},{"ja":"運・財産","en":"fortune","tag":"名詞"},{"ja":"観光客","en":"tourist","tag":"名詞"},{"ja":"宝物","en":"treasure","tag":"名詞"},{"ja":"宇宙","en":"universe","tag":"名詞"},{"ja":"犠牲者","en":"victim","tag":"名詞"},{"ja":"暴力","en":"violence","tag":"名詞"},{"ja":"富","en":"wealth","tag":"名詞"},{"ja":"武器","en":"weapon","tag":"名詞"},{"ja":"重さ","en":"weight","tag":"名詞"},{"ja":"知恵","en":"wisdom","tag":"名詞"},{"ja":"若さ・青年時代","en":"youth","tag":"名詞"},{"ja":"大人","en":"adult","tag":"名詞"},{"ja":"祖先","en":"ancestor","tag":"名詞"},{"ja":"怒り","en":"anger","tag":"名詞"},{"ja":"雰囲気・大気","en":"atmosphere","tag":"名詞"},{"ja":"戦い","en":"battle","tag":"名詞"},{"ja":"美しさ","en":"beauty","tag":"名詞"},{"ja":"国境・境界","en":"border","tag":"名詞"},{"ja":"がけ","en":"cliff","tag":"名詞"},{"ja":"息","en":"breath","tag":"名詞"},{"ja":"式典","en":"ceremony","tag":"名詞"},{"ja":"海岸","en":"coast","tag":"名詞"},{"ja":"討論","en":"debate","tag":"名詞"},{"ja":"砂漠","en":"desert","tag":"名詞"},{"ja":"食事・ダイエット","en":"diet","tag":"名詞"},{"ja":"地震","en":"earthquake","tag":"名詞"},{"ja":"端","en":"edge","tag":"名詞"},{"ja":"入口","en":"entrance","tag":"名詞"},{"ja":"展覧会","en":"exhibition","tag":"名詞"},{"ja":"洪水","en":"flood","tag":"名詞"},{"ja":"燃料","en":"fuel","tag":"名詞"},{"ja":"ごみ","en":"garbage","tag":"名詞"},{"ja":"地面","en":"ground","tag":"名詞"},{"ja":"害","en":"harm","tag":"名詞"},{"ja":"高さ","en":"height","tag":"名詞"},{"ja":"英雄","en":"hero","tag":"名詞"},{"ja":"地平線","en":"horizon","tag":"名詞"},{"ja":"ユーモア","en":"humor","tag":"名詞"},{"ja":"理想","en":"ideal","tag":"名詞"},{"ja":"病気・不調","en":"illness","tag":"名詞"},{"ja":"昆虫","en":"insect","tag":"名詞"},{"ja":"楽器・器具","en":"instrument","tag":"名詞"},{"ja":"旅","en":"journey","tag":"名詞"},{"ja":"正義","en":"justice","tag":"名詞"},{"ja":"親切","en":"kindness","tag":"名詞"},{"ja":"研究所・実験室","en":"laboratory","tag":"名詞"},{"ja":"風景","en":"landscape","tag":"名詞"},{"ja":"液体","en":"liquid","tag":"名詞"},{"ja":"あご","en":"chin","tag":"名詞"},{"ja":"筋肉","en":"muscle","tag":"名詞"},{"ja":"騒音","en":"noise","tag":"名詞"},{"ja":"古代の","en":"ancient","tag":"形容詞"},{"ja":"生きている","en":"alive","tag":"形容詞"},{"ja":"全体の","en":"entire","tag":"形容詞"},{"ja":"よく知られた","en":"familiar","tag":"形容詞"},{"ja":"巨大な","en":"huge","tag":"形容詞"},{"ja":"深い","en":"deep","tag":"形容詞"},{"ja":"明るい・賢い","en":"bright","tag":"形容詞"},{"ja":"新鮮な","en":"fresh","tag":"形容詞"},{"ja":"野生の","en":"wild","tag":"形容詞"},{"ja":"独特な","en":"unique","tag":"形容詞"},{"ja":"まれな","en":"rare","tag":"形容詞"},{"ja":"普通の","en":"ordinary","tag":"形容詞"},{"ja":"心配して","en":"anxious","tag":"形容詞"},{"ja":"ひどい","en":"awful","tag":"形容詞"},{"ja":"勇敢な","en":"brave","tag":"形容詞"},{"ja":"利口な","en":"clever","tag":"形容詞"},{"ja":"残酷な","en":"cruel","tag":"形容詞"},{"ja":"好奇心の強い","en":"curious","tag":"形容詞"},{"ja":"熱心な","en":"eager","tag":"形容詞"},{"ja":"年配の","en":"elderly","tag":"形容詞"},{"ja":"感情的な","en":"emotional","tag":"形容詞"},{"ja":"誤った","en":"false","tag":"形容詞"},{"ja":"優しい","en":"gentle","tag":"形容詞"},{"ja":"有罪の・罪悪感のある","en":"guilty","tag":"形容詞"},{"ja":"有害な","en":"harmful","tag":"形容詞"},{"ja":"病気の","en":"ill","tag":"形容詞"},{"ja":"違法な","en":"illegal","tag":"形容詞"},{"ja":"無罪の・無邪気な","en":"innocent","tag":"形容詞"},{"ja":"知的な","en":"intelligent","tag":"形容詞"},{"ja":"怠惰な","en":"lazy","tag":"形容詞"},{"ja":"合法の","en":"legal","tag":"形容詞"},{"ja":"大声の","en":"loud","tag":"形容詞"},{"ja":"精神の","en":"mental","tag":"形容詞"},{"ja":"穏やかな","en":"mild","tag":"形容詞"},{"ja":"道徳的な","en":"moral","tag":"形容詞"},{"ja":"狭い","en":"narrow","tag":"形容詞"},{"ja":"母国の・生まれつきの","en":"native","tag":"形容詞"},{"ja":"近くの","en":"nearby","tag":"形容詞"},{"ja":"心地よい","en":"pleasant","tag":"形容詞"},{"ja":"純粋な","en":"pure","tag":"形容詞"},{"ja":"急速な","en":"rapid","tag":"形容詞"},{"ja":"生の","en":"raw","tag":"形容詞"},{"ja":"粗い・大まかな","en":"rough","tag":"形容詞"},{"ja":"田舎の","en":"rural","tag":"形容詞"},{"ja":"鋭い","en":"sharp","tag":"形容詞"},{"ja":"内気な","en":"shy","tag":"形容詞"},{"ja":"無言の・静かな","en":"silent","tag":"形容詞"},{"ja":"なめらかな","en":"smooth","tag":"形容詞"},{"ja":"固体の・しっかりした","en":"solid","tag":"形容詞"},{"ja":"とても小さい","en":"tiny","tag":"形容詞"},{"ja":"困難な・頑丈な","en":"tough","tag":"形容詞"},{"ja":"都会の","en":"urban","tag":"形容詞"},{"ja":"暴力的な","en":"violent","tag":"形容詞"},{"ja":"目に見える","en":"visible","tag":"形容詞"},{"ja":"賢明な","en":"wise","tag":"形容詞"},{"ja":"欠席の","en":"absent","tag":"形容詞"},{"ja":"眠って","en":"asleep","tag":"形容詞"},{"ja":"目が覚めて","en":"awake","tag":"形容詞"},{"ja":"苦い","en":"bitter","tag":"形容詞"},{"ja":"目の見えない","en":"blind","tag":"形容詞"},{"ja":"本当に","en":"indeed","tag":"副詞"},{"ja":"主に","en":"mainly","tag":"副詞"},{"ja":"かつて・一度","en":"once","tag":"副詞"},{"ja":"ほとんど〜ない","en":"hardly","tag":"副詞"},{"ja":"前方に","en":"ahead","tag":"副詞"},{"ja":"離れて","en":"apart","tag":"副詞"},{"ja":"かろうじて","en":"barely","tag":"副詞"},{"ja":"単に","en":"merely","tag":"副詞"},{"ja":"いくらか","en":"somewhat","tag":"副詞"},{"ja":"〜の方へ","en":"toward","tag":"その他"},{"ja":"〜に反対して","en":"against","tag":"その他"},{"ja":"〜以内に","en":"within","tag":"その他"},{"ja":"〜の至る所に","en":"throughout","tag":"その他"},{"ja":"〜を除いて","en":"except","tag":"その他"},{"ja":"〜と違って","en":"unlike","tag":"その他"}]},{"id":"h2","name":"高校英単語 中級","note":"高校2年・英検®準2級〜2級の範囲・300語","words":[{"ja":"維持する","en":"maintain","tag":"動詞"},{"ja":"近づく","en":"approach","tag":"動詞"},{"ja":"試みる","en":"attempt","tag":"動詞"},{"ja":"仮定する・思い込む","en":"assume","tag":"動詞"},{"ja":"反応する","en":"react","tag":"動詞"},{"ja":"言及する・参照する","en":"refer","tag":"動詞"},{"ja":"みなす","en":"regard","tag":"動詞"},{"ja":"あざむく","en":"deceive","tag":"動詞"},{"ja":"食べ物を与える","en":"feed","tag":"動詞"},{"ja":"適応する","en":"adapt","tag":"動詞"},{"ja":"採用する・養子にする","en":"adopt","tag":"動詞"},{"ja":"裏切る","en":"betray","tag":"動詞"},{"ja":"結論づける","en":"conclude","tag":"動詞"},{"ja":"行う","en":"conduct","tag":"動詞"},{"ja":"建設する","en":"construct","tag":"動詞"},{"ja":"断る・減少する","en":"decline","tag":"動詞"},{"ja":"強く望む","en":"desire","tag":"動詞"},{"ja":"検知する・発見する","en":"detect","tag":"動詞"},{"ja":"展示する","en":"display","tag":"動詞"},{"ja":"区別する","en":"distinguish","tag":"動詞"},{"ja":"同意する","en":"consent","tag":"動詞"},{"ja":"延長する・伸ばす","en":"extend","tag":"動詞"},{"ja":"許す","en":"forgive","tag":"動詞"},{"ja":"はう","en":"crawl","tag":"動詞"},{"ja":"感動させる・印象づける","en":"impress","tag":"動詞"},{"ja":"奮い立たせる","en":"inspire","tag":"動詞"},{"ja":"解釈する・通訳する","en":"interpret","tag":"動詞"},{"ja":"調査する","en":"investigate","tag":"動詞"},{"ja":"やる気にさせる","en":"motivate","tag":"動詞"},{"ja":"克服する","en":"overcome","tag":"動詞"},{"ja":"追求する","en":"pursue","tag":"動詞"},{"ja":"思い出す","en":"recall","tag":"動詞"},{"ja":"和らげる","en":"relieve","tag":"動詞"},{"ja":"似ている","en":"resemble","tag":"動詞"},{"ja":"抵抗する","en":"resist","tag":"動詞"},{"ja":"解決する","en":"resolve","tag":"動詞"},{"ja":"修復する・回復させる","en":"restore","tag":"動詞"},{"ja":"引退する","en":"retire","tag":"動詞"},{"ja":"報いる","en":"reward","tag":"動詞"},{"ja":"確保する","en":"secure","tag":"動詞"},{"ja":"うらやむ","en":"envy","tag":"動詞"},{"ja":"疑う","en":"suspect","tag":"動詞"},{"ja":"変える","en":"transform","tag":"動詞"},{"ja":"捨てる・断念する","en":"abandon","tag":"動詞"},{"ja":"吸収する","en":"absorb","tag":"動詞"},{"ja":"同行する","en":"accompany","tag":"動詞"},{"ja":"非難する・告発する","en":"accuse","tag":"動詞"},{"ja":"習得する・獲得する","en":"acquire","tag":"動詞"},{"ja":"変える","en":"alter","tag":"動詞"},{"ja":"訴える","en":"appeal","tag":"動詞"},{"ja":"控える","en":"refrain","tag":"動詞"},{"ja":"保証する","en":"assure","tag":"動詞"},{"ja":"固執する・持続する","en":"persist","tag":"動詞"},{"ja":"耐える・産む","en":"bear","tag":"動詞"},{"ja":"懇願する","en":"beg","tag":"動詞"},{"ja":"悩ませる","en":"bother","tag":"動詞"},{"ja":"捕らえる","en":"capture","tag":"動詞"},{"ja":"だます・不正をする","en":"cheat","tag":"動詞"},{"ja":"分類する","en":"classify","tag":"動詞"},{"ja":"崩壊する","en":"collapse","tag":"動詞"},{"ja":"犯す・専念する","en":"commit","tag":"動詞"},{"ja":"意見を述べる","en":"comment","tag":"動詞"},{"ja":"告白する","en":"confess","tag":"動詞"},{"ja":"立ち向かう","en":"confront","tag":"動詞"},{"ja":"保護する・節約する","en":"conserve","tag":"動詞"},{"ja":"相談する","en":"consult","tag":"動詞"},{"ja":"変換する","en":"convert","tag":"動詞"},{"ja":"非難する","en":"condemn","tag":"動詞"},{"ja":"対処する","en":"cope","tag":"動詞"},{"ja":"批判する","en":"criticize","tag":"動詞"},{"ja":"あえて〜する","en":"dare","tag":"動詞"},{"ja":"宣言する","en":"declare","tag":"動詞"},{"ja":"捧げる","en":"dedicate","tag":"動詞"},{"ja":"打ち負かす","en":"defeat","tag":"動詞"},{"ja":"出発する","en":"depart","tag":"動詞"},{"ja":"捧げる・専念する","en":"devote","tag":"動詞"},{"ja":"異なる","en":"differ","tag":"動詞"},{"ja":"熟考する","en":"contemplate","tag":"動詞"},{"ja":"配る","en":"distribute","tag":"動詞"},{"ja":"支配する","en":"dominate","tag":"動詞"},{"ja":"おぼれる","en":"drown","tag":"動詞"},{"ja":"取り除く","en":"eliminate","tag":"動詞"},{"ja":"恥ずかしい思いをさせる","en":"embarrass","tag":"動詞"},{"ja":"現れる","en":"emerge","tag":"動詞"},{"ja":"耐える","en":"endure","tag":"動詞"},{"ja":"従事する・関わる","en":"engage","tag":"動詞"},{"ja":"抱きしめる・受け入れる","en":"embrace","tag":"動詞"},{"ja":"進化する","en":"evolve","tag":"動詞"},{"ja":"誇張する","en":"exaggerate","tag":"動詞"},{"ja":"超える","en":"exceed","tag":"動詞"},{"ja":"除外する","en":"exclude","tag":"動詞"},{"ja":"展示する","en":"exhibit","tag":"動詞"},{"ja":"さらす","en":"expose","tag":"動詞"},{"ja":"薄れる","en":"fade","tag":"動詞"},{"ja":"禁止する","en":"forbid","tag":"動詞"},{"ja":"怖がらせる","en":"frighten","tag":"動詞"},{"ja":"ちらっと見る","en":"glance","tag":"動詞"},{"ja":"つかむ","en":"grab","tag":"動詞"},{"ja":"つかむ・理解する","en":"grasp","tag":"動詞"},{"ja":"癒やす・治す","en":"heal","tag":"動詞"},{"ja":"ためらう","en":"hesitate","tag":"動詞"},{"ja":"説明する・図解する","en":"illustrate","tag":"動詞"},{"ja":"まねる","en":"imitate","tag":"動詞"},{"ja":"課す","en":"impose","tag":"動詞"},{"ja":"受け継ぐ","en":"inherit","tag":"動詞"},{"ja":"孤立させる","en":"isolate","tag":"動詞"},{"ja":"正当化する","en":"justify","tag":"動詞"},{"ja":"寄りかかる・傾く","en":"lean","tag":"動詞"},{"ja":"跳ぶ","en":"leap","tag":"動詞"},{"ja":"修正する","en":"modify","tag":"動詞"},{"ja":"反抗する","en":"rebel","tag":"動詞"},{"ja":"怠る・無視する","en":"neglect","tag":"動詞"},{"ja":"うなずく","en":"nod","tag":"動詞"},{"ja":"気分を害する","en":"offend","tag":"動詞"},{"ja":"見落とす・見渡す","en":"overlook","tag":"動詞"},{"ja":"知覚する","en":"perceive","tag":"動詞"},{"ja":"資格を得る","en":"qualify","tag":"動詞"},{"ja":"予約する","en":"reserve","tag":"動詞"},{"ja":"奪う","en":"rob","tag":"動詞"},{"ja":"台無しにする","en":"ruin","tag":"動詞"},{"ja":"影響・衝撃","en":"impact","tag":"名詞"},{"ja":"自由","en":"freedom","tag":"名詞"},{"ja":"利用・接近","en":"access","tag":"名詞"},{"ja":"達成・業績","en":"achievement","tag":"名詞"},{"ja":"側面","en":"aspect","tag":"名詞"},{"ja":"権威・当局","en":"authority","tag":"名詞"},{"ja":"部門・分類","en":"category","tag":"名詞"},{"ja":"状況","en":"circumstance","tag":"名詞"},{"ja":"対立","en":"conflict","tag":"名詞"},{"ja":"結果・影響","en":"consequence","tag":"名詞"},{"ja":"文脈","en":"context","tag":"名詞"},{"ja":"生き物","en":"creature","tag":"名詞"},{"ja":"礼儀","en":"courtesy","tag":"名詞"},{"ja":"存在","en":"existence","tag":"名詞"},{"ja":"身元・独自性","en":"identity","tag":"名詞"},{"ja":"知能","en":"intelligence","tag":"名詞"},{"ja":"文学","en":"literature","tag":"名詞"},{"ja":"大多数","en":"majority","tag":"名詞"},{"ja":"使命","en":"mission","tag":"名詞"},{"ja":"謎","en":"mystery","tag":"名詞"},{"ja":"視点","en":"perspective","tag":"名詞"},{"ja":"現象","en":"phenomenon","tag":"名詞"},{"ja":"哲学","en":"philosophy","tag":"名詞"},{"ja":"原理・原則","en":"principle","tag":"名詞"},{"ja":"敵意","en":"hostility","tag":"名詞"},{"ja":"プライバシー","en":"privacy","tag":"名詞"},{"ja":"栄光","en":"glory","tag":"名詞"},{"ja":"物質","en":"substance","tag":"名詞"},{"ja":"要約","en":"summary","tag":"名詞"},{"ja":"脅威","en":"threat","tag":"名詞"},{"ja":"不在・欠席","en":"absence","tag":"名詞"},{"ja":"農業","en":"agriculture","tag":"名詞"},{"ja":"不安","en":"anxiety","tag":"名詞"},{"ja":"食欲","en":"appetite","tag":"名詞"},{"ja":"承認","en":"approval","tag":"名詞"},{"ja":"建築","en":"architecture","tag":"名詞"},{"ja":"仮定","en":"assumption","tag":"名詞"},{"ja":"認識・意識","en":"awareness","tag":"名詞"},{"ja":"障壁","en":"barrier","tag":"名詞"},{"ja":"生物学","en":"biology","tag":"名詞"},{"ja":"境界","en":"boundary","tag":"名詞"},{"ja":"負担","en":"burden","tag":"名詞"},{"ja":"能力・収容力","en":"capacity","tag":"名詞"},{"ja":"用心","en":"caution","tag":"名詞"},{"ja":"慈善","en":"charity","tag":"名詞"},{"ja":"化学物質","en":"chemical","tag":"名詞"},{"ja":"文明","en":"civilization","tag":"名詞"},{"ja":"仲間","en":"companion","tag":"名詞"},{"ja":"思いやり","en":"compassion","tag":"名詞"},{"ja":"良心","en":"conscience","tag":"名詞"},{"ja":"意識","en":"consciousness","tag":"名詞"},{"ja":"論争","en":"controversy","tag":"名詞"},{"ja":"批判","en":"criticism","tag":"名詞"},{"ja":"好奇心","en":"curiosity","tag":"名詞"},{"ja":"民主主義","en":"democracy","tag":"名詞"},{"ja":"目的地","en":"destination","tag":"名詞"},{"ja":"尊厳","en":"dignity","tag":"名詞"},{"ja":"次元・寸法","en":"dimension","tag":"名詞"},{"ja":"障害","en":"disability","tag":"名詞"},{"ja":"規律・しつけ","en":"discipline","tag":"名詞"},{"ja":"多様性","en":"diversity","tag":"名詞"},{"ja":"生態学・生態系","en":"ecology","tag":"名詞"},{"ja":"共感","en":"empathy","tag":"名詞"},{"ja":"出会い","en":"encounter","tag":"名詞"},{"ja":"熱意","en":"enthusiasm","tag":"名詞"},{"ja":"倫理","en":"ethics","tag":"名詞"},{"ja":"進化","en":"evolution","tag":"名詞"},{"ja":"絶滅","en":"extinction","tag":"名詞"},{"ja":"名声","en":"fame","tag":"名詞"},{"ja":"疲労","en":"fatigue","tag":"名詞"},{"ja":"小説・作り話","en":"fiction","tag":"名詞"},{"ja":"炎","en":"flame","tag":"名詞"},{"ja":"化石","en":"fossil","tag":"名詞"},{"ja":"破片","en":"fragment","tag":"名詞"},{"ja":"摩擦","en":"friction","tag":"名詞"},{"ja":"遺伝子","en":"gene","tag":"名詞"},{"ja":"身ぶり","en":"gesture","tag":"名詞"},{"ja":"重力","en":"gravity","tag":"名詞"},{"ja":"遺産","en":"heritage","tag":"名詞"},{"ja":"仮説","en":"hypothesis","tag":"名詞"},{"ja":"錯覚・幻想","en":"illusion","tag":"名詞"},{"ja":"移民","en":"immigrant","tag":"名詞"},{"ja":"衝動","en":"impulse","tag":"名詞"},{"ja":"乳児","en":"infant","tag":"名詞"},{"ja":"感染","en":"infection","tag":"名詞"},{"ja":"洞察","en":"insight","tag":"名詞"},{"ja":"本能","en":"instinct","tag":"名詞"},{"ja":"意図","en":"intention","tag":"名詞"},{"ja":"直感","en":"intuition","tag":"名詞"},{"ja":"皮肉","en":"irony","tag":"名詞"},{"ja":"目印・名所","en":"landmark","tag":"名詞"},{"ja":"伝説","en":"legend","tag":"名詞"},{"ja":"論理","en":"logic","tag":"名詞"},{"ja":"少数派","en":"minority","tag":"名詞"},{"ja":"分子","en":"molecule","tag":"名詞"},{"ja":"動機","en":"motive","tag":"名詞"},{"ja":"物語","en":"narrative","tag":"名詞"},{"ja":"栄養","en":"nutrition","tag":"名詞"},{"ja":"義務","en":"obligation","tag":"名詞"},{"ja":"障害物","en":"obstacle","tag":"名詞"},{"ja":"生物","en":"organism","tag":"名詞"},{"ja":"郷愁","en":"nostalgia","tag":"名詞"},{"ja":"偏見","en":"prejudice","tag":"名詞"},{"ja":"心理学","en":"psychology","tag":"名詞"},{"ja":"罰","en":"punishment","tag":"名詞"},{"ja":"批判的な・重大な","en":"critical","tag":"形容詞"},{"ja":"極端な","en":"extreme","tag":"形容詞"},{"ja":"主要な・初等の","en":"primary","tag":"形容詞"},{"ja":"代わりの","en":"alternative","tag":"形容詞"},{"ja":"人工の","en":"artificial","tag":"形容詞"},{"ja":"絶え間ない","en":"constant","tag":"形容詞"},{"ja":"遠い","en":"distant","tag":"形容詞"},{"ja":"基本的な","en":"fundamental","tag":"形容詞"},{"ja":"遠く離れた","en":"remote","tag":"形容詞"},{"ja":"厳しい・深刻な","en":"severe","tag":"形容詞"},{"ja":"安定した","en":"stable","tag":"形容詞"},{"ja":"厳格な","en":"strict","tag":"形容詞"},{"ja":"一時的な","en":"temporary","tag":"形容詞"},{"ja":"広大な","en":"vast","tag":"形容詞"},{"ja":"絶対的な","en":"absolute","tag":"形容詞"},{"ja":"抽象的な","en":"abstract","tag":"形容詞"},{"ja":"十分な・適切な","en":"adequate","tag":"形容詞"},{"ja":"攻撃的な","en":"aggressive","tag":"形容詞"},{"ja":"匿名の","en":"anonymous","tag":"形容詞"},{"ja":"明らかな","en":"apparent","tag":"形容詞"},{"ja":"ぎこちない・気まずい","en":"awkward","tag":"形容詞"},{"ja":"素晴らしい・優秀な","en":"brilliant","tag":"形容詞"},{"ja":"気軽な・普段着の","en":"casual","tag":"形容詞"},{"ja":"壊れやすい","en":"fragile","tag":"形容詞"},{"ja":"具体的な","en":"concrete","tag":"形容詞"},{"ja":"かなりの","en":"considerable","tag":"形容詞"},{"ja":"一貫した","en":"consistent","tag":"形容詞"},{"ja":"現代の","en":"contemporary","tag":"形容詞"},{"ja":"決定的に重要な","en":"crucial","tag":"形容詞"},{"ja":"まともな","en":"decent","tag":"形容詞"},{"ja":"繊細な","en":"delicate","tag":"形容詞"},{"ja":"密集した","en":"dense","tag":"形容詞"},{"ja":"必死の","en":"desperate","tag":"形容詞"},{"ja":"多様な","en":"diverse","tag":"形容詞"},{"ja":"劇的な","en":"dramatic","tag":"形容詞"},{"ja":"上品な","en":"elegant","tag":"形容詞"},{"ja":"莫大な","en":"enormous","tag":"形容詞"},{"ja":"誠実な・忠実な","en":"faithful","tag":"形容詞"},{"ja":"致命的な","en":"fatal","tag":"形容詞"},{"ja":"本物の","en":"genuine","tag":"形容詞"},{"ja":"厳しい","en":"harsh","tag":"形容詞"},{"ja":"謙虚な・質素な","en":"humble","tag":"形容詞"},{"ja":"同一の","en":"identical","tag":"形容詞"},{"ja":"避けられない","en":"inevitable","tag":"形容詞"},{"ja":"無限の","en":"infinite","tag":"形容詞"},{"ja":"強烈な","en":"intense","tag":"形容詞"},{"ja":"鋭い・熱心な","en":"keen","tag":"形容詞"},{"ja":"論理的な","en":"logical","tag":"形容詞"},{"ja":"忠実な","en":"loyal","tag":"形容詞"},{"ja":"成熟した","en":"mature","tag":"形容詞"},{"ja":"ほんの","en":"mere","tag":"形容詞"},{"ja":"小さな・重要でない","en":"minor","tag":"形容詞"},{"ja":"控えめな","en":"modest","tag":"形容詞"},{"ja":"相互の","en":"mutual","tag":"形容詞"},{"ja":"中立の","en":"neutral","tag":"形容詞"},{"ja":"高貴な","en":"noble","tag":"形容詞"},{"ja":"多数の","en":"numerous","tag":"形容詞"},{"ja":"野心的な","en":"ambitious","tag":"形容詞"},{"ja":"奇妙な","en":"odd","tag":"形容詞"},{"ja":"楽観的な","en":"optimistic","tag":"形容詞"},{"ja":"ますます","en":"increasingly","tag":"副詞"},{"ja":"比較的","en":"relatively","tag":"副詞"},{"ja":"完全に","en":"entirely","tag":"副詞"},{"ja":"絶対に","en":"absolutely","tag":"副詞"},{"ja":"およそ","en":"approximately","tag":"副詞"},{"ja":"最終的に","en":"ultimately","tag":"副詞"},{"ja":"どうにかして","en":"somehow","tag":"副詞"},{"ja":"したがって","en":"thus","tag":"副詞"},{"ja":"さらに","en":"moreover","tag":"副詞"},{"ja":"その上","en":"furthermore","tag":"副詞"},{"ja":"〜の下に","en":"beneath","tag":"その他"},{"ja":"〜の上に","en":"upon","tag":"その他"},{"ja":"何でも","en":"whatever","tag":"その他"},{"ja":"いつでも","en":"whenever","tag":"その他"},{"ja":"どこでも","en":"wherever","tag":"その他"}]}],"basicChunks":[["⏰","get up","起きる","got up"],["🛌","go to bed","寝る","went to bed"],["🚿","take a shower","シャワーを浴びる","took a shower"],["🪥","brush my teeth","歯をみがく","brushed my teeth"],["🧼","wash my hands","手を洗う","washed my hands"],["👕","get dressed","着替える","got dressed"],["🍳","eat breakfast","朝ごはんを食べる","ate breakfast"],["☕","drink coffee","コーヒーを飲む","drank coffee"],["👨‍🍳","cook dinner","夕飯を作る","cooked dinner"],["🍽️","do the dishes","皿を洗う","did the dishes"],["🧺","do the laundry","洗濯する","did the laundry"],["🧹","clean my room","部屋を掃除する","cleaned my room"],["🗑️","take out the trash","ゴミを出す","took out the trash"],["🚪","leave home","家を出る","left home"],["🚃","take the train","電車に乗る","took the train"],["🚗","drive a car","車を運転する","drove a car"],["💼","go to work","仕事に行く","went to work"],["📧","check my email","メールを確認する","checked my email"],["📞","make a phone call","電話をかける","made a phone call"],["📝","write a report","レポートを書く","wrote a report"],["🛒","go shopping","買い物に行く","went shopping"],["🎫","buy a ticket","チケットを買う","bought a ticket"],["💳","pay the bill","会計をする","paid the bill"],["🏋️","go to the gym","ジムに行く","went to the gym"],["🏃","run in the park","公園を走る","ran in the park"],["⚽","play soccer","サッカーをする","played soccer"],["🎬","watch a movie","映画を見る","watched a movie"],["📖","read a book","本を読む","read a book"],["🎧","listen to music","音楽を聴く","listened to music"],["📚","study English","英語を勉強する","studied English"]],"fieldChunks":[["📧","send the report","報告書を送る","sent the report"],["💬","reply to the email","メールに返信する","replied to the email"],["👥","attend the meeting","会議に出る","attended the meeting"],["📅","schedule a meeting","会議の予定を入れる","scheduled a meeting"],["📞","call the client","取引先に電話する","called the client"],["🤝","meet the client","取引先と会う","met the client"],["📝","write a proposal","提案書を書く","wrote a proposal"],["🎤","make a presentation","プレゼンをする","made a presentation"],["🖥️","prepare the slides","スライドを準備する","prepared the slides"],["📄","review the contract","契約書を確認する","reviewed the contract"],["✍️","sign the contract","契約書にサインする","signed the contract"],["🏢","book a meeting room","会議室を予約する","booked a meeting room"],["✈️","book the flight","飛行機を予約する","booked the flight"],["🗒️","take notes","メモを取る","took notes"],["📂","share the file","ファイルを共有する","shared the file"],["🗓️","update the schedule","予定表を更新する","updated the schedule"],["🖨️","print the documents","書類を印刷する","printed the documents"],["📦","order the supplies","備品を注文する","ordered the supplies"],["✅","confirm the order","注文を確認する","confirmed the order"],["🏭","visit the factory","工場を見学する","visited the factory"],["💰","negotiate the price","値段を交渉する","negotiated the price"],["📊","check the budget","予算を確認する","checked the budget"],["🔧","fix the printer","プリンターを直す","fixed the printer"],["🌐","translate the document","書類を翻訳する","translated the document"],["🏁","finish the project","プロジェクトを終える","finished the project"],["🙋","interview the candidates","応募者を面接する","interviewed the candidates"],["🧭","lead the team","チームをまとめる","led the team"],["📈","analyze the data","データを分析する","analyzed the data"],["🧾","send the invoice","請求書を送る","sent the invoice"],["🙇","welcome the visitors","来客を出迎える","welcomed the visitors"]],"ng":{"time":["lead the team","negotiate the price","write a proposal","check the budget","finish the project","take notes","translate the document","review the contract","fix the printer","analyze the data"],"use":["attend the meeting","meet the client","visit the factory","lead the team","interview the candidates","negotiate the price","welcome the visitors","confirm the order"],"where":["check the budget","update the schedule","confirm the order","finish the project","lead the team","review the contract","negotiate the price","analyze the data","send the invoice","reply to the email"],"long":["sign the contract","send the report","book a meeting room","book the flight","confirm the order","share the file","send the invoice","schedule a meeting","reply to the email"],"daily":["sign the contract","negotiate the price","interview the candidates","book the flight","visit the factory","write a proposal","finish the project","review the contract","make a presentation","fix the printer","book a meeting room"],"who":["take notes"]},"relative":true};
+const P=CFG.storePrefix||"dk-";
+const DECKS=CFG.decks;
+const FD=DECKS[0],BASES=DECKS.slice(1);
+const SH_BASE=CFG.shadowingBase;
+const ORG=CFG.org||{};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+function speak(t){try{if(!("speechSynthesis" in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.9;speechSynthesis.speak(u);}catch(e){}}
+let timer=null;
+const store={get(k,d){try{const v=localStorage.getItem(k.replace(/^dk-/,P));return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k.replace(/^dk-/,P),JSON.stringify(v));}catch(e){}}};
+const set$=(id,t)=>{const e=$(id);if(e)e.textContent=t;};
+function buzz(ms){try{if(navigator.vibrate)navigator.vibrate(ms||8);}catch(e){}}
+/* 切り替え（セグメント）の白い板を、押した所へすべらせる */
+function segSlide(id){
+  const el=$(id);if(!el)return;
+  let i=el.querySelector(".sl");
+  if(!i){i=document.createElement("i");i.className="sl";el.insertBefore(i,el.firstChild);}
+  const btns=[...el.querySelectorAll("button")];if(!btns.length)return;
+  const n=btns.findIndex(b=>b.getAttribute("aria-pressed")==="true");
+  i.hidden=n<0;if(n<0)return;
+  i.style.width="calc((100% - 4px) / "+btns.length+")";
+  i.style.transform="translateX("+n*100+"%)";
+}
+
+/* ============ 名前・団体コード・記録 ============ */
+const pad=n=>String(n).padStart(2,"0");
+const dayStr=(d=new Date())=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const dayNum=(s=dayStr())=>Math.round(new Date(s+"T00:00:00").getTime()/864e5);
+const isSet=v=>!!(v&&String(v).indexOf("__")!==0);
+
+/* 置き場所：A＝団体のスプレッドシート（record.endpoint）／B＝A-PUSHのFirebase（firebase.apiKey）。
+   どちらも未設定なら、この端末の中だけで動く（今まで通り）。 */
+const ENDPOINT=CFG.record?CFG.record.endpoint:"";
+const KEY=CFG.record?CFG.record.key:"";
+const USE_A=isSet(ENDPOINT);
+const USE_B=!!(CFG.firebase&&isSet(CFG.firebase.apiKey));
+const NEED_CODE=USE_B||isSet(ORG.code);
+
+let ME=store.get("dk-me",null);
+if(ME&&!ME.uid){ME.uid=Math.random().toString(36).slice(2,10);store.set("dk-me",ME);}
+if(ME&&ME.group!=null&&!ME.han){ME.han="";}            /* 古い形（班を自分で選ぶ）から移る */
+let LOG=store.get("dk-log",{});   /* {"2026-10-14":{sp:1,wd:10,sh:0}} */
+let PENDING=store.get("dk-pending",[]);
+
+function flushA(){
+  if(!USE_A||!PENDING.length||!navigator.onLine)return;
+  const batch=PENDING.slice(0,20);
+  fetch(ENDPOINT,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({key:KEY,rows:batch})})
+    .then(()=>{PENDING=PENDING.slice(batch.length);store.set("dk-pending",PENDING);if(PENDING.length)flushA();})
+    .catch(()=>{});
+}
+function flush(){flushA();NET.flush();}
+function logEvent(kind,detail,count){
+  const d=dayStr(),k={"スピーキング":"sp","単語":"wd","シャドーイング":"sh"}[kind];
+  LOG[d]=LOG[d]||{sp:0,wd:0,sh:0};LOG[d][k]+=count;store.set("dk-log",LOG);
+  if(ME&&USE_A){PENDING.push({ts:new Date().toISOString(),day:d,name:ME.name,group:ME.han||"",uid:ME.uid,kind,detail,count});store.set("dk-pending",PENDING);}
+  NET.markDay(d,LOG[d]);
+  flush();paintStatus();paintPlan();
+}
+window.addEventListener("online",flush);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){sendWords();flush();}});
+
+/* ============ 団体とつながる部分（B＝Firebase）============
+   ここは入れ替えやすいように1か所にまとめてある。Firebaseが未設定なら全部なにもしない。 */
+const SDK=(CFG.firebase&&CFG.firebase.sdk)||"https://www.gstatic.com/firebasejs/11.0.2/";
+const NET={
+  ready:false,uid:null,fb:null,_queue:[],
+  /* Firebaseの読み込み。失敗しても練習は止めない（記録は端末に残り、次につながった時に送る） */
+  async init(){
+    if(!USE_B){paintSync(syncText(),USE_A);return;}
+    try{
+      const [A,U,F,Fn]=await Promise.all([
+        import(SDK+"firebase-app.js"),import(SDK+"firebase-auth.js"),import(SDK+"firebase-firestore.js"),import(SDK+"firebase-functions.js")]);
+      const app=A.initializeApp(CFG.firebase);
+      const auth=U.getAuth(app),db=F.getFirestore(app);
+      this.fb={A,U,F,Fn,app,auth,db};
+      await U.signInAnonymously(auth);
+      this.uid=auth.currentUser.uid;
+      this.ready=true;
+      if(ME&&ME.sid){
+        if(ME.linked!==this.uid)await this.login(ME.sid,ME.name);
+        await this.pull();await this.saveMe();this.watchInbox();
+      }
+      this.flush();
+      paintSync(syncText(),true);
+    }catch(e){
+      this.ready=false;
+      paintSync("団体とつながれませんでした。練習の記録はこの端末に残り、つながった時にまとめて送ります。",false);
+    }
+  },
+  /* この端末が生徒IDにひも付いているか（ひも付いていない間は、記録は端末にためておく） */
+  on(){return this.ready&&!!ME&&!!ME.sid&&ME.linked===this.uid;},
+  /* 生徒ID＋名前で入る（functions の student が名簿と照らし合わせる）。データは生徒IDにつながる＝スマホを替えても戻せる */
+  async login(sid,name){
+    const {Fn,app}=this.fb;
+    const r=(await Fn.httpsCallable(Fn.getFunctions(app,"asia-northeast1"),"student")({sid,name})).data;
+    ME=Object.assign({},ME||{},{sid:r.sid,name:r.name,orgId:r.org,orgName:(ME&&ME.orgName)||ORG.name||"",team:r.team,han:r.han,linked:this.uid,
+      uid:(ME&&ME.uid)||Math.random().toString(36).slice(2,10)});
+    store.set("dk-me",ME);
+    return r;
+  },
+  /* 前の端末の記録を、この端末に戻す（数は大きい方を取る） */
+  async pull(){
+    if(!this.on())return;
+    try{
+      const {collection,getDocs}=this.fb.F;
+      const snap=await getDocs(collection(this.fb.db,this.path()+"/days"));
+      snap.forEach(d=>{const v=d.data(),x=LOG[d.id]=LOG[d.id]||{sp:0,wd:0,sh:0};
+        ["sp","wd","sh","wn"].forEach(k=>{if(v[k]||x[k])x[k]=Math.max(x[k]||0,v[k]||0);});});
+      store.set("dk-log",LOG);paintStatus();paintPlan();
+    }catch(e){}
+  },
+  /* 団体コードを確かめる（Firebaseを使わない団体だけ） */
+  async lookupCode(code){
+    const local=()=>code===String(ORG.code||"").toUpperCase()?{id:ORG.id,name:ORG.name}:null;
+    if(!this.ready)return local();
+    try{
+      const {doc,getDoc}=this.fb.F;
+      const d=await getDoc(doc(this.fb.db,"codes",code));
+      if(d.exists()){const v=d.data();return {id:v.orgId,name:v.name};}
+      return null;
+    }catch(e){return local();}
+  },
+  path(){return "orgs/"+ME.orgId+"/members/"+ME.sid;},
+  /* 来た印を付けて、幹部が決めたチーム・班を受け取る（名簿に入れるのは幹部＝ここからは作らない） */
+  async saveMe(){
+    if(!this.on())return;
+    try{
+      const {doc,getDoc,updateDoc,serverTimestamp}=this.fb.F;
+      const ref=doc(this.fb.db,this.path());
+      const cur=await getDoc(ref);
+      if(!cur.exists())return;
+      await updateDoc(ref,{lastSeen:serverTimestamp(),updatedAt:serverTimestamp()});
+      const v=cur.data();
+      if(v.team!==ME.team||v.han!==ME.han){ME.team=v.team||"";ME.han=v.han||"";store.set("dk-me",ME);paintStatus();}
+      this.watchInbox();
+    }catch(e){}
+  },
+  /* その日の記録を1件に上書きする（何回やっても1日1件） */
+  markDay(d,x){
+    if(!USE_B||!ME)return;
+    this._queue=this._queue.filter(q=>q.d!==d);
+    this._queue.push({d,x:{sp:x.sp|0,wd:x.wd|0,sh:x.sh|0,wn:x.wn|0}});
+    store.set("dk-fbq",this._queue);
+    this.flush();
+  },
+  async flush(){
+    if(!this.on())return;
+    if(!this._queue.length)this._queue=store.get("dk-fbq",[]);
+    if(!this._queue.length||!navigator.onLine)return;
+    const {doc,setDoc,updateDoc,serverTimestamp}=this.fb.F;
+    const left=[];
+    for(const q of this._queue){
+      try{
+        await setDoc(doc(this.fb.db,this.path()+"/days/"+q.d),Object.assign({},q.x,{at:serverTimestamp()}));
+      }catch(e){left.push(q);}
+    }
+    this._queue=left;store.set("dk-fbq",left);
+    if(!left.length){
+      const last=Object.keys(LOG).filter(k=>{const v=LOG[k];return (v.sp||0)+(v.wd||0)+(v.sh||0)>0;}).sort().pop();
+      try{await updateDoc(doc(this.fb.db,this.path()),{lastDay:last||"",lastSeen:serverTimestamp(),updatedAt:serverTimestamp()});}catch(e){}
+    }
+  },
+  /* お知らせ箱を見張る */
+  watchInbox(){
+    if(!this.on()||this._watching)return;
+    try{
+      const {collection,query,orderBy,limit,onSnapshot}=this.fb.F;
+      this._watching=onSnapshot(query(collection(this.fb.db,this.path()+"/inbox"),orderBy("at","desc"),limit(50)),snap=>{
+        MSGS=snap.docs.map(d=>{const v=d.data();
+          return {id:d.id,text:v.text,from:v.from,at:v.at&&v.at.toDate?dayStr(v.at.toDate()).slice(5).replace("-","/"):""};});
+        store.set("dk-msgs",MSGS);paintInbox();
+      },()=>{});
+    }catch(e){}
+  },
+  /* 読んだ印をつける（幹部の管理アプリで「既読」に数えられる） */
+  markRead(id){
+    if(!this.on())return;
+    try{const {doc,updateDoc}=this.fb.F;updateDoc(doc(this.fb.db,this.path()+"/inbox/"+id),{read:true}).catch(()=>{});}catch(e){}
+  },
+  /* 通知の鍵を取って、自分の行に入れておく（幹部が送る時に使われる） */
+  async enablePush(){
+    if(!this.on()||!CFG.firebase.vapidKey||!isSet(CFG.firebase.vapidKey))return false;
+    try{
+      const M=await import(SDK+"firebase-messaging.js");
+      const reg=await navigator.serviceWorker.register("firebase-messaging-sw.js");
+      const token=await M.getToken(M.getMessaging(this.fb.app),{vapidKey:CFG.firebase.vapidKey,serviceWorkerRegistration:reg});
+      if(!token)return false;
+      const {doc,updateDoc}=this.fb.F;
+      await updateDoc(doc(this.fb.db,this.path()),{fcm:token});
+      M.onMessage(M.getMessaging(this.fb.app),()=>{this.watchInbox();});
+      return true;
+    }catch(e){return false;}
+  }
+};
+
+
+/* お知らせ（届いた物はこの端末にも残す。開けば読める） */
+let MSGS=store.get("dk-msgs",[]);
+let MREAD=store.get("dk-msgread",{});
+function unread(){return MSGS.filter(m=>!MREAD[m.id]).length;}
+function paintInbox(){
+  const n=unread(),b=$("inbox-n");
+  b.hidden=!n;b.textContent=n>9?"9+":String(n);
+  $("ib-body").innerHTML=MSGS.length
+    ? MSGS.map(m=>'<div class="msg'+(MREAD[m.id]?"":" unread")+'"><div class="mh"><span>'+esc(m.from||"幹部")+'</span><span>'+esc(m.at||"")+(MREAD[m.id]?"":' <span class="new">新着</span>')+'</span></div><div class="mt">'+esc(m.text)+'</div></div>').join("")
+    : '<p class="empty">'+(USE_B?"お知らせはまだありません。":"この団体では、お知らせは使っていません。")+'</p>';
+}
+function openInbox(){
+  openSheet("inbox");paintInbox();
+  setTimeout(()=>{MSGS.forEach(m=>{if(!MREAD[m.id])NET.markRead(m.id);MREAD[m.id]=1;});store.set("dk-msgread",MREAD);paintInbox();},1200);
+}
+$("inbox-btn").addEventListener("click",openInbox);
+$("ib-x").addEventListener("click",()=>closeSheet("inbox"));
+
+/* 通知を受け取る */
+function paintNotif(){
+  const row=$("notif-row");
+  if(!USE_B||!ME){row.hidden=true;return;}
+  row.hidden=false;
+  const p=(window.Notification&&Notification.permission)||"default";
+  if(p==="granted"){set$("notif-t","お知らせを受け取っています");set$("notif-s","幹部からの連絡が、この端末に届きます");set$("notif-c","✓ ON");}
+  else if(p==="denied"){set$("notif-t","通知が止まっています");set$("notif-s","端末の設定でこのサイトの通知を許可してください。アプリの中のお知らせ箱でも読めます");set$("notif-c","");}
+  else{set$("notif-t","お知らせを受け取る");set$("notif-s","幹部からの連絡が、この端末に届きます");set$("notif-c","許可する ›");}
+}
+$("notif-go").addEventListener("click",()=>{
+  if(!window.Notification){paintNotif();return;}
+  if(Notification.permission==="granted"){openInbox();return;}
+  Notification.requestPermission().then(()=>{paintNotif();NET.enablePush();});
+});
+function paintSync(msg,on){
+  const el=$("sync");el.classList.toggle("off",!on);set$("sync-t",msg);
+}
+function syncText(){
+  if(USE_B)return ME&&ME.sid?("団体「"+(ME.orgName||ORG.name||"")+"」とつながっています。練習した日と内容が、名前と一緒に幹部に見えます。"):"幹部からもらった生徒IDと名前を入れると、幹部に練習の記録が届きます。";
+  if(USE_A)return "練習した日と内容が、名前と一緒に団体の管理表に記録されます。";
+  return "記録とゴールは、この端末のブラウザに保存されます。機種を変えたり、別のブラウザで開いたりすると、0から始まります。";
+}
+
+/* ---- はじめに（名前＋団体コード） ---- */
+let foundOrg=null;
+function resumeQuiz(){if(!$("p-sp").hidden&&!$("v-quiz").hidden)startTimer();}
+function openProfile(){
+  clearInterval(timer);openSheet("pf");
+  $("pf-name").value=ME?ME.name:"";
+  $("pf-code").value=ME?((USE_B?ME.sid:ME.code)||""):"";
+  foundOrg=ME&&ME.orgId?{id:ME.orgId,name:ME.orgName}:null;
+  $("pf-code").closest("label")&&0;
+  document.querySelectorAll("#pf-form .pf-l")[1].hidden=!NEED_CODE;
+  $("pf-code").hidden=!NEED_CODE;
+  checkCode();
+  setTimeout(()=>{try{$("pf-name").focus();}catch(e){}},50);
+}
+function checkPf(){
+  const ok=!!$("pf-name").value.trim()&&(USE_B?($("pf-code").value.trim().length>=3&&$("pf-ok").checked):(!NEED_CODE||foundOrg));
+  $("pf-save").disabled=!ok;
+}
+function checkCode(){
+  if(USE_B){$("pf-code").value=$("pf-code").value.toUpperCase();$("pf-found").hidden=true;$("pf-agree").hidden=false;checkPf();return;}   /* 生徒ID：確かめるのは「ログイン」を押した時 */
+  if(!NEED_CODE){$("pf-found").hidden=true;$("pf-agree").hidden=true;checkPf();return;}
+  const code=$("pf-code").value.trim().toUpperCase();
+  $("pf-code").value=code;
+  if(code.length<4){foundOrg=null;$("pf-found").hidden=true;$("pf-agree").hidden=true;checkPf();return;}
+  NET.lookupCode(code).then(o=>{
+    foundOrg=o;
+    const f=$("pf-found");f.hidden=false;f.classList.toggle("bad",!o);
+    f.querySelector(".m").textContent=o?"✓":"？";
+    set$("pf-found-t",o?("この団体に入ります：「"+o.name+"」"):"このコードの団体が見つかりません。幹部にもう一度確認してください。");
+    $("pf-agree").hidden=!(o&&USE_B);
+    checkPf();
+  });
+}
+$("pf-name").addEventListener("input",checkPf);
+$("pf-code").addEventListener("input",checkCode);
+$("pf-ok").addEventListener("change",checkPf);
+function pfErr(t){const f=$("pf-found");f.hidden=false;f.classList.add("bad");f.querySelector(".m").textContent="？";set$("pf-found-t",t);}
+$("pf-form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const name=$("pf-name").value.trim().replace(/\s+/g," ");
+  if(USE_B){
+    const b=$("pf-save");b.disabled=true;b.textContent="確かめています…";
+    try{
+      if(!NET.ready)throw {code:"offline"};
+      await NET.login($("pf-code").value,name);
+    }catch(err){
+      b.textContent="ログイン";checkPf();
+      pfErr(/not-found/.test(err&&err.code||"")?"生徒IDか名前が違います。幹部にもらったIDと、幹部に伝えた名前を確かめてください。"
+        :!navigator.onLine||err.code==="offline"?"ネットにつながっていません。つながってから、もう一度押してください。":"つながりませんでした。少し待ってから、もう一度押してください。");
+      return;
+    }
+    b.textContent="ログイン";
+    PENDING.forEach(r=>{r.name=ME.name;});store.set("dk-pending",PENDING);
+    await NET.pull();NET.saveMe();   /* 先に前の記録を戻してから（大きい方を取る）、今までの分をまとめて送る */
+    NET._queue=Object.keys(LOG).map(d=>({d,x:{sp:LOG[d].sp|0,wd:LOG[d].wd|0,sh:LOG[d].sh|0,wn:LOG[d].wn|0}}));store.set("dk-fbq",NET._queue);
+    closeSheet("pf");paintStatus();paintNotif();paintSync(syncText(),true);flush();resumeQuiz();maybeGuide(curTab);
+    return;
+  }
+  if(!name||(NEED_CODE&&!foundOrg))return;
+  ME={name,uid:(ME&&ME.uid)||Math.random().toString(36).slice(2,10),
+      code:NEED_CODE?$("pf-code").value.trim().toUpperCase():"",
+      orgId:foundOrg?foundOrg.id:(ORG.id||""),orgName:foundOrg?foundOrg.name:(ORG.name||""),
+      team:(ME&&ME.team)||"",han:(ME&&ME.han)||""};
+  store.set("dk-me",ME);
+  PENDING.forEach(r=>{r.name=ME.name;});store.set("dk-pending",PENDING);
+  NET.saveMe();
+  closeSheet("pf");paintStatus();paintNotif();paintSync(syncText(),USE_A||USE_B);flush();resumeQuiz();maybeGuide(curTab);
+});
+$("pf-cancel").addEventListener("click",()=>{closeSheet("pf");resumeQuiz();maybeGuide(curTab);});
+$("me").addEventListener("click",openProfile);
+
+/* 今日・連続・今週 */
+function activeDays(){return Object.keys(LOG).filter(d=>{const x=LOG[d];return x.sp+x.wd+x.sh>0;});}
+function streak(){
+  const set=new Set(activeDays()),d=new Date();let n=0;
+  if(!set.has(dayStr(d)))d.setDate(d.getDate()-1);   /* 今日まだでも、昨日まで続いていれば数える */
+  while(set.has(dayStr(d))){n++;d.setDate(d.getDate()-1);}
+  return n;
+}
+function weekDays(){const t=dayNum();return activeDays().filter(d=>t-dayNum(d)<7).length;}
+/* ============ 型：見出し・タブ・シート・今日＆計画 ============ */
+const REDUCE=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+document.addEventListener("touchstart",()=>{},{passive:true});   /* iPhoneで :active（押した時の反応）を効かせる */
+
+function initStatic(){
+  set$("brand",CFG.site.title);   /* 一番上はA-PUSHのロゴ（shell.html）。ここは分野の名前だけ */
+  set$("civ-label",CFG.field.longLabel);$("civ").setAttribute("aria-label",CFG.field.longLabel);
+  set$("w-sub",DECKS.map(d=>d.name+" "+d.words.length).join("・"));
+  set$("w-fieldnote",CFG.field.wordNote||"");
+  set$("pf-h",USE_B?"生徒IDと名前でログイン":NEED_CODE?"名前と団体コードでログイン":"名前を入れてログイン");
+  if(USE_B){
+    document.querySelectorAll("#pf-form .pf-l")[1].textContent="生徒ID（幹部からもらったID）";
+    $("pf-code").maxLength=24;$("pf-code").placeholder="例：K7M2Q9";
+  }
+  set$("pf-note",CFG.record.note);
+  set$("pf-agree-t","練習した日と回数が、名前と一緒に団体の幹部に見えることに同意します。メールや電話番号は聞きません。記録はA-PUSHのサーバー（日本・東京）に置かれます。");
+  $("me-edit").addEventListener("click",openProfile);
+  $("pf-x").addEventListener("click",()=>$("pf-cancel").click());
+  paintSync(syncText(),USE_A||USE_B);
+}
+
+/* ---- タブ（下のバー・4つ）。今のタブをもう一度押すと一番上へ ---- */
+const TABS=["home","sp","sh","wd","co"];   /* co＝本コースの説明 */
+const scrollPos={};
+let curTab=null;
+function openTab(k,silent){
+  if(curTab)scrollPos[curTab]=window.scrollY;
+  TABS.forEach(n=>{const t=$("tab-"+n);if(t)t.setAttribute("aria-selected",String(n===k));$("p-"+n).hidden=(n!==k);});   /* co（本コース）は下のタブが無い。上の「本コース」から開く */
+  curTab=k;store.set("dk-tab",k);
+  window.scrollTo(0,scrollPos[k]||0);navStuck();
+  if(k!=="sp")clearInterval(timer);
+  if(k==="sp"&&!$("v-quiz").hidden)startTimer();
+  if(k==="home"){paintStatus();paintPlan();ringIn();}
+  if(!silent)maybeGuide(k);
+}
+TABS.filter(n=>$("tab-"+n)).forEach(n=>$("tab-"+n).addEventListener("click",()=>{
+  if(curTab===n){window.scrollTo({top:0,behavior:REDUCE?"auto":"smooth"});return;}
+  openTab(n);
+}));
+function navStuck(){const n=document.querySelector("#p-"+curTab+" .nav");if(n)n.classList.toggle("stuck",window.scrollY>28);}
+window.addEventListener("scroll",navStuck,{passive:true});
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-go]");if(!b)return;
+  const g=b.dataset.go;
+  if(g==="plan"){openTab("home");setTimeout(()=>{const t=$("plan-sec");if(t)t.scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"start"});},60);return;}
+  openTab(g);
+});
+
+/* ---- 下から出るシート：ばね（はね返りなし）で動く・途中でつかめる・指で下に引いて閉じる・勢いも見る ---- */
+const SHEETS={},STACK=[];
+const sheetOpen=id=>!!(SHEETS[id]&&SHEETS[id].open);
+const rubber=(x,d,c=.55)=>(x*d*c)/(d+c*x);
+function sheetCtl(id){
+  if(SHEETS[id])return SHEETS[id];
+  const el=$(id),st={id,el,y:0,v:0,raf:0,open:false,H:600};SHEETS[id]=st;
+  st.set=y=>{st.y=y;el.style.transform="translateY("+y+"px)";if(STACK[STACK.length-1]===st)$("scrim").style.opacity=String(Math.max(0,Math.min(1,1-y/st.H)));};
+  st.spring=(to,v0,done)=>{
+    cancelAnimationFrame(st.raf);st.v=v0||0;
+    if(REDUCE){st.set(to);if(done)done();return;}
+    const k=Math.pow(2*Math.PI/0.38,2),c=2*Math.sqrt(k);let last=performance.now();
+    const tick=t=>{const dt=Math.min(.032,Math.max(0,(t-last)/1000));last=t;
+      st.v+=(-k*(st.y-to)-c*st.v)*dt;st.set(st.y+st.v*dt);
+      if(Math.abs(st.v)<8&&Math.abs(st.y-to)<.5){st.set(to);st.raf=0;if(done)done();return;}
+      st.raf=requestAnimationFrame(tick);};
+    st.raf=requestAnimationFrame(tick);
+  };
+  const top=el.querySelector(".sh-top");let drag=null;
+  top.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;cancelAnimationFrame(st.raf);
+    try{top.setPointerCapture(e.pointerId);}catch(_){}drag={y0:e.clientY-st.y,h:[[e.clientY,e.timeStamp]]};});
+  top.addEventListener("pointermove",e=>{if(!drag)return;let y=e.clientY-drag.y0;if(y<0)y=-rubber(-y,st.H);st.set(y);
+    drag.h.push([e.clientY,e.timeStamp]);if(drag.h.length>5)drag.h.shift();});
+  const end=()=>{if(!drag)return;const a=drag.h[0],b=drag.h[drag.h.length-1],dt=(b[1]-a[1])/1000,v=dt>0?(b[0]-a[0])/dt:0;drag=null;
+    const proj=st.y+(v/1000)*0.998/(1-0.998);
+    if(proj>st.H*0.45){if(st.onDismiss)st.onDismiss(v);else closeSheet(id,v);}else st.spring(0,v);};
+  top.addEventListener("pointerup",end);top.addEventListener("pointercancel",end);
+  return st;
+}
+function openSheet(id){
+  const st=sheetCtl(id);if(st.open)return;
+  const fresh=!st.el.classList.contains("open");
+  st.el.classList.add("open");st.H=st.el.offsetHeight+24;st.open=true;
+  const i=STACK.indexOf(st);if(i>=0)STACK.splice(i,1);STACK.push(st);
+  $("scrim").classList.add("on");
+  if(fresh)st.set(st.H);
+  st.spring(0,0);
+}
+function closeSheet(id,v){
+  const st=SHEETS[id];if(!st||!st.open)return;st.open=false;
+  st.spring(st.H,v||0,()=>{
+    st.el.classList.remove("open");const i=STACK.indexOf(st);if(i>=0)STACK.splice(i,1);
+    if(!STACK.length){$("scrim").classList.remove("on");$("scrim").style.opacity="0";}
+  });
+}
+$("scrim").addEventListener("click",()=>{const st=STACK[STACK.length-1];if(!st||!st.open)return;if(st.onDismiss)st.onDismiss(0);else closeSheet(st.id);});
+sheetCtl("guide").onDismiss=v=>closeGuide(v);
+sheetCtl("inbox").onDismiss=v=>closeSheet("inbox",v);
+sheetCtl("pf").onDismiss=()=>$("pf-cancel").click();
+
+/* ---- 計画：1日のゴール（スピーキング・新しい単語・シャドーイング）と、今月・3ヶ月のゴール ---- */
+let G=Object.assign({sp:1,sh:1,month:"",m3:"",m3Start:dayStr()},store.get("dk-goals",{}));
+const goalNow=()=>({sp:G.sp,wd:DAILY,sh:G.sh});
+/* 1日のゴールは、変えた日から先にだけ使う（前の日は、その日のゴールで判定） */
+function goalOn(d){const h=(G.hist||[]).filter(x=>x.from<=d);return h.length?h[h.length-1]:((G.hist&&G.hist[0])||goalNow());}
+function saveGoals(){
+  const t=dayStr(),h=(G.hist||[]).filter(x=>x.from!==t);h.push(Object.assign({from:t},goalNow()));G.hist=h;
+  store.set("dk-goals",G);
+  set$("saved","保存しました");clearTimeout(saveGoals.t);saveGoals.t=setTimeout(()=>set$("saved",""),2000);
+}
+function setDaily(n){DAILY=n;store.set("dk-daily",DAILY);saveGoals();renderDaily();buildDeck();paintPlan();paintStatus();}
+function markDone(){const d=dayStr(),x=LOG[d];if(!x||!(x.wn||x.wd))return;if(!x.wdDone){x.wdDone=1;store.set("dk-log",LOG);}}
+const wordsOf=(x,g)=>x.wdDone?Math.max(g,x.wn||0):(x.wn!=null?x.wn:(x.wd||0));
+const TASKS=[
+  {k:"sp",t:"スピーキング",ic:"🗣️",u:"ラウンド",go:"sp"},
+  {k:"sh",t:"シャドーイング",ic:"🎧",u:"本",go:"sh"},
+  {k:"wd",t:"単語",ic:"📚",u:"語",go:"wd"}
+];
+function dayState(d){
+  const x=LOG[d]||{},g=goalOn(d);
+  const rows=TASKS.filter(t=>g[t.k]>0).map(t=>{const n=t.k==="wd"?wordsOf(x,g.wd):(x[t.k]||0);return {t,n,g:g[t.k],met:n>=g[t.k]};});
+  return {rows,all:rows.length>0&&rows.every(r=>r.met),any:((x.sp||0)+(x.wd||0)+(x.sh||0))>0};
+}
+const monthWords=(from,to)=>Object.keys(LOG).filter(d=>d>=from&&d<=to).reduce((s,d)=>s+(LOG[d].wn||0),0);
+function goalStreak(){let d=new Date();if(!dayState(dayStr(d)).all)d.setDate(d.getDate()-1);let n=0;while(dayState(dayStr(d)).all){n++;d.setDate(d.getDate()-1);}return n;}
+
+/* ---- 今日 ---- */
+function paintStatus(){
+  const st=dayState(dayStr());
+  const met=st.rows.filter(r=>r.met).length;
+  set$("h-num",met+" / "+st.rows.length);
+  const left=st.rows.filter(r=>!r.met).map(r=>r.t.t);
+  $("h-msg").innerHTML=!st.rows.length?"下の「計画」で、1日のゴールを決めてください":st.all?"今日のゴール達成。おつかれさま！":"今日のゴール<br>あと "+esc(left.join("・"));
+  ringIn();
+  const due=DECKS.reduce((s,d)=>s+stat(d).due,0);
+  $("today-list").innerHTML=st.rows.map(r=>{
+    const s=r.t.k==="wd"?("復習 "+due+"語＋新しい "+Math.min(r.n,r.g)+" / "+r.g+"語"):("今日 "+r.n+" / "+r.g+" "+r.t.u);
+    return '<button class="row'+(r.met?" done":"")+'" data-go="'+r.t.go+'"><span class="ic" aria-hidden="true">'+r.t.ic+'</span><span><b>'+r.t.t+'</b><small>'+s+'</small></span><span class="chev">'+(r.met?"✓ できた":"やる ›")+'</span></button>';
+  }).join("")||'<button class="row" data-go="plan"><span class="ic">📅</span><span><b>1日のゴールを決める</b><small>この下の「計画」</small></span><span class="chev">›</span></button>';
+  set$("st-streak",streak());
+  set$("st-week",weekDays());
+  const mk=dayStr().slice(0,7);set$("st-words",monthWords(mk+"-01",dayStr()));
+  const who=ME?(ME.name+(ME.han?"・"+ME.han:(ME.orgName?"・"+ME.orgName:""))):"ログインする";
+  set$("me",who);
+  set$("me-edit",ME?"アカウント":"ログイン");
+  paintNotif();paintInbox();
+}
+function ringIn(){
+  const st=dayState(dayStr()),p=st.rows.length?st.rows.reduce((s,r)=>s+Math.min(1,r.n/r.g),0)/st.rows.length:0;
+  const r=$("ring"),to=String(263.9*(1-p));
+  if(r.dataset.v===to)return;r.dataset.v=to;
+  if($("p-home").hidden||REDUCE){r.style.strokeDashoffset=to;return;}
+  r.style.strokeDashoffset="263.9";requestAnimationFrame(()=>requestAnimationFrame(()=>{r.style.strokeDashoffset=to;}));
+}
+
+/* ---- 計画 ---- */
+let calY=new Date().getFullYear(),calM=new Date().getMonth();
+function paintPlan(){
+  const today=dayStr(),first=new Date(calY,calM,1),days=new Date(calY,calM+1,0).getDate();
+  set$("cal-title",calY+"年 "+(calM+1)+"月");
+  let h=["日","月","火","水","木","金","土"].map(w=>'<span class="w">'+w+'</span>').join("");
+  for(let i=0;i<first.getDay();i++)h+="<span></span>";
+  for(let d=1;d<=days;d++){
+    const s=calY+"-"+pad(calM+1)+"-"+pad(d),st=dayState(s),x=LOG[s];
+    const tip=x?("スピーキング"+(x.sp||0)+"回・単語"+(x.wd||0)+"語・シャドーイング"+(x.sh||0)+"本"):"記録なし";
+    h+='<span class="d'+(s>today?" future":st.all?" all":st.any?" some":"")+(s===today?" today":"")+'" title="'+tip+'">'+d+'</span>';
+  }
+  $("cal-grid").innerHTML=h;
+  const nowY=new Date().getFullYear(),nowM=new Date().getMonth();
+  $("cal-next").disabled=(calY>nowY||(calY===nowY&&calM>=nowM));
+  const mk=today.slice(0,7);
+  set$("n-streak",goalStreak());
+  set$("n-month",Object.keys(LOG).filter(k=>k.startsWith(mk)&&dayState(k).all).length);
+  set$("n-words",monthWords(mk+"-01",today));
+  set$("g-sp",G.sp);set$("g-wd",DAILY);set$("g-sh",G.sh);
+  set$("g-hint","新しい単語を毎日"+DAILY+"語なら、1ヶ月で約"+DAILY*30+"語、3ヶ月で約"+DAILY*90+"語。");
+  set$("g-month-label",(nowM+1)+"月のゴール");
+  if(document.activeElement!==$("g-month"))$("g-month").value=G.month||"";
+  if(document.activeElement!==$("g-3m"))$("g-3m").value=G.m3||"";
+  const end=new Date(G.m3Start+"T00:00:00");end.setDate(end.getDate()+90);
+  const left3=Math.max(0,dayNum(dayStr(end))-dayNum());
+  set$("g-3m-meta",G.m3?(G.m3Start.replace(/-/g,"/")+" 〜 "+dayStr(end).replace(/-/g,"/")+"・残り "+left3+"日・新しい単語 "+monthWords(G.m3Start,today)+"語"):"書くと、今日から3ヶ月の期限が付きます");
+}
+$("cal-prev").addEventListener("click",()=>{calM--;if(calM<0){calM=11;calY--;}paintPlan();});
+$("cal-next").addEventListener("click",()=>{calM++;if(calM>11){calM=0;calY++;}paintPlan();});
+document.querySelectorAll("[data-goal]").forEach(b=>b.addEventListener("click",()=>{
+  const k=b.dataset.goal,d=+b.dataset.d;
+  if(k==="wd"){const n=Math.max(5,Math.min(30,DAILY+d));if(n!==DAILY)setDaily(n);return;}
+  const n=Math.max(0,Math.min(3,G[k]+d));if(n===G[k])return;G[k]=n;saveGoals();paintPlan();paintStatus();
+}));
+$("g-month").addEventListener("change",()=>{G.month=$("g-month").value.trim();saveGoals();});
+$("g-3m").addEventListener("change",()=>{const v=$("g-3m").value.trim();if(v!==G.m3)G.m3Start=dayStr();G.m3=v;saveGoals();paintPlan();});
+
+/* ---- 自分のカレンダーに入れる ---- */
+function planText(){const g=goalNow();return TASKS.filter(t=>g[t.k]>0).map(t=>t.t+" "+g[t.k]+t.u).join("・")||"スピーキング・単語・シャドーイング";}
+function startEnd(){
+  const [hh,mi]=($("c-time").value||"21:00").split(":").map(Number),len=+$("c-len").value;
+  const s=new Date();s.setHours(hh,mi,0,0);const e=new Date(s.getTime()+len*6e4);
+  const f=d=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+"T"+pad(d.getHours())+pad(d.getMinutes())+"00";
+  return [f(s),f(e)];
+}
+const CAL_TITLE=CFG.site.short+" 今日のトレーニング",SITE_URL=location.origin+location.pathname;
+$("c-ics").addEventListener("click",e=>{
+  e.preventDefault();
+  const [s,en]=startEnd(),now=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
+  const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//A-PUSH//"+CFG.id+"//JA","BEGIN:VEVENT",
+    "UID:apush-"+Date.now()+"@"+location.hostname,"DTSTAMP:"+now,"DTSTART:"+s,"DTEND:"+en,"RRULE:FREQ=DAILY",
+    "SUMMARY:"+CAL_TITLE,"DESCRIPTION:今日の課題："+planText()+"\\n"+SITE_URL,"URL:"+SITE_URL,
+    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:"+CAL_TITLE,"END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([ics],{type:"text/calendar;charset=utf-8"}));a.download="training.ics";
+  document.body.appendChild(a);a.click();a.remove();
+});
+$("c-google").addEventListener("click",()=>{
+  const [s,en]=startEnd();
+  $("c-google").href="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(CAL_TITLE)
+    +"&dates="+s+"/"+en+"&ctz=Asia/Tokyo&recur="+encodeURIComponent("RRULE:FREQ=DAILY")
+    +"&details="+encodeURIComponent("今日の課題："+planText()+"\n"+SITE_URL);
+});
+
+/* ============ 1 スピーキング：A-PUSHメソッド（型 × 動詞チャンク）============ */
+/* [絵, 原形, 日本語, 過去形] 基礎＝training.apush.jp の30個 */
+const BASIC=CFG.basicChunks;
+/* 分野＝ONで足す30個 */
+const CIVIL=CFG.fieldChunks;
+/* ---- 動詞の形（ing・三単現・過去分詞） ---- */
+const PP={get:"gotten",go:"gone",take:"taken",eat:"eaten",drink:"drunk",do:"done",drive:"driven",write:"written",run:"run",wear:"worn"};
+const DBL=["get","run","dig","put","cut","stop","shop","sit","swim","plan"];
+const head=v=>v[1].split(" ")[0];
+const rest=v=>v[1].split(" ").slice(1).join(" ");
+const join=(a,b)=>b?a+" "+b:a;
+function ingV(h){if(DBL.includes(h))return h+h.slice(-1)+"ing";if(/ie$/.test(h))return h.slice(0,-2)+"ying";if(/[^e]e$/.test(h))return h.slice(0,-1)+"ing";return h+"ing";}
+function s3V(h){if(h==="have")return "has";if(/(s|sh|ch|x|z|o)$/.test(h))return h+"es";if(/[^aeiou]y$/.test(h))return h.slice(0,-1)+"ies";return h+"s";}
+const F={
+  base:v=>v[1], past:v=>v[3],
+  ing:v=>join(ingV(head(v)),rest(v)),
+  s3:v=>join(s3V(head(v)),rest(v)),
+  pp:v=>join(PP[head(v)]||v[3].split(" ")[0],rest(v))
+};
+const my=(x,to)=>x.replace(/\bmy\b/g,to);
+/* 質問（q）に答える（2026-10-18）。q：聞こえる質問　cue：答えの日本語のヒント　f(v)：答え　wr(v)：まちがいの答えの候補（2つ選ぶ） */
+const FILL={When:[" after lunch","昼ごはんのあとに"],Where:[" over there","あそこで"],How:[" like this","こうやって"],Why:[" because my boss asked me to","上司に頼まれたので"]};
+function whSet(W,J,opt){
+  const w=W.toLowerCase(),yo=x=>my(x,"your"),ou=x=>my(x,"our"),[A,AJ]=FILL[W],AW=A.replace("my boss asked me","our boss asked us");
+  const L3=[{q:v=>"Do you know "+w+" we should "+ou(F.base(v))+"?",cue:"はい。"+AJ+"〜すればいいです",f:v=>"Yes. We should "+ou(F.base(v))+AW+".",
+             wr:v=>["Yes. We should "+ou(F.past(v))+AW+".","Yes. We should to "+ou(F.base(v))+AW+".","Yes. We should "+ou(F.ing(v))+AW+"."]}];
+  if(opt.to)L3.push({q:v=>"Could you tell me "+w+" to "+ou(F.base(v))+"?",cue:"いいですよ。"+AJ+"〜してください",f:v=>"Sure. Please "+ou(F.base(v))+A+".",
+             wr:v=>["Sure. Please "+ou(F.past(v))+A+".","Sure. Please to "+ou(F.base(v))+A+".","Sure. Please "+ou(F.ing(v))+A+"."]});
+  else L3.push({q:v=>"Do you know "+w+" we have to "+ou(F.base(v))+"?",cue:"はい。"+AJ+"〜しなければなりません",f:v=>"Yes. We have to "+ou(F.base(v))+AW+".",
+             wr:v=>["Yes. We have to "+ou(F.past(v))+AW+".","Yes. We has to "+ou(F.base(v))+AW+".","Yes. We must to "+ou(F.base(v))+AW+"."]});
+  return {
+    1:[{q:v=>W+" do you "+yo(F.base(v))+"?",cue:AJ+"〜します",f:v=>"I "+F.base(v)+A+".",wr:v=>["I "+F.past(v)+A+".","I am "+F.base(v)+A+".","I "+F.s3(v)+A+"."]}],
+    2:[{q:v=>W+" did you "+yo(F.base(v))+"?",cue:AJ+"〜しました",f:v=>"I "+F.past(v)+A+".",wr:v=>["I "+F.base(v)+A+".","I did "+F.past(v)+A+".","I was "+F.base(v)+A+"."]},
+       {q:v=>W+" are you going to "+yo(F.base(v))+"?",cue:AJ+"〜するつもりです",f:v=>"I'm going to "+F.base(v)+A+".",wr:v=>["I'm going to "+F.past(v)+A+".","I going to "+F.base(v)+A+".","I'm go to "+F.base(v)+A+"."]},
+       opt.to?{q:v=>W+" can we "+ou(F.base(v))+"?",cue:AJ+"〜できます",f:v=>"We can "+ou(F.base(v))+AW+".",wr:v=>["We can "+ou(F.past(v))+AW+".","We can to "+ou(F.base(v))+AW+".","We cans "+ou(F.base(v))+AW+"."]}
+             :{q:v=>W+" do we have to "+ou(F.base(v))+"?",cue:AJ+"〜しなければなりません",f:v=>"We have to "+ou(F.base(v))+AW+".",wr:v=>["We have to "+ou(F.past(v))+AW+".","We has to "+ou(F.base(v))+AW+".","We must to "+ou(F.base(v))+AW+"."]}],
+    3:L3
+  };
+}
+const TPL={
+  who:{1:[{q:v=>"Who can "+F.base(v)+"?",cue:"ケビンが〜できます",f:v=>"Kevin can "+F.base(v)+".",wr:v=>["Kevin can "+F.past(v)+".","Kevin cans "+F.base(v)+".","Kevin can to "+F.base(v)+"."]}],
+       2:[{q:v=>"Who is going to "+F.base(v)+"?",cue:"ケビンが〜する予定です",f:v=>"Kevin is going to "+F.base(v)+".",wr:v=>["Kevin is going to "+F.past(v)+".","Kevin going to "+F.base(v)+".","Kevin is go to "+F.base(v)+"."]},
+          {q:v=>"Who "+F.past(v)+"?",cue:"ケビンが〜しました",f:v=>"Kevin "+F.past(v)+".",wr:v=>["Kevin "+F.base(v)+".","Kevin did "+F.past(v)+".","Kevin was "+F.base(v)+"."]}],
+       3:[{q:v=>"Do you know who is supposed to "+F.base(v)+"?",cue:"はい。ケビンが〜することになっています",f:v=>"Yes. Kevin is supposed to "+F.base(v)+".",wr:v=>["Yes. Kevin is supposed to "+F.past(v)+".","Yes. Kevin supposed to "+F.base(v)+".","Yes. Kevin is suppose to "+F.base(v)+"."]}]},
+  what:{1:[{q:v=>"What time do you "+my(F.base(v),"your")+"?",cue:"7時に〜します",f:v=>"I "+F.base(v)+" at seven.",wr:v=>["I "+F.past(v)+" at seven.","I am "+F.base(v)+" at seven.","I "+F.s3(v)+" at seven."]}],
+        2:[{q:v=>"What did you use to "+my(F.base(v),"your")+"?",cue:"これを使って〜しました",f:v=>"I used this to "+F.base(v)+".",wr:v=>["I used this to "+F.past(v)+".","I use this to "+F.past(v)+".","I used this for "+F.base(v)+"."]},
+           {q:v=>"What will we need to "+my(F.base(v),"our")+"?",cue:"〜するには、これが必要になります",f:v=>"We will need these to "+my(F.base(v),"our")+".",wr:v=>["We will need these to "+my(F.past(v),"our")+".","We will needs these to "+my(F.base(v),"our")+".","We will need these "+my(F.base(v),"our")+"."]}],
+        3:[{q:v=>"Do you know what we need to "+my(F.base(v),"our")+"?",cue:"はい。〜するには、これが要ります",f:v=>"Yes. We need this to "+my(F.base(v),"our")+".",wr:v=>["Yes. We need this to "+my(F.past(v),"our")+".","Yes. We needs this to "+my(F.base(v),"our")+".","Yes. We need this "+my(F.base(v),"our")+"."]}]},
+  when:whSet("When","いつ",{to:true}),
+  where:whSet("Where","どこで",{to:true}),
+  why:whSet("Why","なぜ",{to:false}),
+  how:whSet("How","どうやって",{to:true}),
+  past:{1:[{q:v=>"What did you do yesterday?",cue:"昨日 〜した（過去形）",f:v=>"I "+F.past(v)+" yesterday.",wr:v=>["I "+F.base(v)+" yesterday.","I will "+F.base(v)+" yesterday.","I am "+F.base(v)+" yesterday."]}],
+        2:[{q:v=>"What did he do last week?",cue:"彼は先週 〜した",f:v=>"He "+my(F.past(v),"his")+" last week.",wr:v=>["He "+my(F.s3(v),"his")+" last week.","He was "+my(F.base(v),"his")+" last week.","He did "+my(F.past(v),"his")+" last week."]},
+           {q:v=>"What were you doing then?",cue:"そのとき 〜していた（過去進行形）",f:v=>"I was "+F.ing(v)+" then.",wr:v=>["I was "+F.base(v)+" then.","I "+F.ing(v)+" then.","I were "+F.ing(v)+" then."]}],
+        3:[{q:v=>"What had you already done when he arrived?",cue:"彼が来たとき、もう〜していた（過去完了）",f:v=>"I had already "+F.pp(v)+" when he arrived.",wr:v=>["I had already "+F.base(v)+" when he arrived.","I already "+F.pp(v)+" when he arrived.","I have already "+F.pp(v)+" when he arrived."]},
+           {q:v=>"What had you been doing for an hour?",cue:"1時間ずっと〜していた（過去完了進行形）",f:v=>"I had been "+F.ing(v)+" for an hour.",wr:v=>["I had been "+F.base(v)+" for an hour.","I had "+F.ing(v)+" for an hour.","I was been "+F.ing(v)+" for an hour."]}]},
+  present:{1:[{q:v=>"What do you do every day?",cue:"毎日 〜する（現在形）",f:v=>"I "+F.base(v)+" every day.",wr:v=>["I "+F.past(v)+" every day.","I am "+F.base(v)+" every day.","I "+F.ing(v)+" every day."]}],
+           2:[{q:v=>"What does he do every day?",cue:"彼は毎日 〜する（三単現）",f:v=>"He "+my(F.s3(v),"his")+" every day.",wr:v=>["He "+my(F.base(v),"his")+" every day.","He is "+my(F.base(v),"his")+" every day.","He do "+my(F.base(v),"his")+" every day."]},
+              {q:v=>"What are you doing now?",cue:"今 〜しているところ（現在進行形）",f:v=>"I am "+F.ing(v)+" now.",wr:v=>["I am "+F.base(v)+" now.","I "+F.ing(v)+" now.","I is "+F.ing(v)+" now."]}],
+           3:[{q:v=>"What have you just done?",cue:"ちょうど〜したところ（現在完了）",f:v=>"I have just "+F.pp(v)+".",wr:v=>["I have just "+F.base(v)+".","I has just "+F.pp(v)+".","I just have "+F.base(v)+"."]},
+              {q:v=>"What have you been doing since this morning?",cue:"朝からずっと〜している（現在完了進行形）",f:v=>"I have been "+F.ing(v)+" since this morning.",wr:v=>["I have been "+F.base(v)+" since this morning.","I am "+F.ing(v)+" since this morning.","I have "+F.ing(v)+" since this morning."]}]},
+  future:{1:[{q:v=>"What will you do tomorrow?",cue:"明日 〜する（will）",f:v=>"I will "+F.base(v)+" tomorrow.",wr:v=>["I will "+F.past(v)+" tomorrow.","I "+F.past(v)+" tomorrow.","I will to "+F.base(v)+" tomorrow."]}],
+          2:[{q:v=>"What are you going to do tomorrow?",cue:"明日 〜するつもり（be going to）",f:v=>"I'm going to "+F.base(v)+" tomorrow.",wr:v=>["I'm going to "+F.past(v)+" tomorrow.","I going to "+F.base(v)+" tomorrow.","I'm go to "+F.base(v)+" tomorrow."]},
+             {q:v=>"What will he do next week?",cue:"彼は来週 〜するでしょう",f:v=>"He will "+my(F.base(v),"his")+" next week.",wr:v=>["He will "+my(F.s3(v),"his")+" next week.","He wills "+my(F.base(v),"his")+" next week.","He will "+my(F.past(v),"his")+" next week."]}],
+          3:[{q:v=>"What will you have done by the time I get here?",cue:"あなたが着くまでに〜し終えているだろう（未来完了）",f:v=>"I will have "+F.pp(v)+" by the time you get here.",wr:v=>["I will have "+F.base(v)+" by the time you get here.","I will "+F.pp(v)+" by the time you get here.","I will had "+F.pp(v)+" by the time you get here."]},
+             {q:v=>"What will you be doing at this time tomorrow?",cue:"明日の今ごろは〜しているだろう（未来進行形）",f:v=>"I will be "+F.ing(v)+" at this time tomorrow.",wr:v=>["I will "+F.ing(v)+" at this time tomorrow.","I will be "+F.base(v)+" at this time tomorrow.","I will been "+F.ing(v)+" at this time tomorrow."]}]}
+};
+/* 関係代名詞（CFG.relative の団体だけ）。which の型は「the/a＋名詞」が目的語の動作だけ（ok） */
+const objOf=v=>rest(v).replace(/^an? /,"the "),pastHead=v=>v[3].split(" ")[0];
+const hasObj=v=>/^(the|an?) /.test(rest(v));
+TPL.rel={
+  1:[{q:v=>"Do you know anyone who can "+F.base(v)+"?",cue:"はい。〜できる人を知っています（who）",f:v=>"Yes. I know someone who can "+F.base(v)+".",wr:v=>["Yes. I know someone which can "+F.base(v)+".","Yes. I know someone who can "+F.past(v)+".","Yes. I know someone who can "+F.s3(v)+"."]},
+     {q:v=>"Who is that guy?",cue:"毎日〜している人です（who＋三単現）",f:v=>"He is the person who "+F.s3(v)+" every day.",wr:v=>["He is the person who "+F.base(v)+" every day.","He is the person which "+F.s3(v)+" every day.","He is the person who is "+F.base(v)+" every day."]}],
+  2:[{q:v=>"Who is that guy?",cue:"昨日〜した人です（who＋過去）",f:v=>"He is the person who "+F.past(v)+" yesterday.",wr:v=>["He is the person who "+F.base(v)+" yesterday.","He is the person which "+F.past(v)+" yesterday.","He is the person who did "+F.past(v)+" yesterday."]},
+     {q:v=>"What is this?",cue:"私が昨日〜した物です（which）",ok:hasObj,f:v=>"This is "+objOf(v)+" which I "+pastHead(v)+" yesterday.",wr:v=>["This is "+objOf(v)+" who I "+pastHead(v)+" yesterday.","This is "+objOf(v)+" which I "+head(v)+" yesterday.","This is "+objOf(v)+" which I "+pastHead(v)+" it yesterday."]}],
+  3:[{q:v=>"Who are you looking for?",cue:"〜したことがある人を探しています（who＋現在完了）",f:v=>"We're looking for someone who has "+F.pp(v)+" before.",wr:v=>["We're looking for someone who have "+F.pp(v)+" before.","We're looking for someone who has "+F.base(v)+" before.","We're looking for someone which has "+F.pp(v)+" before."]},
+     {q:v=>"What do you want to do next?",cue:"次にやりたいのは〜すること（what）",f:v=>"What I want to do next is "+F.base(v)+".",wr:v=>["What do I want to do next is "+F.base(v)+".","That I want to do next is "+F.base(v)+".","What I want to do next is "+F.past(v)+"."]}]
+};
+/* 意味が変になる組み合わせは出さない（2026-10-17）。例：Who got up? ／ How do you get up? ／ I have been getting up since this morning.
+   型のグループ → 出さない動作（原形）。グループは型の日本語（cue）から決める（下の tagOf） */
+const NG={
+  who:["get up","go to bed","take a shower","get dressed","eat breakfast","drink coffee","leave home","take the train","go to work","go to the gym","run in the park","watch a movie","read a book","listen to music","study English","wear a hard hat","drive a car"],
+  time:["wash my hands","drive a car","buy a ticket","pay the bill","write a report","wear a hard hat","measure the wall","saw the boards","hammer the nails","tighten the bolts","mark the line","change the blade","cover the hole","climb the ladder","connect the pipes","dig a hole","lay the blocks","level the ground","take photos of the site","paint the wall","stack the lumber","repair the roof","install the lights","buy the materials","fix the pump","check the drawing","carry the materials","make a phone call","read a book","watch a movie"],
+  use:["get up","go to bed","take a shower","get dressed","drink coffee","leave home","take the train","go to work","go to the gym","run in the park","read a book","drive a car","watch a movie","wear a hard hat","climb the ladder","check the drawing","explain the plan","play soccer","take out the trash","go shopping","check the tools","buy the materials","start the generator","buy a ticket","check my email","brush my teeth"],
+  we:["brush my teeth","wash my hands","take a shower","get dressed"],
+  where:["get up","check my email","measure the wall","paint the wall","tighten the bolts","change the blade","mark the line","level the ground","leave home","go to bed","clean my room","run in the park","go to work"],
+  how:["get up","go to bed","take a shower","get dressed","eat breakfast","drink coffee","leave home","take the train","read a book","watch a movie","listen to music","run in the park","go to the gym","study English","wear a hard hat","go shopping","take out the trash","play soccer"],
+  why:["get up","go to bed","leave home"],
+  long:["get up","go to bed","leave home","buy a ticket","pay the bill","take out the trash","get dressed","wash my hands","brush my teeth","go to work","take the train","take a shower","start the generator","change the blade","cover the hole","climb the ladder","buy the materials","mark the line","go shopping","go to the gym"],
+  done:["wear a hard hat","drive a car","go to work","go shopping","go to the gym","run in the park","listen to music","study English","take the train","go to bed"],
+  daily:["pay the bill","buy a ticket","repair the roof","install the lights","fix the pump","change the blade","cover the hole","buy the materials","dig a hole","start the generator"],
+  week:["get up","go to bed","take a shower","brush my teeth","wash my hands","get dressed","eat breakfast","drink coffee","leave home","wear a hard hat","go to work","take the train"]
+};
+function tagOf(k,t){
+  const c=t.cue,g=[];
+  if(k==="who"||(k==="rel"&&/人/.test(c)))g.push("who");
+  if(k==="what")g.push(/7時/.test(c)?"time":"use");
+  if(["when","where","why","how"].includes(k)){g.push("we",k);}
+  if(/進行形）/.test(c)&&/完了/.test(c))g.push("long");else if(/完了）/.test(c))g.push("done");
+  if(/毎日/.test(c))g.push("daily");
+  if(/先週|来週/.test(c))g.push("week");
+  return g;
+}
+for(const g in CFG.ng||{})NG[g]=[...(NG[g]||[]),...CFG.ng[g]];   /* 団体の動作の「出さない」は設定ファイルから足す */
+const fits=(k,t,v)=>(!t.ok||t.ok(v))&&!tagOf(k,t).some(g=>(NG[g]||[]).includes(v[1]));
+const SETS=[
+  {k:"who",label:"Who",ja:"誰"},{k:"what",label:"What",ja:"何"},{k:"when",label:"When",ja:"いつ"},
+  {k:"where",label:"Where",ja:"どこ"},{k:"why",label:"Why",ja:"なぜ"},{k:"how",label:"How",ja:"どうやって"},
+  {k:"past",label:"過去形"},{k:"present",label:"現在形"},{k:"future",label:"未来形"},{k:"mix",label:"時制ミックス"}
+];
+if(CFG.relative)SETS.push({k:"rel",label:"関係代名詞"});
+const LEVELS=[{n:1,label:"1",sub:"中1"},{n:2,label:"2",sub:"中2〜3"},{n:3,label:"3",sub:"高校卒業"}];
+const LIMIT={1:20,2:25,3:30};
+let CIV=store.get("dk-civ",false);
+let LV=store.get("dk-lv",1);if(![1,2,3].includes(LV))LV=1;
+let SI=0,queue=[],qi=0,score=0,log=[],taps=0,left=20,opts=[];
+const curSet=()=>SETS[SI];
+const limit=()=>LIMIT[LV];
+function paintCiv(){
+  $("civ").setAttribute("aria-checked",String(CIV));
+  set$("civ-note",CIV?"ON："+CFG.field.chunkNote:"OFF：生活の動作だけ（基礎）");
+}
+$("civ").addEventListener("click",()=>{CIV=!CIV;store.set("dk-civ",CIV);paintCiv();startRound();});
+function renderLv(){$("sp-lv").innerHTML=LEVELS.map(l=>'<button data-lv="'+l.n+'" aria-pressed="'+(l.n===LV)+'"><b>'+l.label+'</b><small>'+l.sub+'</small></button>').join("");segSlide("sp-lv");}
+$("sp-lv").addEventListener("click",e=>{const b=e.target.closest("[data-lv]");if(!b)return;LV=+b.dataset.lv;store.set("dk-lv",LV);renderLv();startRound();});
+function renderChips(){$("sp-chips").innerHTML=SETS.map((s,i)=>'<button class="chip'+(i<6?" wh":"")+'" data-s="'+i+'" aria-pressed="'+(i===SI)+'">'+esc(s.label)+(s.ja?'<span class="n">'+s.ja+'</span>':'')+'</button>').join("");}
+$("sp-chips").addEventListener("click",e=>{const b=e.target.closest("[data-s]");if(!b)return;SI=+b.dataset.s;renderChips();startRound();});
+function view(k){["quiz","repeat","result"].forEach(n=>$("v-"+n).hidden=(n!==k));}
+function makeQ(v,civ){
+  let k=curSet().k;
+  if(k==="mix")k=shuffle(["past","present","future"])[0];
+  const ts=TPL[k][LV].filter(t=>fits(k,t,v));
+  if(!ts.length)return {w:[]};   /* この動作に合う型が無い→出さない（startRound で落とす） */
+  const t=shuffle(ts)[0];
+  const a=t.f(v);
+  const w=shuffle([...new Set(t.wr(v))].filter(x=>x!==a)).slice(0,2);
+  return {v,civ,q:t.q(v),cue:t.cue,ja:v[2],a,w,full:a,fullja:v[2]+"｜"+t.cue};
+}
+function startRound(){
+  const k=curSet().k;
+  const ok=v=>!((k==="who"||k==="rel")&&/\bmy\b/.test(v[1]));   /* Who・関係代名詞には my の付く動作を出さない */
+  const b=shuffle(BASIC.filter(ok)),c=shuffle(CIVIL.filter(ok));
+  const mk=(list,civ,n)=>list.map(v=>makeQ(v,civ)).filter(q=>q.w.length===2).slice(0,n);
+  queue=shuffle(CIV?[...mk(c,true,3),...mk(b,false,2)]:mk(b,false,5));
+  qi=0;score=0;log=[];askQ();
+}
+function paintPips(){$("pips").innerHTML=[0,1,2,3,4].map(i=>{const l=log[i];return '<span class="pip'+(l?(l.right?" y":" n"):(i===qi?" cur":""))+'"></span>';}).join("");}
+function askQ(){
+  const q=queue[qi];
+  paintPips();
+  set$("ask","質問に答えると？　レベル"+LV);
+  set$("pic",q.v[0]);
+  $("qja").innerHTML=esc(q.ja)+(q.civ?'<span class="tag">'+esc(CFG.field.label)+'</span>':'');
+  $("cue").hidden=false;set$("cue",q.cue);
+  $("stem").hidden=false;$("stem").innerHTML=esc(q.q)+' <button class="spk" data-say="'+esc(q.q)+'" aria-label="質問をもう一度聞く">▶</button>';speak(q.q);
+  opts=shuffle([q.a,...q.w]);
+  $("choices").innerHTML=opts.map((o,n)=>'<button class="ch" data-o="'+n+'"><span class="k">'+(n+1)+'</span><span>'+esc(o)+'</span></button>').join("");
+  view("quiz");startTimer();
+}
+function startTimer(){
+  left=limit();paintTimer();clearInterval(timer);
+  timer=setInterval(()=>{left--;paintTimer();if(left<=0){clearInterval(timer);answer(null);}},1000);
+}
+function paintTimer(){const b=$("tbar");b.style.width=Math.max(0,left)/limit()*100+"%";b.classList.toggle("low",left<=5);set$("qleft",Math.max(0,left)+"s");}
+$("stem").addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(b)speak(b.dataset.say);});
+$("choices").addEventListener("click",e=>{const b=e.target.closest(".ch");if(!b||b.disabled)return;clearInterval(timer);answer(opts[+b.dataset.o]);});
+function answer(chosen){
+  const q=queue[qi],right=(chosen===q.a);
+  if(right)score++;
+  log.push({q,right});
+  document.querySelectorAll("#choices .ch").forEach(el=>{
+    el.disabled=true;const v=opts[+el.dataset.o];
+    if(v===q.a)el.classList.add("correct");else if(chosen!==null&&v===chosen)el.classList.add("wrong");else el.classList.add("dim");
+  });
+  setTimeout(()=>openRepeat(q,right,chosen===null),650);
+}
+function openRepeat(q,right,timedOut){
+  $("tbar").style.width="100%";$("tbar").classList.remove("low");
+  set$("verdict",right?"正解":(timedOut?"時間切れ　正しい英語はこちら":"おしい　正しい英語はこちら"));
+  $("verdict").className="verdict "+(right?"y":"n");
+  set$("rpic",q.v[0]);
+  set$("rq",q.q);set$("answer",q.full);$("answer").classList.remove("sm");
+  set$("answerja",q.fullja);
+  taps=0;document.querySelectorAll("#dots .dot").forEach(d=>d.classList.remove("on"));
+  $("btn-next").disabled=true;$("btn-next").textContent=(qi===4)?"結果を見る":"次へ";
+  view("repeat");speak(q.full);
+}
+$("dots").addEventListener("click",e=>{
+  const d=e.target.closest("[data-d]");if(!d)return;const n=+d.dataset.d;if(n>taps)return;
+  d.classList.add("on");buzz(taps===2?[10,40,14]:8);taps=Math.max(taps,n+1);speak(queue[qi].full);
+  if(taps>=3)$("btn-next").disabled=false;
+});
+$("btn-next").addEventListener("click",()=>{if(qi>=4){showResult();return;}qi++;askQ();});
+function showResult(){
+  clearInterval(timer);paintPips();
+  logEvent("スピーキング","Lv"+LV+"・"+curSet().label+(CIV?"・"+CFG.field.label+"ON":"・基礎")+"・"+score+"/5",1);
+  set$("rscore",score);
+  set$("rmsg",score===5?(CIV?"全問正解。次の型か、次のレベルへ。":"全問正解。慣れたら"+CFG.field.longLabel+"をONに。"):score>=3?"あと少し。もう5問いきましょう。":"この型はまだ練習が要ります。もう5問。");
+  $("recap").innerHTML=log.map(l=>'<div class="rrow"><span class="m">'+l.q.v[0]+'</span><span>'+esc(l.q.full)+'</span><span class="v '+(l.right?"y":"n")+'">'+(l.right?"○":"×")+'</span></div>').join("");
+  view("result");
+}
+$("btn-again").addEventListener("click",startRound);
+$("btn-nextset").addEventListener("click",()=>{SI=(SI+1)%SETS.length;renderChips();startRound();});
+
+/* ============ 2 単語（単語だけ・4冊・1日5〜30語・忘却曲線） ============ */
+/* 1日の流れ：①今日が復習日の語（全部）→ ②新しい語（1日の数まで）→ おわり
+   日本語＋英単語3つから選ぶ。正解：1日後 → 3日後 → 7日後 → 14日後 → 30日後 にもう一度出る（5回正解で「覚えた」、60日後に確認）
+   まちがい：段階を0に戻し、今日の中で3枚あとにもう一度出る */
+const STEPS=[1,3,7,14,30];
+const DAILY_OPTS=[5,10,15,20,25,30];
+let DAILY=store.get("dk-daily",10);
+if(DAILY_OPTS.indexOf(DAILY)<0)DAILY=10;
+let deckId=store.get("dk-deck",DECKS[0].id);
+if(!DECKS.some(d=>d.id===deckId))deckId=DECKS[0].id;
+let SRS=store.get("dk-srs",{});        /* {"c1:shovel":[段階, 次に出す日]} */
+let NEWDAY=store.get("dk-newday",{});  /* {"2026-10-14":{"c1":7}} 今日はじめて出した語の数（冊ごと） */
+let wmode="card",wq=[],wtaps=0,wcount=0,extra=0,wopts=[],wright=null;
+const deck=()=>DECKS.find(d=>d.id===deckId);
+const key=w=>deckId+":"+w.en;
+const kOf=(d,w)=>d.id+":"+w.en;
+const newToday=()=>((NEWDAY[dayStr()]||{})[deckId])||0;
+function stat(d){
+  const t=dayNum();let due=0,learning=0,mastered=0,fresh=0;
+  d.words.forEach(w=>{const s=SRS[kOf(d,w)];if(!s)fresh++;else{if(s[0]>STEPS.length)mastered++;else learning++;if(s[1]<=t)due++;}});
+  return {due,learning,mastered,fresh};
+}
+function renderDaily(){
+  $("w-daily").innerHTML=DAILY_OPTS.map(n=>'<button data-daily="'+n+'" aria-pressed="'+(n===DAILY)+'">'+n+'</button>').join("");
+  segSlide("w-daily");
+}
+$("w-daily").addEventListener("click",e=>{const b=e.target.closest("[data-daily]");if(!b)return;setDaily(+b.dataset.daily);});
+function renderDecks(){
+  $("w-decks").innerHTML=DECKS.map(d=>{
+    const s=stat(d);
+    return '<button class="deck" data-deck="'+d.id+'" aria-pressed="'+(d.id===deckId)+'"><b>'+esc(d.name)+'</b><span>覚えた '+s.mastered+'・学習中 '+s.learning+' / '+d.words.length+(s.due?'　<em>復習 '+s.due+'</em>':'')+'</span></button>';
+  }).join("");
+  set$("w-decknote",deck().note);
+}
+$("w-decks").addEventListener("click",e=>{const b=e.target.closest("[data-deck]");if(!b)return;sendWords();deckId=b.dataset.deck;store.set("dk-deck",deckId);extra=0;buildDeck();});
+/* 今日のカードを作る */
+function buildDeck(){
+  const t=dayNum(),ws=deck().words;
+  const due=ws.filter(w=>{const s=SRS[key(w)];return s&&s[1]<=t;}).sort((a,b)=>SRS[key(a)][1]-SRS[key(b)][1]);
+  const room=Math.max(0,DAILY+extra-newToday());
+  const fresh=ws.filter(w=>!SRS[key(w)]).slice(0,room);   /* 新しい語は単語帳の順（よく使う順） */
+  wq=[...due,...fresh];
+  renderDecks();renderToday();showWord();renderList();
+}
+function renderToday(){
+  const t=dayNum(),ws=deck().words;
+  const dueLeft=ws.filter(w=>{const s=SRS[key(w)];return s&&s[1]<=t;}).length;
+  const nt=newToday(),goal=DAILY+extra;
+  $("w-today").innerHTML='<span>今日の復習 <b>'+dueLeft+'</b>語のこり</span><span>新しい語 <b>'+Math.min(nt,goal)+'</b> / '+goal+'</span>';
+  $("w-bar").style.width=(goal?Math.min(100,nt/goal*100):0)+"%";
+}
+function showWord(){
+  if(!wq.length){finish();return;}
+  $("w-study").hidden=false;$("w-finish").hidden=true;
+  const w=wq[0],s=SRS[key(w)];
+  set$("w-pos","のこり "+wq.length+"枚");
+  const lab=!s?"新しい語":s[0]===0?"もう一度":"復習（"+s[0]+"回目）";
+  set$("w-done",lab);$("w-done").className=s?"due":"";
+  set$("w-catlabel",w.tag);
+  set$("w-ja",w.ja);set$("w-en",w.en);
+  /* まちがいの2つは、同じ分野・品詞から選ぶ（足りなければ同じ単語帳から） */
+  const pool=deck().words.filter(x=>x.en!==w.en&&x.ja!==w.ja);
+  const same=shuffle(pool.filter(x=>x.tag===w.tag)),other=shuffle(pool.filter(x=>x.tag!==w.tag));
+  wopts=shuffle([w.en,...[...same,...other].slice(0,2).map(x=>x.en)]);
+  $("w-choices").innerHTML=wopts.map((o,n)=>'<button class="ch" data-o="'+n+'"><span class="k">'+(n+1)+'</span><span>'+esc(o)+'</span></button>').join("");
+  $("w-ans").hidden=true;wright=null;
+  wtaps=0;document.querySelectorAll("#w-dots .dot").forEach(x=>x.classList.remove("on"));
+  $("w-next").disabled=true;
+}
+$("w-choices").addEventListener("click",e=>{
+  const b=e.target.closest(".ch");if(!b||b.disabled)return;
+  const w=wq[0],chosen=wopts[+b.dataset.o];wright=(chosen===w.en);
+  document.querySelectorAll("#w-choices .ch").forEach(el=>{el.disabled=true;const v=wopts[+el.dataset.o];
+    if(v===w.en)el.classList.add("correct");else if(v===chosen)el.classList.add("wrong");else el.classList.add("dim");});
+  set$("w-verdict",wright?"正解":"おしい　正しい英語はこちら");
+  $("w-verdict").className="verdict "+(wright?"y":"n");
+  $("w-ans").hidden=false;speak(w.en);
+});
+function finish(){
+  sendWords();markDone();
+  $("w-study").hidden=true;$("w-finish").hidden=false;
+  const t=dayNum(),ws=deck().words;
+  const next=ws.map(w=>SRS[key(w)]).filter(Boolean).map(s=>s[1]).filter(d=>d>t).sort((a,b)=>a-b)[0];
+  const tomorrow=ws.filter(w=>{const s=SRS[key(w)];return s&&s[1]===t+1;}).length;
+  set$("w-fin-msg","今日の「"+deck().name+"」はおわりです。");
+  set$("w-fin-sub",next?("明日の復習は "+tomorrow+"語。忘れかけたころに、もう一度出てきます。"):"この単語帳の語は、全部はじめました。");
+  $("w-more").hidden=!ws.some(w=>!SRS[key(w)]);
+}
+$("w-more").addEventListener("click",()=>{extra+=5;buildDeck();});
+$("w-dots").addEventListener("click",e=>{
+  const d=e.target.closest("[data-d]");if(!d)return;const n=+d.dataset.d;if(n>wtaps)return;
+  d.classList.add("on");buzz(wtaps===2?[10,40,14]:8);wtaps=Math.max(wtaps,n+1);speak(wq[0].en);if(wtaps>=3)$("w-next").disabled=false;
+});
+function sendWords(){if(wcount>0){logEvent("単語",deck().name,wcount);wcount=0;}}
+function counted(){wcount++;if(wcount>=10)sendWords();}
+function markNew(w){
+  if(SRS[key(w)])return;
+  const d=dayStr();NEWDAY[d]=NEWDAY[d]||{};NEWDAY[d][deckId]=(NEWDAY[d][deckId]||0)+1;
+  Object.keys(NEWDAY).forEach(k=>{if(dayNum()-dayNum(k)>3)delete NEWDAY[k];});
+  store.set("dk-newday",NEWDAY);
+  LOG[d]=LOG[d]||{sp:0,wd:0,sh:0};LOG[d].wn=(LOG[d].wn||0)+1;store.set("dk-log",LOG);
+}
+$("w-next").addEventListener("click",()=>{
+  const w=wq.shift();markNew(w);
+  if(wright){
+    const s=SRS[key(w)]||[0,0],lv=Math.min(s[0]+1,STEPS.length+1);
+    SRS[key(w)]=[lv,dayNum()+(lv<=STEPS.length?STEPS[lv-1]:60)];
+  }else{
+    SRS[key(w)]=[0,dayNum()];
+    wq.splice(Math.min(3,wq.length),0,w);
+  }
+  store.set("dk-srs",SRS);
+  counted();renderDecks();renderToday();showWord();
+});
+function setMode(m){wmode=m;$("w-mode-card").setAttribute("aria-pressed",String(m==="card"));$("w-mode-list").setAttribute("aria-pressed",String(m==="list"));segSlide("w-mode");$("w-card").hidden=(m!=="card");$("w-listwrap").hidden=(m!=="list");if(m==="list")renderList();}
+$("w-mode-card").addEventListener("click",()=>setMode("card"));
+$("w-mode-list").addEventListener("click",()=>setMode("list"));
+function renderList(){
+  const q=$("w-q").value.trim().toLowerCase(),t=dayNum();
+  const f=deck().words.filter(w=>!q||w.ja.toLowerCase().includes(q)||w.en.toLowerCase().includes(q));
+  $("w-list").innerHTML=f.length?f.map(w=>{const s=SRS[key(w)];
+    const m=!s?'':s[0]>STEPS.length?' <span class="ok">覚えた</span>':' <span class="ok">'+(s[1]<=t?'今日':(s[1]-t)+'日後')+'</span>';
+    return '<div class="li"><span>'+esc(w.ja)+m+'</span><span class="e">'+esc(w.en)+'</span><button class="spk" data-say="'+esc(w.en)+'" aria-label="読み上げ">▶</button></div>';}).join(""):'<div class="li"><span>見つかりません</span></div>';
+}
+$("w-q").addEventListener("input",renderList);
+$("w-list").addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(b)speak(b.dataset.say);});
+
+/* ============ 3 シャドーイング ============ */
+const SH=[
+  {lv:"レベル1",sub:"英検®4級程度・1〜2分",items:[["L1-1","Hello, I'm Anna!","be動詞・自己紹介"],["L1-2","Are You Busy?","現在進行形"],["L1-3","What Can You Do?","can"]]},
+  {lv:"レベル2",sub:"英検®3級程度・2〜3分",items:[["L2-1","When Do I Start?","未来・仕事の初日"],["L2-2","Yesterday Was Amazing!","過去形"],["L2-3","Have You Ever ...?","現在完了"]]},
+  {lv:"レベル3",sub:"英検®2級〜準1級程度・約5分",items:[["L3-1","Northward Shift of Boreal Tree Cover","NASA・森林"],["L3-2","Webb Spies Rain Clouds on Titan","NASA・宇宙"],["L3-3","The Ransom of Red Chief","VOA American Stories"]]}
+];
+$("sh-list").innerHTML=SH.map(l=>'<h3>'+l.lv+'<span>'+l.sub+'</span></h3>'+l.items.map(it=>
+  '<a class="vid" data-id="'+it[0]+'" href="'+SH_BASE+'#'+it[0]+'"><span class="id">'+it[0].split("-")[1]+'</span><span class="t">'+esc(it[1])+'<small>'+esc(it[0])+'・'+esc(it[2])+'</small></span><span class="go">開く →</span></a>').join("")).join("");
+
+$("sh-list").addEventListener("click",e=>{const a=e.target.closest(".vid");if(a)logEvent("シャドーイング",a.dataset.id,1);});
+
+/* ============ やり方の解説（1画面に1つ・3〜4画面） ============ */
+const FIG_LOAD='<figure class="gfig"><div class="lbar"><span class="lb-l">今</span><div class="lb"><i class="g" style="flex:4">音の聞き取り</i><i class="b" style="flex:1">意味</i></div></div>'+
+ '<div class="lbar"><span class="lb-l">シャドーイング後</span><div class="lb"><i class="g" style="flex:1">自動</i><i class="b" style="flex:4">意味・返事を考える</i></div></div>'+
+ '<figcaption>割合はイメージです</figcaption></figure>';
+const GUIDE={
+  sp:{title:"A-PUSH Method",pages:[
+    {h:"話せる英語は、声に出した回数で決まる。",img:"02"},
+    {h:"英語を、九九にする。",img:"13",l:["7×8と聞かれて、計算する人はいない","何百回も声に出したから、口が答える"]},
+    {h:"英語も、同じにする。",img:"12",l:["Where did you…? と聞かれて答える。これを200回、300回と声に出す","型が口から勝手に出てくる","名詞の次は動詞、動詞の次は目的語。並びが体に入る"]},
+    {h:"何が身につく？",l:["5W1H ＋ 基本の時制（過去・現在・未来）"+(CFG.relative?" ＋ 関係代名詞":""),"質問を聞いて、すぐに答えられる"],
+     ex:[["Where did you go?","過去"],["What do you do?","現在"],["When will you start?","未来"]]},
+    {h:"やり方",img:"07",steps:["英語の質問を聞く（文字も出ます）","日本語のヒントに合う答えを選ぶ（20〜30秒）","答えを声に出して3回（ここが本番）"],
+     l:["1ラウンド5問・約2分","レベル1から。慣れたら"+CFG.field.longLabel+"をON"]}
+  ]},
+  sh:{title:"シャドーイング",pages:[
+    {h:"聞いて、すぐ後を追う。",l:["お手本を聞きながら、少し遅れて、同じ音・同じ速さで言う"]},
+    {h:"聞き取りで頭がいっぱいだと、意味が入ってこない。",img:"11",l:["英語を聞く時、頭は「音の聞き取り」と「意味の理解」の2つの仕事をしている","頭の容量は限られている"],fig:FIG_LOAD,
+     src:"門田修平『シャドーイングと音読の科学』の考え方"},
+    {h:"車の運転と同じ。",l:["覚えたては操作で精一杯。話す余裕がない","慣れると操作は自動。話しながら運転できる","シャドーイングは、英語の「運転操作」を自動にする練習"]},
+    {h:"やり方",img:"06",steps:["動画を3回聞く（最後まで聞くと1回）","質問に答える"],
+     tip:"コツ：意味は置いておいて、まず音に慣れる"}
+  ]},
+  wd:{title:"単語トレーニング",pages:[
+    {h:"まず慣れ。その次に専門用語。",img:"10"},
+    {h:DECKS.map(d=>d.words.length).join(" ＋ ")+" ＝ "+DECKS.reduce((s,d)=>s+d.words.length,0)+"語",l:DECKS.map(d=>d.name+" "+d.words.length+"個")},
+    {h:"忘れる前に、もう一度。",img:"14",l:["復習しないと、すぐ忘れる","忘れかけた頃にもう一度見ると、忘れにくくなる"]},
+    {h:"やり方",img:"08",steps:["日本語を見て、英単語3つから選ぶ","声に出して3回","正解した語は 1日後→3日後→7日後→14日後→30日後 にもう一度出る"],
+     l:["1日の新しい単語は5〜30語から選ぶ（最初は10）","まちがえた語は、その日のうちにもう一度出る"]},
+    {h:"言えた単語は、決まった日に戻ってくる。",img:"09"}
+  ]}
+};
+let gKey=null,gPage=0;
+function renderGuide(){
+  const g=GUIDE[gKey],p=g.pages[gPage],last=gPage===g.pages.length-1;
+  /* 画像のページ：画像の中に見出しがあるので、文字の見出しは出さない（読み上げ用に alt に入れる） */
+  let h=p.img?'<img class="g-img" src="howto/'+p.img+'.webp" alt="'+esc(p.h)+'" width="1600" height="900">':'<p class="g-h">'+esc(p.h)+'</p>';
+  if(p.steps)h+='<ol class="g-steps">'+p.steps.map(s=>'<li>'+esc(s)+'</li>').join("")+'</ol>';
+  if(p.fig)h+=p.fig;
+  if(p.l)h+='<ul class="g-l">'+p.l.map(s=>'<li>'+esc(s)+'</li>').join("")+'</ul>';
+  if(p.ex)h+='<div class="g-ex">'+p.ex.map(e=>'<button class="g-exr" data-say="'+esc(e[0])+'"><b>'+esc(e[0])+'</b><span>'+esc(e[1])+'</span></button>').join("")+'</div>';
+  if(p.tip)h+='<p class="g-tip">'+esc(p.tip)+'</p>';
+  if(p.src)h+='<p class="g-src">出どころ：'+esc(p.src)+'</p>';
+  set$("g-title",g.title);
+  $("g-body").innerHTML=h;
+  $("g-dots").innerHTML=g.pages.map((_,i)=>'<i class="'+(i===gPage?"on":"")+'"></i>').join("");
+  $("g-prev").hidden=gPage===0;
+  $("g-next").textContent=last?"はじめる":"次へ";
+}
+function openGuide(k){
+  gKey=k;gPage=0;clearInterval(timer);renderGuide();openSheet("guide");
+  store.set("dk-guide-"+k,1);
+}
+function closeGuide(v){closeSheet("guide",typeof v==="number"?v:0);gKey=null;resumeQuiz();}
+function maybeGuide(k){if(!GUIDE[k]||sheetOpen("pf")||sheetOpen("guide"))return;if(!store.get("dk-guide-"+k,0))openGuide(k);}
+$("g-next").addEventListener("click",()=>{if(gPage>=GUIDE[gKey].pages.length-1){closeGuide();return;}gPage++;renderGuide();});
+$("g-prev").addEventListener("click",()=>{if(gPage>0){gPage--;renderGuide();}});
+$("g-close").addEventListener("click",closeGuide);
+$("g-body").addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(b)speak(b.dataset.say);});
+(()=>{let x0=null;const el=$("g-card");
+  el.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;},{passive:true});
+  el.addEventListener("touchend",e=>{if(x0===null||!gKey)return;const dx=e.changedTouches[0].clientX-x0;x0=null;
+    if(dx<-50&&gPage<GUIDE[gKey].pages.length-1){gPage++;renderGuide();}else if(dx>50&&gPage>0){gPage--;renderGuide();}},{passive:true});
+})();
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&sheetOpen("pf")){$("pf-cancel").click();return;}
+  if(e.key==="Escape"&&sheetOpen("inbox")){closeSheet("inbox");return;}
+  if(!sheetOpen("guide"))return;
+  if(e.key==="Escape")closeGuide();if(e.key==="ArrowRight")$("g-next").click();if(e.key==="ArrowLeft")$("g-prev").click();
+});
+document.querySelectorAll("[data-guide]").forEach(b=>b.addEventListener("click",()=>openGuide(b.dataset.guide)));
+
+/* ============ ホーム画面アプリ（PWA） ============ */
+const isStandalone=()=>window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;paintInstall();});
+function paintInstall(){
+  const hide=isStandalone()||store.get("dk-install-hide",0);
+  $("inst").hidden=hide;if(hide)return;
+  if(deferredPrompt){$("inst-msg").innerHTML="<b>アプリ版もあります。</b>ホーム画面に置くと、アプリのように開けます。記録も消えにくくなります。";$("inst-go").hidden=false;}
+  else if(isIOS){$("inst-msg").innerHTML="<b>アプリ版もあります。</b>Safariの <b>共有ボタン（□に↑）</b> → <b>「ホーム画面に追加」</b>。ブラウザのままでも全部使えますが、入れておくと記録が消えにくくなります"+(USE_B?"。お知らせもここから届きます":"")+"。";$("inst-go").hidden=true;}
+  else{$("inst-msg").innerHTML="<b>アプリ版もあります。</b>ブラウザのメニューから「ホーム画面に追加」（または「アプリをインストール」）を選ぶと、アプリのように開けます。";$("inst-go").hidden=true;}
+}
+$("inst-go").textContent="アプリ版を入れる";
+$("inst-go").addEventListener("click",async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();try{await deferredPrompt.userChoice;}catch(e){}deferredPrompt=null;paintInstall();});
+$("inst-x").addEventListener("click",()=>{store.set("dk-install-hide",1);paintInstall();});
+if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
+
+/* start */
+initStatic();paintCiv();renderLv();renderChips();startRound();renderDaily();setMode("card");buildDeck();
+NET.init();paintStatus();paintPlan();flush();paintInstall();
+const t0=store.get("dk-tab","home");
+if(!ME){openTab(TABS.includes(t0)?t0:"home",true);openProfile();}else openTab(TABS.includes(t0)?t0:"home");
+</script>
+<script src="install.js" defer></script>  <!-- ホーム画面に追加の案内・LINEから来た人・記録の引き継ぎ -->
+</body>
+</html>
