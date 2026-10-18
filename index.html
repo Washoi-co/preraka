@@ -191,6 +191,19 @@ a{color:inherit}
 .rrow{display:grid;grid-template-columns:28px 1fr 22px;gap:8px;align-items:start;padding:9px 0;border-top:.5px solid var(--line2);font-size:14px}
 .rrow .m{font-size:20px;line-height:1.2}
 .rrow .v{font-weight:800;text-align:right} .rrow .v.y{color:var(--brand)} .rrow .v.n{color:var(--mute)}
+/* アドリブを声で → AI 添削 → 復唱 → 間隔をあけた復習 */
+.mic{align-self:center;display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:var(--on);border-radius:99px;padding:16px 36px;font-size:19px;font-weight:800;transition:transform .1s ease-out}
+.mic:active{transform:scale(.97)}
+.mic.on{background:var(--ng)}
+#ad-type,#f-err,#f-ok{display:flex;flex-direction:column;gap:10px}
+#ad-in{width:100%;border:0;background:var(--bg);border-radius:12px;padding:13px 14px;font-family:var(--en);font-size:17px;color:var(--ink)}
+#ad-live{font-family:var(--en);font-size:16px;color:var(--ink);min-height:1.3em}
+.say.priv{font-size:11.5px}
+.you{margin:0;font-family:var(--en);font-size:16px;text-align:center;color:var(--mute);line-height:1.4}
+.okb{align-self:center;font-size:12px;font-weight:700;background:var(--ok);color:#fff;border-radius:99px;padding:2px 10px}
+.adw{display:flex;justify-content:center;align-items:center;gap:10px}
+#f-msg{margin:0;text-align:center;font-size:14px;color:var(--ng)}
+#rev-card p{grid-column:2/-1}
 
 /* 単語 */
 .decks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
@@ -487,6 +500,11 @@ a{color:inherit}
   <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 3847 1000" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">話す</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="sp">やり方</button></div>
   <h1 class="large">話す</h1>
   <p class="sub">A-PUSHメソッド・質問に答えて、声に出して3回</p>
+  <div class="inst" id="rev-card" hidden>
+    <span class="inst-ic" aria-hidden="true">🔁</span>
+    <p><b>今日の復習：添削した文 <span id="rev-n" class="en"></span>文</b></p>
+    <button class="primary" id="rev-go">復習する</button>
+  </div>
   <div class="toggle-row">
     <div><b>今日の単語を混ぜる</b><span id="mix-note"></span></div>
     <button class="switch" id="mix" role="switch" aria-checked="false" aria-label="今日の単語を混ぜる"><i></i></button>
@@ -529,13 +547,38 @@ a{color:inherit}
         <p class="answer" id="ad-frame"></p>
         <p class="wen"><span id="ad-en"></span> <button class="spk" id="ad-say" aria-label="単語を聞く">🔊</button></p>
         <p class="say" id="ad-ja"></p>
-        <p class="say">この単語を使って、この型で自分の文を作り、声に出して3回</p>
-        <div class="dots" id="ad-dots">
-          <button class="dot" data-d="0" aria-label="1回目">1</button>
-          <button class="dot" data-d="1" aria-label="2回目">2</button>
-          <button class="dot" data-d="2" aria-label="3回目">3</button>
+        <p class="say">この単語を使って、この型で自分の文を作り、声に出して言ってみよう</p>
+        <button class="mic" id="ad-mic">🎤 話す</button>
+        <p class="say" id="ad-live" aria-live="polite"></p>
+        <div id="ad-type" hidden>
+          <p class="say" id="ad-nomic" hidden>声が使えない時は、打って入力してください</p>
+          <input id="ad-in" lang="en" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" aria-label="あなたの英文" placeholder="ここに英文（直せます）">
+          <div class="acts"><button class="ghost" id="ad-again">もう一度話す</button><button class="primary" id="ad-next">送って次へ</button></div>
         </div>
-        <div class="acts"><button class="primary" id="ad-next" disabled>次へ</button></div>
+        <p class="say priv">添削のため、英文を送ります。名前・声は送りません（生徒IDは元に戻せない形にして、今月の利用分を数えるだけに使います）</p>
+      </div>
+      <div id="v-fix" class="cin" style="padding:0" hidden>
+        <div class="meta"><span class="wcat" id="f-tag">添削</span><span id="f-n"></span></div>
+        <p class="say" id="f-you-h">① あなたの文</p>
+        <p class="you" id="f-you"></p>
+        <p class="say" id="f-fix-h">② 添削</p>
+        <p class="say" id="f-wait" role="status">添削しています…</p>
+        <div id="f-err" hidden>
+          <p id="f-msg" role="alert"></p>
+          <div class="acts"><button class="ghost" id="f-skip">とばす</button><button class="primary" id="f-retry">もう一度</button></div>
+        </div>
+        <div id="f-ok" hidden>
+          <span class="okb" id="f-badge">そのままでOK</span>
+          <div class="adw"><p class="answer" id="f-en"></p><button class="spk" id="f-say" aria-label="聞く">▶</button></div>
+          <p class="say" id="f-note"></p>
+          <p class="say">声に出して3回。タップすると音が鳴ります。</p>
+          <div class="dots" id="f-dots">
+            <button class="dot" data-f="0" aria-label="1回目">1</button>
+            <button class="dot" data-f="1" aria-label="2回目">2</button>
+            <button class="dot" data-f="2" aria-label="3回目">3</button>
+          </div>
+        </div>
+        <div class="acts"><button class="primary" id="f-next" disabled>次へ</button></div>
       </div>
       <div id="v-result" class="cin" style="padding:0" hidden>
         <p class="big"><span id="rscore">0</span><em id="rtotal"> / 5</em></p>
@@ -1083,7 +1126,7 @@ function initStatic(){
 })();
 const TOURS={
   home:[["#ring","今日のゴールの達成の様子です。"],["#today-list","今日やること。上から順に進めましょう。"],["#plan-sec","カレンダーと、1日の目標・月のゴールはここ。"],[".tabbar","下のタブで「今日＆計画・話す・シャドーイング・単語」を行き来します。"]],
-  sp:[["#p-sp .toggle-row",CFG.field.longLabel+"のスイッチ。ONにすると"+CFG.field.label+"の内容で練習します。"],["#sp-grp","練習する文法を選びます。"],["#sp-lv","レベルです。Lv1から。"],["#sp-chips","この中から型を1つ選びます。"],["#sp-hint","慣れたら「絵だけ」に。日本語のヒントが消えます。"],["#stem","英語の質問です。▶でもう一度聞けます。"],["#choices","絵と日本語に合う答えを選んだら、声に出して3回。"],["#p-sp [data-guide=sp]","やり方はいつでもここから。"]],
+  sp:[["#p-sp .toggle-row","「今日の単語を混ぜる」をONにすると、今日の単語で自分の文を作って言います。言った文は添削されて、あとで復習に出ます。"],["#sp-grp","練習する文法を選びます。"],["#sp-lv","レベルです。Lv1から。"],["#sp-chips","この中から型を1つ選びます。"],["#sp-hint","慣れたら「絵だけ」に。日本語のヒントが消えます。"],["#stem","英語の質問です。▶でもう一度聞けます。"],["#choices","絵と日本語に合う答えを選んだら、声に出して3回。"],["#p-sp [data-guide=sp]","やり方はいつでもここから。"]],
   sh:[["#sh-list","動画を選びます。レベル1から順に。"],["#p-sh [data-guide=sh]","やり方はここから。"]],
   wd:[["#w-decks","単語帳を選びます。"],["#w-daily","1日に新しく覚える単語の数。"],["#w-mode","カードと一覧を切り替えられます。"],["#w-card","ここで1語ずつ覚えます。"]]
 };
@@ -1098,6 +1141,7 @@ function openTab(k,silent){
   window.scrollTo(0,scrollPos[k]||0);navStuck();
   if(k!=="sp")clearInterval(timer);
   if(k==="sp"&&!$("v-quiz").hidden)startTimer();
+  if(k==="sp")paintRev();
   if(k==="home"){paintStatus();paintPlan();ringIn();}
   if(!silent)maybeGuide(k);
   if(TOURS[k]&&window.apTour)apTour(CFG.id+"-"+k,TOURS[k]);   /* 初めて開いたタブだけ、何がどこにあるかの案内 */
@@ -1204,6 +1248,8 @@ function paintStatus(){
     const s=r.t.k==="wd"?("復習 "+due+"語＋新しい "+Math.min(r.n,r.g)+" / "+r.g+"語"):("今日 "+r.n+" / "+r.g+" "+r.t.u);
     return '<button class="row'+(r.met?" done":"")+'" data-go="'+r.t.go+'"><span class="ic" aria-hidden="true">'+r.t.ic+'</span><span><b>'+r.t.t+'</b><small>'+s+'</small></span><span class="chev">'+(r.met?"✓ できた":"やる ›")+'</span></button>';
   }).join("")||'<button class="row" data-go="plan"><span class="ic">📅</span><span><b>1日のゴールを決める</b><small>この下の「計画」</small></span><span class="chev">›</span></button>';
+  const rv=revList().length;   /* 添削した文の復習（話すの dk-adrev）。ゴールの輪には数えない。並べるだけ */
+  if(rv)$("today-list").innerHTML+='<button class="row" data-rev="1"><span class="ic" aria-hidden="true">🔁</span><span><b>話すの復習（添削した文）</b><small>今日 '+rv+'文</small></span><span class="chev">やる ›</span></button>';
   set$("st-streak",streak());
   set$("st-week",weekDays());
   const mk=dayStr().slice(0,7);set$("st-words",monthWords(mk+"-01",dayStr()));
@@ -1458,6 +1504,9 @@ const LIMIT={1:20,2:25,3:30};
 let PIC=store.get("dk-pic",false);   /* 絵だけ：日本語のヒントを出さない */
 const CIV=false;   /* 2026-10-19：話すは基礎の動作だけ（分野の動作のスイッチはやめた。混ぜるのは「今日の単語」だけ） */
 let MIX=store.get("dk-mix",false),adNoted=false;
+/* アドリブの AI 添削（Cloud Functions の review）。モデルと考える深さは、ここで変える */
+/* 添削のモデル（Haiku）と月の上限（1アカウント100円）は、サーバー（review）がサイトを見て決める */
+const REVIEW_URL="https://asia-northeast1-apush-training.cloudfunctions.net/review";
 let LV=store.get("dk-lv",1);if(![1,2,3].includes(LV))LV=1;
 let SI=0,queue=[],qi=0,score=0,log=[],taps=0,left=20,opts=[];
 const curSet=()=>SETS[SI];
@@ -1477,7 +1526,7 @@ function renderChips(){
 }
 $("sp-grp").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;SI=SETS.findIndex(s=>s.g===b.dataset.g);renderChips();startRound();});
 $("sp-chips").addEventListener("click",e=>{const b=e.target.closest("[data-s]");if(!b)return;SI=+b.dataset.s;renderChips();startRound();});
-function view(k){["quiz","repeat","adlib","result"].forEach(n=>$("v-"+n).hidden=(n!==k));}
+function view(k){["quiz","repeat","adlib","fix","result"].forEach(n=>$("v-"+n).hidden=(n!==k));}
 function makeQ(v,civ,ok){
   let k=curSet().k;
   if(k==="mix")k=shuffle(["past","present","future"])[0];
@@ -1512,7 +1561,7 @@ function startRound(){
   }
   if(!queue.length){clearInterval(timer);paintPips();set$("ask","このレベルでは、この型の問題がありません。ほかの型かレベルを選んでください。");
     $("stem").hidden=true;$("qja").hidden=$("cue").hidden=true;set$("pic","");$("choices").innerHTML="";view("quiz");return;}
-  qi=0;score=0;log=[];askQ();
+  qi=0;score=0;log=[];adl=[];FIX=null;micStop();paintRev();askQ();
 }
 function paintPips(){$("pips").innerHTML=queue.map((_,i)=>{const l=log[i];return '<span class="pip'+(l?(l.right||l.ad?" y":" n"):(i===qi?" cur":""))+'"></span>';}).join("");}
 function askQ(){
@@ -1564,22 +1613,152 @@ $("dots").addEventListener("click",e=>{
 });
 function nextQ(){if(qi>=queue.length-1){showResult();return;}qi++;askQ();}
 $("btn-next").addEventListener("click",nextQ);
-/* アドリブのカード：正解・まちがい・時間なし。3回タップで次へ */
+/* アドリブのカード：🎤で言う（文字は直せる）→「送って次へ」で添削を後ろで頼んで、待たずに次へ */
+let adl=[],cur=null;
 function openAdlib(q){
   clearInterval(timer);$("tbar").style.width="100%";$("tbar").classList.remove("low");
   set$("ad-cue",q.cue);set$("ad-q",q.q);set$("ad-frame",q.f);
   set$("ad-en",q.w.en);$("ad-ja").innerHTML=esc(q.w.ja)+(q.w.tag?'<span class="tag">'+esc(q.w.tag)+'</span>':'');
-  taps=0;document.querySelectorAll("#ad-dots .dot").forEach(d=>d.classList.remove("on"));
-  $("ad-next").disabled=true;$("ad-next").textContent=(qi===queue.length-1)?"結果を見る":"次へ";
+  cur={word:q.w.en,meaning:q.w.ja,pattern:q.f};
+  micStop();$("ad-in").value="";set$("ad-live","");
+  if(!SR||micOff)adType(true,false);else{$("ad-mic").hidden=false;$("ad-type").hidden=true;}
   view("adlib");speak(q.w.en);
 }
 $("ad-say").addEventListener("click",()=>speak(queue[qi].w.en));
-$("ad-dots").addEventListener("click",e=>{
-  const d=e.target.closest("[data-d]");if(!d)return;const n=+d.dataset.d;if(n>taps)return;
-  d.classList.add("on");buzz(taps===2?[10,40,14]:8);taps=Math.max(taps,n+1);
-  if(taps>=3)$("ad-next").disabled=false;
+/* 声の文字起こし（端末のブラウザの機能）。使えない・止められた時は、打って入力 */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let sr=null,micOff=false;
+function micStop(){
+  if(sr){sr.onresult=sr.onerror=sr.onend=null;try{sr.abort();}catch(e){}sr=null;}
+  $("ad-mic").classList.remove("on");set$("ad-mic","🎤 話す");
+}
+function adType(note,again){
+  $("ad-mic").hidden=true;$("ad-type").hidden=false;
+  $("ad-nomic").hidden=!note;$("ad-again").hidden=!again;
+}
+function micStart(){
+  micStop();
+  try{speechSynthesis.cancel();}catch(e){}
+  let txt="",fail="";
+  const r=sr=new SR();
+  r.lang="en-US";r.interimResults=true;r.continuous=false;
+  r.onresult=e=>{txt=Array.from(e.results,x=>x[0].transcript).join(" ").replace(/\s+/g," ");set$("ad-live",txt);};
+  r.onerror=e=>{fail=e.error||"error";};
+  r.onend=()=>{
+    sr=null;micStop();set$("ad-live","");
+    if(/not-allowed|service-not-allowed|audio-capture/.test(fail))micOff=true;   /* マイクが使えない → このあとは打って入力 */
+    $("ad-in").value=txt.trim();
+    adType(!!fail&&fail!=="no-speech",!micOff);
+  };
+  try{r.start();}catch(e){sr=null;micOff=true;adType(true,false);return;}
+  $("ad-mic").hidden=false;$("ad-type").hidden=true;
+  $("ad-mic").classList.add("on");set$("ad-mic","● 聞いています（押すと止める）");
+}
+$("ad-mic").addEventListener("click",()=>{if(sr)sr.stop();else micStart();});
+$("ad-again").addEventListener("click",micStart);
+$("ad-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();$("ad-next").click();}});
+$("ad-next").addEventListener("click",()=>{
+  micStop();
+  const it=Object.assign({},cur,{you:$("ad-in").value.trim()});
+  adl[qi]=it;review(it);
+  log.push({q:queue[qi],ad:true});
+  if(qi>=queue.length-1){FIX={list:adl.filter(Boolean),i:0,review:false};paintPips();paintFix();view("fix");return;}
+  qi++;askQ();
 });
-$("ad-next").addEventListener("click",()=>{log.push({q:queue[qi],ad:true});nextQ();});
+
+/* 添削。送るのは英文・型・単語・意味と、ハッシュにした生徒IDだけ。名前・声は送らない */
+/* 月の利用額を数えるための account：生徒IDをハッシュにしたもの（元のIDには戻せない形で送る） */
+const acctHash=s=>crypto.subtle.digest("SHA-256",new TextEncoder().encode("apush-review|"+s)).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""));
+function review(it){
+  it.r=null;it.err=null;
+  if(!it.you){it.err="英文が入っていません。";it.p=Promise.resolve();return it.p;}   /* 空は送らない */
+  const sig=window.AbortSignal&&AbortSignal.timeout?AbortSignal.timeout(40000):undefined;
+  it.p=acctHash((ME&&ME.orgId||"")+":"+(ME&&(ME.sid||ME.uid)||"")).then(account=>fetch(REVIEW_URL,{method:"POST",headers:{"Content-Type":"application/json"},signal:sig,
+      body:JSON.stringify({data:{sentence:it.you,pattern:it.pattern,word:it.word,meaning:it.meaning,account}})}))
+    .then(async res=>{
+      const j=await res.json().catch(()=>({}));
+      const r=j.result;
+      if(!res.ok||!r||!String(r.corrected||"").trim()){const e=new Error();e.ja=j.error&&j.error.message;throw e;}
+      it.r={ok:!!r.ok,corrected:String(r.corrected).trim(),note:String(r.note||"")};
+      saveRev(it);
+    })
+    .catch(e=>{it.err=(e&&e.ja)||"添削できませんでした。電波の良い所で「もう一度」を押してください。";})
+    .then(()=>{if(FIX&&!FIX.review&&FIX.list[FIX.i]===it)paintFix();});
+  return it.p;
+}
+
+/* 添削を1文ずつ見て3回（review:true の時は、今日の復習） */
+let FIX=null;
+const fixEn=it=>FIX.review?it.en:(it.r&&it.r.corrected);
+function paintFix(){
+  const it=FIX.list[FIX.i],rv=FIX.review,en=fixEn(it),last=FIX.i===FIX.list.length-1;
+  set$("f-tag",rv?"🔁 今日の復習":"添削");
+  set$("f-n",(FIX.i+1)+" / "+FIX.list.length);
+  $("f-you-h").hidden=$("f-you").hidden=$("f-fix-h").hidden=rv;
+  set$("f-you",it.you||"（何も言っていません）");
+  $("f-wait").hidden=!!(en||it.err);
+  $("f-err").hidden=!!en||!it.err;set$("f-msg",it.err||"");
+  $("f-ok").hidden=!en;
+  set$("f-en",en||"");
+  $("f-badge").hidden=rv||!(it.r&&it.r.ok);
+  set$("f-note",(rv?it.note:it.r&&it.r.note)||"");$("f-note").hidden=!$("f-note").textContent;
+  FIX.taps=0;$("f-dots").querySelectorAll(".dot").forEach(d=>d.classList.remove("on"));
+  $("f-next").disabled=true;set$("f-next",last?(rv?"おわり":"結果を見る"):"次へ");
+  if(en)speak(en);
+}
+$("f-say").addEventListener("click",()=>speak($("f-en").textContent));
+$("f-dots").addEventListener("click",e=>{
+  const d=e.target.closest("[data-f]");if(!d||!FIX)return;
+  const n=+d.dataset.f;if(n>FIX.taps)return;
+  d.classList.add("on");buzz(FIX.taps===2?[10,40,14]:8);FIX.taps=Math.max(FIX.taps,n+1);
+  speak($("f-en").textContent);
+  if(FIX.taps>=3)$("f-next").disabled=false;
+});
+$("f-retry").addEventListener("click",()=>{review(FIX.list[FIX.i]);paintFix();});
+function fixNext(){
+  if(FIX.review)revDone(FIX.list[FIX.i].id);
+  if(++FIX.i<FIX.list.length){paintFix();return;}
+  if(FIX.review)endReview();else showResult();
+}
+$("f-skip").addEventListener("click",fixNext);
+$("f-next").addEventListener("click",fixNext);
+
+/* ---- 添削した文の復習（dk-adrev）。アドリブの日から +1・+4・+11日。遅れてやった日の当日には、もう出さない ---- */
+const RV=[1,4,11];
+const addDays=(s,n)=>{const [y,m,d]=s.split("-").map(Number);return dayStr(new Date(y,m-1,d+n));};
+const revDue=x=>{const a=addDays(x.made,RV[x.step]),b=x.last?addDays(x.last,1):"";return a>b?a:b;};
+const revList=()=>store.get("dk-adrev",[]).filter(x=>x&&x.en&&RV[x.step]!==undefined&&revDue(x)<=dayStr());
+function saveRev(it){
+  const L=store.get("dk-adrev",[]);
+  L.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),en:it.r.corrected,you:it.you,note:it.r.note,word:it.word,made:dayStr(),step:0});
+  store.set("dk-adrev",L);
+}
+function revDone(id){
+  const L=store.get("dk-adrev",[]),x=L.find(y=>y.id===id);if(!x)return;
+  x.step++;x.last=dayStr();
+  store.set("dk-adrev",x.step>=RV.length?L.filter(y=>y!==x):L);
+}
+function paintRev(){const n=revList().length;$("rev-card").hidden=!n;set$("rev-n",n);return n;}
+function openReview(){
+  const L=revList();
+  if(!L.length){paintRev();return;}
+  micStop();clearInterval(timer);$("tbar").style.width="100%";$("tbar").classList.remove("low");$("ad-note").hidden=true;
+  FIX={list:L,i:0,review:true};paintFix();view("fix");
+  $("v-fix").closest(".card").scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"start"});
+}
+$("rev-go").addEventListener("click",openReview);
+$("today-list").addEventListener("click",e=>{if(e.target.closest("[data-rev]")){openTab("sp");openReview();}});
+function endReview(){
+  const n=FIX.list.length;
+  logEvent("スピーキング","添削した文の復習・"+n+"文",1);
+  paintRev();
+  set$("rscore",n);set$("rtotal"," 文 復習");
+  set$("rmsg","今日の復習おわり。");
+  $("recap").innerHTML=FIX.list.map(x=>'<div class="rrow"><span class="m">🔁</span><span>'+esc(x.en)+'</span><span class="v y">✓</span></div>').join("");
+  set$("btn-again","練習にもどる");$("btn-nextset").hidden=true;
+  FIX=null;
+  view("result");
+}
 function showResult(){
   clearInterval(timer);paintPips();
   const nq=queue.filter(q=>!q.ad).length,na=queue.length-nq;   /* 点数は普通の問題だけ。アドリブはやった数 */
@@ -1589,6 +1768,12 @@ function showResult(){
   if(!nq)set$("rmsg","アドリブ "+na+"文、おつかれさまでした。単語を変えて、もう1回。");
   else set$("rmsg",(na?nq+"問中"+score+"問正解＋アドリブ"+na+"。":"")+(score===nq?(PIC?"全問正解。次の型か、次のレベルへ。":"全問正解。慣れたら「絵だけ」で。"):score>=nq*.6?"あと少し。もう1回いきましょう。":"この型はまだ練習が要ります。もう1回。"));
   $("recap").innerHTML=log.map(l=>l.ad?'<div class="rrow"><span class="m"></span><span>アドリブ：'+esc(l.q.w.en)+'</span><span class="v y">✓</span></div>':'<div class="rrow"><span class="m">'+l.q.v[0]+'</span><span>'+esc(l.q.full)+'</span><span class="v '+(l.right?"y":"n")+'">'+(l.right?"○":"×")+'</span></div>').join("");
+  if(adl.length){   /* アドリブ（添削つき）の回 */
+    const L=adl.filter(Boolean);
+    set$("rmsg","アドリブ"+L.length+"文、添削した文を3回ずつ言えました。");
+    $("recap").innerHTML=L.map(it=>'<div class="rrow"><span class="m"></span><span>'+esc(it.r?it.r.corrected:(it.you||"（添削なし）"))+'</span><span class="v '+(it.r?"y":"n")+'">'+(it.r?"✓":"–")+'</span></div>').join("");
+  }
+  set$("btn-again","もう1回");$("btn-nextset").hidden=false;FIX=null;
   view("result");
 }
 $("btn-again").addEventListener("click",startRound);
