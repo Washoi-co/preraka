@@ -536,7 +536,7 @@ a{color:inherit}
         <p class="answer" id="ad-frame"></p>
         <p class="wen"><span id="ad-en"></span> <button class="spk" id="ad-say" aria-label="単語を聞く">🔊</button></p>
         <p class="say" id="ad-ja"></p>
-        <p class="say">この単語を使って、この型で自分の文を作り、声に出して言ってみよう</p>
+        <p class="say">この単語を使って、この型で自分の文を作り、声に出して言ってみよう。🎤を押して話し、言えたらもう一度押すと次へ進みます</p>
         <button class="mic" id="ad-mic">🎤 話す</button>
         <p class="say" id="ad-live" aria-live="polite"></p>
         <div id="ad-type" hidden>
@@ -544,7 +544,7 @@ a{color:inherit}
           <input id="ad-in" lang="en" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" aria-label="あなたの英文" placeholder="ここに英文（直せます）">
           <div class="acts"><button class="ghost" id="ad-again">もう一度話す</button><button class="primary" id="ad-next">送って次へ</button></div>
         </div>
-        <p class="say priv">添削のため、英文を送ります。名前・声は送りません（生徒IDは元に戻せない形にして、今月の利用分を数えるだけに使います）</p>
+        <p class="say priv">添削のため、声（または英文）を送ります。声は文字にするためだけに使い、保存しません。名前は送りません（生徒IDは元に戻せない形にして、今月の利用分を数えるだけに使います）</p>
       </div>
       <div id="v-fix" class="cin" style="padding:0" hidden>
         <div class="meta"><span class="wcat" id="f-tag">添削</span><span id="f-n"></span></div>
@@ -1602,16 +1602,19 @@ function openRepeat(q,right,timedOut){
   set$("rq",q.q);set$("answer",q.full);$("answer").classList.remove("sm");
   set$("answerja",q.fullja);
   taps=0;document.querySelectorAll("#dots .dot").forEach(d=>d.classList.remove("on"));
-  $("btn-next").disabled=true;$("btn-next").textContent=(qi===queue.length-1)?"結果を見る":"次へ";
-  view("repeat");speak(q.full);
+  repLabel();view("repeat");speak(q.full);
 }
-$("dots").addEventListener("click",e=>{
-  const d=e.target.closest("[data-d]");if(!d)return;const n=+d.dataset.d;if(n>taps)return;
-  d.classList.add("on");buzz(taps===2?[10,40,14]:8);taps=Math.max(taps,n+1);speak(queue[qi].full);
-  if(taps>=3)$("btn-next").disabled=false;
-});
+/* 3回言う：点でも「言えた」ボタンでも数える。3回で「次へ」になる */
+const REP_DONE=()=>(qi===queue.length-1)?"結果を見る":"次へ";
+function repLabel(){$("btn-next").disabled=false;$("btn-next").textContent=taps>=3?REP_DONE():"言えた（"+taps+"/3）";}
+function repTap(){
+  if(taps>=3)return;
+  $("dots").querySelectorAll(".dot")[taps].classList.add("on");buzz(taps===2?[10,40,14]:8);taps++;
+  if(taps<3)speak(queue[qi].full);repLabel();
+}
+$("dots").addEventListener("click",e=>{if(e.target.closest("[data-d]"))repTap();});
 function nextQ(){if(qi>=queue.length-1){showResult();return;}qi++;askQ();}
-$("btn-next").addEventListener("click",nextQ);
+$("btn-next").addEventListener("click",()=>{if(taps<3)repTap();else nextQ();});
 /* アドリブのカード：🎤で言う（文字は直せる）→「送って次へ」で添削を後ろで頼んで、待たずに次へ */
 let adl=[],cur=null;
 function openAdlib(q){
@@ -1620,65 +1623,66 @@ function openAdlib(q){
   set$("ad-en",q.w.en);$("ad-ja").innerHTML=esc(q.w.ja)+(q.w.tag?'<span class="tag">'+esc(q.w.tag)+'</span>':'');
   cur={word:q.w.en,meaning:q.w.ja,pattern:q.f};
   micStop();$("ad-in").value="";set$("ad-live","");
-  if(!SR||micOff)adType(true,false);else{$("ad-mic").hidden=false;$("ad-type").hidden=true;}
+  if(!CAN_REC||micOff)adType(true,false);else{$("ad-mic").hidden=false;$("ad-type").hidden=true;}
   view("adlib");speak(q.w.en);
 }
 $("ad-say").addEventListener("click",()=>speak(queue[qi].w.en));
-/* 声の文字起こし（端末のブラウザの機能）。使えない・止められた時は、打って入力 */
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-let sr=null,micOff=false;
-function micStop(){
-  if(sr){sr.onresult=sr.onerror=sr.onend=null;try{sr.abort();}catch(e){}sr=null;}
-  $("ad-mic").classList.remove("on");set$("ad-mic","🎤 話す");
+/* 声：録音 → 添削のときにサーバーで文字にする（OpenAI）。押す→話す→もう一度押すと、送って次の問題へ（待たない）
+   録音できない端末・マイクを止めた時は、打って入力 */
+const CAN_REC=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder);
+let rec=null,recStream=null,micOff=false,recT=0,recTick=0;
+function micStop(){   /* 録音を捨てて止める */
+  if(rec){rec.ondataavailable=rec.onstop=null;try{rec.stop();}catch(e){}rec=null;}
+  clearInterval(recTick);$("ad-mic").classList.remove("on");set$("ad-mic","🎤 話す");set$("ad-live","");
 }
+function micRelease(){micStop();if(recStream){recStream.getTracks().forEach(t=>t.stop());recStream=null;}}
 function adType(note,again){
   $("ad-mic").hidden=true;$("ad-type").hidden=false;
   $("ad-nomic").hidden=!note;$("ad-again").hidden=!again;
 }
-function micStart(){
+async function micStart(){
   micStop();
   try{speechSynthesis.cancel();}catch(e){}
-  let txt="",fail="";
-  const r=sr=new SR();
-  r.lang="en-US";r.interimResults=true;r.continuous=false;
-  r.onresult=e=>{txt=Array.from(e.results,x=>x[0].transcript).join(" ").replace(/\s+/g," ");set$("ad-live",txt);};
-  r.onerror=e=>{fail=e.error||"error";};
-  r.onend=()=>{
-    sr=null;micStop();set$("ad-live","");
-    if(/not-allowed|service-not-allowed|audio-capture/.test(fail))micOff=true;   /* マイクが使えない → このあとは打って入力 */
-    $("ad-in").value=txt.trim();
-    adType(!!fail&&fail!=="no-speech",!micOff);
-  };
-  try{r.start();}catch(e){sr=null;micOff=true;adType(true,false);return;}
-  $("ad-mic").hidden=false;$("ad-type").hidden=true;
-  $("ad-mic").classList.add("on");set$("ad-mic","● 聞いています（押すと止める）");
+  try{recStream=recStream||await navigator.mediaDevices.getUserMedia({audio:true});}
+  catch(e){micOff=true;adType(true,false);return;}
+  const chunks=[],r=rec=new MediaRecorder(recStream);
+  r.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+  r.onstop=()=>{rec=null;adSend(new Blob(chunks,{type:r.mimeType||"audio/mp4"}),(Date.now()-recT)/1000);};
+  r.start();recT=Date.now();
+  $("ad-mic").hidden=false;$("ad-type").hidden=true;$("ad-mic").classList.add("on");
+  const tick=()=>{const t=Math.floor((Date.now()-recT)/1000);set$("ad-mic","● 録音中 "+t+"秒（押すと送って次へ）");if(t>=30&&rec)rec.stop();};
+  tick();recTick=setInterval(tick,500);
 }
-$("ad-mic").addEventListener("click",()=>{if(sr)sr.stop();else micStart();});
+$("ad-mic").addEventListener("click",()=>{if(rec){clearInterval(recTick);rec.stop();}else micStart();});
 $("ad-again").addEventListener("click",micStart);
+$("ad-use-mic")&&$("ad-use-mic").addEventListener("click",micStart);
 $("ad-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();$("ad-next").click();}});
-$("ad-next").addEventListener("click",()=>{
+function adSend(blob,sec){   /* 声（blob）か、打った文で添削を頼んで、次へ */
   micStop();
-  const it=Object.assign({},cur,{you:$("ad-in").value.trim()});
+  const it=Object.assign({},cur,{you:blob?"":$("ad-in").value.trim(),audio:blob||null,sec:sec||0});
   adl[qi]=it;review(it);
   log.push({q:queue[qi],ad:true});
-  if(qi>=queue.length-1){FIX={list:adl.filter(Boolean),i:0,review:false};paintPips();paintFix();view("fix");return;}
+  if(qi>=queue.length-1){micRelease();FIX={list:adl.filter(Boolean),i:0,review:false};paintPips();paintFix();view("fix");return;}
   qi++;askQ();
-});
+}
+$("ad-next").addEventListener("click",()=>adSend(null));
 
 /* 添削。送るのは英文・型・単語・意味と、ハッシュにした生徒IDだけ。名前・声は送らない */
 /* 月の利用額を数えるための account：生徒IDをハッシュにしたもの（元のIDには戻せない形で送る） */
 const acctHash=s=>crypto.subtle.digest("SHA-256",new TextEncoder().encode("apush-review|"+s)).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""));
 function review(it){
   it.r=null;it.err=null;
-  if(!it.you){it.err="英文が入っていません。";it.p=Promise.resolve();return it.p;}   /* 空は送らない */
-  const sig=window.AbortSignal&&AbortSignal.timeout?AbortSignal.timeout(40000):undefined;
-  it.p=acctHash((ME&&ME.orgId||"")+":"+(ME&&(ME.sid||ME.uid)||"")).then(account=>fetch(REVIEW_URL,{method:"POST",headers:{"Content-Type":"application/json"},signal:sig,
-      body:JSON.stringify({data:{sentence:it.you,pattern:it.pattern,word:it.word,meaning:it.meaning,account}})}))
+  if(!it.you&&!it.audio){it.err="英文が入っていません。";it.p=Promise.resolve();return it.p;}   /* 空は送らない */
+  const sig=window.AbortSignal&&AbortSignal.timeout?AbortSignal.timeout(80000):undefined;
+  const b64=it.audio?new Promise(ok=>{const f=new FileReader();f.onload=()=>ok(String(f.result).split(",")[1]||"");f.readAsDataURL(it.audio);}):Promise.resolve("");
+  it.p=Promise.all([acctHash((ME&&ME.orgId||"")+":"+(ME&&(ME.sid||ME.uid)||"")),b64]).then(([account,audio])=>fetch(REVIEW_URL,{method:"POST",headers:{"Content-Type":"application/json"},signal:sig,
+      body:JSON.stringify({data:Object.assign({sentence:it.you,pattern:it.pattern,word:it.word,meaning:it.meaning,account},audio?{audio,mime:it.audio.type,sec:it.sec}:{})})}))
     .then(async res=>{
       const j=await res.json().catch(()=>({}));
       const r=j.result;
       if(!res.ok||!r||!String(r.corrected||"").trim()){const e=new Error();e.ja=j.error&&j.error.message;throw e;}
       it.r={ok:!!r.ok,corrected:String(r.corrected).trim(),note:String(r.note||"")};
+      if(r.heard!=null)it.you=String(r.heard);
       saveRev(it);
     })
     .catch(e=>{it.err=(e&&e.ja)||"添削できませんでした。電波の良い所で「もう一度」を押してください。";})
@@ -1694,7 +1698,7 @@ function paintFix(){
   set$("f-tag",rv?"🔁 今日の復習":"添削");
   set$("f-n",(FIX.i+1)+" / "+FIX.list.length);
   $("f-you-h").hidden=$("f-you").hidden=$("f-fix-h").hidden=rv;
-  set$("f-you",it.you||"（何も言っていません）");
+  set$("f-you",it.you||(it.audio&&!it.r&&!it.err?"（聞き取っています…）":"（何も言っていません）"));
   $("f-wait").hidden=!!(en||it.err);
   $("f-err").hidden=!!en||!it.err;set$("f-msg",it.err||"");
   $("f-ok").hidden=!en;
@@ -1702,17 +1706,18 @@ function paintFix(){
   $("f-badge").hidden=rv||!(it.r&&it.r.ok);
   set$("f-note",(rv?it.note:it.r&&it.r.note)||"");$("f-note").hidden=!$("f-note").textContent;
   FIX.taps=0;$("f-dots").querySelectorAll(".dot").forEach(d=>d.classList.remove("on"));
-  $("f-next").disabled=true;set$("f-next",last?(rv?"おわり":"結果を見る"):"次へ");
+  fixLabel();
   if(en)speak(en);
 }
+const fixLast=()=>FIX.i===FIX.list.length-1?(FIX.review?"おわり":"結果を見る"):"次へ";
+function fixLabel(){const en=!!fixEn(FIX.list[FIX.i]);$("f-next").disabled=!en;set$("f-next",FIX.taps>=3?fixLast():"言えた（"+FIX.taps+"/3）");}
+function fixTap(){
+  if(!FIX||FIX.taps>=3||!fixEn(FIX.list[FIX.i]))return;
+  $("f-dots").querySelectorAll(".dot")[FIX.taps].classList.add("on");buzz(FIX.taps===2?[10,40,14]:8);FIX.taps++;
+  if(FIX.taps<3)speak($("f-en").textContent);fixLabel();
+}
 $("f-say").addEventListener("click",()=>speak($("f-en").textContent));
-$("f-dots").addEventListener("click",e=>{
-  const d=e.target.closest("[data-f]");if(!d||!FIX)return;
-  const n=+d.dataset.f;if(n>FIX.taps)return;
-  d.classList.add("on");buzz(FIX.taps===2?[10,40,14]:8);FIX.taps=Math.max(FIX.taps,n+1);
-  speak($("f-en").textContent);
-  if(FIX.taps>=3)$("f-next").disabled=false;
-});
+$("f-dots").addEventListener("click",e=>{if(e.target.closest("[data-f]"))fixTap();});
 $("f-retry").addEventListener("click",()=>{review(FIX.list[FIX.i]);paintFix();});
 function fixNext(){
   if(FIX.review)revDone(FIX.list[FIX.i].id);
@@ -1721,7 +1726,7 @@ function fixNext(){
   if(FIX.review)endReview();else showResult();
 }
 $("f-skip").addEventListener("click",fixNext);
-$("f-next").addEventListener("click",fixNext);
+$("f-next").addEventListener("click",()=>{if(FIX.taps<3)fixTap();else fixNext();});
 
 /* ---- 添削した文の復習（dk-adrev）。アドリブの日から +1・+4・+11日。遅れてやった日の当日には、もう出さない ---- */
 const RV=[1,4,11];
