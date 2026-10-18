@@ -489,6 +489,7 @@ a{color:inherit}
     <span class="ap-c">無料体験＆学習相談 →</span>
   </a>
   <div class="sync off" id="sync"><span class="d" aria-hidden="true"></span><span id="sync-t"></span></div>
+  <div class="group"><a class="row" id="to-admin" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="ic" aria-hidden="true">🔑</span><span><b>管理者の方へ</b><small>管理アプリ（代表・リーダー用）。登録された方だけ中を見られます</small></span><span class="chev">›</span></a></div>
   <footer class="foot">
     <span><b>音について</b>　端末の読み上げ機能を使っています。端末や設定によっては鳴りません。マナーモードを切ってください。</span>
     <span class="by">TRAINING BY A-PUSH</span>
@@ -2021,6 +2022,8 @@ $("inst-x").addEventListener("click",()=>{store.set("dk-install-hide",1);paintIn
 if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
 
 /* start */
+/* 管理者の方へ：管理アプリ（kanri）を、この団体の場所で開く */
+$("to-admin").href="https://apush-training.web.app/?org="+encodeURIComponent(ORG.id||CFG.id||"");   /* ponytail: kanri.apush.jp ができたら差し替え */
 initStatic();paintMix();renderLv();renderHint();renderChips();startRound();renderDaily();setMode("card");buildDeck();
 NET.init();paintStatus();paintPlan();flush();paintInstall();
 const t0=store.get("dk-tab","home");
