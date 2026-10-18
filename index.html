@@ -1506,18 +1506,17 @@ function startRound(){
   /* 5問（分野ONなら分野の動作を3問、onAll なら5問とも）。不自然な文を外すと足りない型は、ある分だけ */
   const qc=CIV?mk(c,true,CFG.onAll?5:3):[];
   queue=shuffle([...qc,...(CIV&&CFG.onAll?[]:mk(b,false,5-qc.length))]);
-  /* 今日の単語を混ぜる：3問目と5問目をアドリブに（単語が1つなら3問目だけ）。単語がまだ無ければ一度だけお知らせ */
+  /* 今日の単語を混ぜる：5問ともアドリブに（単語が5つより少なければ、くり返して型を変える）。単語がまだ無ければ一度だけお知らせ */
   $("ad-note").hidden=true;
   if(MIX&&queue.length){
-    const ws=todayWords().slice(0,2);
+    const ws=todayWords().slice(0,5);
     if(!ws.length&&!adNoted){adNoted=true;$("ad-note").hidden=false;}
     if(ws.length){
-      queue=queue.slice(0,5-ws.length);
-      ws.forEach((w,i)=>{
+      queue=[0,1,2,3,4].map(i=>{
         let k=curSet().k;if(k==="mix")k=shuffle(["past","present","future"])[0];
         const fr=shuffle(adFrames(k,LV))[0];
-        if(fr)queue.splice(Math.min([2,4][i],queue.length),0,{ad:true,w,...fr});
-      });
+        return fr?{ad:true,w:ws[i%ws.length],...fr}:null;
+      }).filter(Boolean);
     }
   }
   if(!queue.length){clearInterval(timer);paintPips();set$("ask","このレベルでは、この型の問題がありません。ほかの型かレベルを選んでください。");
@@ -1594,9 +1593,10 @@ function showResult(){
   clearInterval(timer);paintPips();
   const nq=queue.filter(q=>!q.ad).length,na=queue.length-nq;   /* 点数は普通の問題だけ。アドリブはやった数 */
   logEvent("スピーキング","Lv"+LV+"・"+curSet().label+(CIV?"・"+CFG.field.label+"ON":"・基礎")+(PIC?"・絵だけ":"")+"・"+score+"/"+nq+(na?"＋アドリブ"+na:""),1);
-  set$("rscore",score);
-  set$("rtotal"," / "+nq);
-  set$("rmsg",(na?nq+"問中"+score+"問正解＋アドリブ"+na+"。":"")+(score===nq?(PIC?"全問正解。次の型か、次のレベルへ。":"全問正解。慣れたら「絵だけ」で。"):score>=nq*.6?"あと少し。もう1回いきましょう。":"この型はまだ練習が要ります。もう1回。"));
+  set$("rscore",nq?score:na);
+  set$("rtotal",nq?" / "+nq:" 文 アドリブ");
+  if(!nq)set$("rmsg","アドリブ "+na+"文、おつかれさまでした。単語を変えて、もう1回。");
+  else set$("rmsg",(na?nq+"問中"+score+"問正解＋アドリブ"+na+"。":"")+(score===nq?(PIC?"全問正解。次の型か、次のレベルへ。":"全問正解。慣れたら「絵だけ」で。"):score>=nq*.6?"あと少し。もう1回いきましょう。":"この型はまだ練習が要ります。もう1回。"));
   $("recap").innerHTML=log.map(l=>l.ad?'<div class="rrow"><span class="m"></span><span>アドリブ：'+esc(l.q.w.en)+'</span><span class="v y">✓</span></div>':'<div class="rrow"><span class="m">'+l.q.v[0]+'</span><span>'+esc(l.q.full)+'</span><span class="v '+(l.right?"y":"n")+'">'+(l.right?"○":"×")+'</span></div>').join("");
   view("result");
 }
