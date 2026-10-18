@@ -488,10 +488,6 @@ a{color:inherit}
   <h1 class="large">話す</h1>
   <p class="sub">A-PUSHメソッド・質問に答えて、声に出して3回</p>
   <div class="toggle-row">
-    <div><b id="civ-label"></b><span id="civ-note"></span></div>
-    <button class="switch" id="civ" role="switch" aria-checked="false"><i></i></button>
-  </div>
-  <div class="toggle-row">
     <div><b>今日の単語を混ぜる</b><span id="mix-note"></span></div>
     <button class="switch" id="mix" role="switch" aria-checked="false" aria-label="今日の単語を混ぜる"><i></i></button>
   </div>
@@ -1015,7 +1011,7 @@ document.addEventListener("touchstart",()=>{},{passive:true});   /* iPhoneで :a
 
 function initStatic(){
   set$("brand",CFG.site.title);   /* 一番上はA-PUSHのロゴ（shell.html）。ここは分野の名前だけ */
-  set$("civ-label",CFG.field.longLabel);$("civ").setAttribute("aria-label",CFG.field.longLabel);
+
   set$("w-sub",DECKS.map(d=>d.name+" "+d.words.length).join("・"));
   set$("w-fieldnote",CFG.field.wordNote||"");
   set$("pf-h",USE_B?"生徒IDと名前でログイン":NEED_CODE?"名前と団体コードでログイン":"名前を入れてログイン");
@@ -1460,17 +1456,12 @@ const GROUPS=[{g:"wh",label:"5W1H"},{g:"tense",label:"時制"},...(CFG.relative?
 const LEVELS=[{n:1,label:"Lv1",sub:"中1"},{n:2,label:"Lv2",sub:"中2〜3"},{n:3,label:"Lv3",sub:"高校卒業"}];
 const LIMIT={1:20,2:25,3:30};
 let PIC=store.get("dk-pic",false);   /* 絵だけ：日本語のヒントを出さない */
-let CIV=store.get("dk-civ",false);
+const CIV=false;   /* 2026-10-19：話すは基礎の動作だけ（分野の動作のスイッチはやめた。混ぜるのは「今日の単語」だけ） */
 let MIX=store.get("dk-mix",false),adNoted=false;
 let LV=store.get("dk-lv",1);if(![1,2,3].includes(LV))LV=1;
 let SI=0,queue=[],qi=0,score=0,log=[],taps=0,left=20,opts=[];
 const curSet=()=>SETS[SI];
 const limit=()=>LIMIT[LV];
-function paintCiv(){
-  $("civ").setAttribute("aria-checked",String(CIV));
-  set$("civ-note",CIV?"ON："+CFG.field.chunkNote:"OFF：生活の動作だけ（基礎）");
-}
-$("civ").addEventListener("click",()=>{CIV=!CIV;store.set("dk-civ",CIV);paintCiv();startRound();if(CFG.onAll){extra=0;buildDeck();}});
 function paintMix(){$("mix").setAttribute("aria-checked",String(MIX));set$("mix-note",MIX?"ON：今日の単語でアドリブ":"OFF：決まった文だけ");}
 $("mix").addEventListener("click",()=>{MIX=!MIX;store.set("dk-mix",MIX);adNoted=false;paintMix();startRound();});
 function renderHint(){$("sp-hint").querySelectorAll("[data-h]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.h===+PIC)));segSlide("sp-hint");}
@@ -1768,7 +1759,7 @@ const GUIDE={
     {h:"何が身につく？",l:["5W1H ＋ 基本の時制（過去・現在・未来）"+(CFG.relative?" ＋ 関係代名詞":""),"質問を聞いて、すぐに答えられる"],
      ex:[["Where did you go?","過去"],["What do you do?","現在"],["When will you start?","未来"]]},
     {h:"やり方",img:"07",steps:["英語の質問を聞く（文字も出ます）","絵と日本語に合う答えを選ぶ（20〜30秒）","答えを声に出して3回（ここが本番）"],
-     l:["1ラウンド5問・約2分","レベル1から。慣れたら"+CFG.field.longLabel+"をON"]}
+     l:["1ラウンド5問・約2分","レベル1から。慣れたら「今日の単語を混ぜる」をON"]}
   ]},
   sh:{title:"シャドーイング",pages:[
     {h:"聞いて、すぐ後を追う。",l:["お手本を聞きながら、少し遅れて、同じ音・同じ速さで言う"]},
@@ -1845,7 +1836,7 @@ $("inst-x").addEventListener("click",()=>{store.set("dk-install-hide",1);paintIn
 if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
 
 /* start */
-initStatic();paintCiv();paintMix();renderLv();renderHint();renderChips();startRound();renderDaily();setMode("card");buildDeck();
+initStatic();paintMix();renderLv();renderHint();renderChips();startRound();renderDaily();setMode("card");buildDeck();
 NET.init();paintStatus();paintPlan();flush();paintInstall();
 const t0=store.get("dk-tab","home");
 if(!ME){openTab(TABS.includes(t0)?t0:"home",true);openProfile();}else openTab(TABS.includes(t0)?t0:"home");
