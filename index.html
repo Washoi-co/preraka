@@ -499,6 +499,10 @@ a{color:inherit}
     <p><b>今日の復習：添削した文 <span id="rev-n" class="en"></span>文</b></p>
     <button class="primary" id="rev-go">復習する</button>
   </div>
+  <div class="toggle-row">
+    <div><b>今日の単語を混ぜる</b><span id="mix-note"></span></div>
+    <button class="switch" id="mix" role="switch" aria-checked="false" aria-label="今日の単語を混ぜる"><i></i></button>
+  </div>
   <div class="seg" id="sp-grp" role="group" aria-label="種目"></div>
   <div class="seg lv" id="sp-lv" role="group" aria-label="レベル"></div>
   <div class="chips" id="sp-chips" role="group" aria-label="型を選ぶ"></div>
@@ -593,14 +597,9 @@ a{color:inherit}
   <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 3847 1000" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">単語</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="wd">やり方</button></div>
   <h1 class="large">単語</h1>
   <p class="sub" id="w-sub"></p>
-  <div class="decks" id="w-decks" role="group" aria-label="単語帳を選ぶ"></div>
+  <div class="chips" id="w-decks" role="group" aria-label="単語帳を選ぶ"></div>
   <div class="inst"><span class="inst-ic" aria-hidden="true">📚</span><p><b>有料版では、もっと上まで</b><br>IELTS 8.5・TOEFL 110・TOEIC 950点・英検®1級まで。さらに土木やビジネスなど＋2,500単語が追加されます。</p><button class="pill" data-go="co">見る</button></div>
-  <div class="daily">
-    <span><b>1日の新しい単語</b><small>計画のゴールと同じ数</small></span>
-    <div class="seg" id="w-daily" role="group" aria-label="1日の新しい単語の数"></div>
-  </div>
   <p class="note" id="w-adnote" hidden>先に今日の単語をやりましょう。おわったら、アドリブ5問に進めます。</p>
-  <div class="today"><div class="today-t" id="w-today"></div><div class="bar"><i id="w-bar"></i></div></div>
   <div class="filters">
     <span class="note" id="w-decknote"></span>
     <div class="seg" id="w-mode" role="group" aria-label="見せ方">
@@ -1048,7 +1047,6 @@ document.addEventListener("touchstart",()=>{},{passive:true});   /* iPhoneで :a
 function initStatic(){
   set$("brand",CFG.site.title);   /* 一番上はA-PUSHのロゴ（shell.html）。ここは分野の名前だけ */
 
-  set$("w-sub",DECKS.map(d=>d.name+" "+d.words.length).join("・"));
   set$("w-fieldnote",CFG.field.wordNote||"");
   set$("pf-h",USE_B?"生徒IDと名前でログイン":NEED_CODE?"名前と団体コードでログイン":"名前を入れてログイン");
   if(USE_B){
@@ -1121,7 +1119,7 @@ const TOURS={
   home:[["#ring","今日のゴールの達成の様子です。"],["#today-list","今日やること。上から順に進めましょう。"],["#plan-sec","カレンダーと、1日の目標・月のゴールはここ。"],[".tabbar","下のタブで「今日＆計画・話す・シャドーイング・単語」を行き来します。"]],
   sp:[["#p-sp .sub","話すは、決まった文で質問に答える練習です。今日の単語で自分の文を作る「アドリブ5問」は、単語がおわったあとに出ます（添削されて、あとで復習に出ます）。"],["#sp-grp","練習する文法を選びます。"],["#sp-lv","レベルです。Lv1から。"],["#sp-chips","この中から型を1つ選びます。"],["#sp-hint","慣れたら「絵だけ」に。日本語のヒントが消えます。"],["#stem","英語の質問です。▶でもう一度聞けます。"],["#choices","絵と日本語に合う答えを選んだら、声に出して3回。"],["#p-sp [data-guide=sp]","やり方はいつでもここから。"]],
   sh:[["#sh-list","動画を選びます。レベル1から順に。"],["#p-sh [data-guide=sh]","やり方はここから。"]],
-  wd:[["#w-decks","単語帳を選びます。"],["#w-daily","1日に新しく覚える単語の数。"],["#w-mode","カードと一覧を切り替えられます。"],["#w-card","ここで1語ずつ覚えます。"]]
+  wd:[["#w-decks","単語帳を選びます。"],["#w-mode","カードと一覧を切り替えられます。"],["#w-card","ここで1語ずつ覚えます。"]]
 };
 /* ---- タブ（下のバー・4つ）。今のタブをもう一度押すと一番上へ ---- */
 const TABS=["home","sp","sh","wd","co"];   /* co＝本コースの説明 */
@@ -1216,7 +1214,7 @@ function saveGoals(){
   store.set("dk-goals",G);
   set$("saved","保存しました");clearTimeout(saveGoals.t);saveGoals.t=setTimeout(()=>set$("saved",""),2000);
 }
-function setDaily(n){DAILY=n;store.set("dk-daily",DAILY);saveGoals();renderDaily();buildDeck();paintPlan();paintStatus();}
+function setDaily(n){DAILY=n;store.set("dk-daily",DAILY);saveGoals();buildDeck();paintPlan();paintStatus();}
 function markDone(){const d=dayStr(),x=LOG[d];if(!x||!(x.wn||x.wd))return;if(!x.wdDone){x.wdDone=1;store.set("dk-log",LOG);}}
 const wordsOf=(x,g)=>x.wdDone?Math.max(g,x.wn||0):(x.wn!=null?x.wn:(x.wd||0));
 const TASKS=[
@@ -1533,6 +1531,17 @@ function makeQ(v,civ,ok){
   const w=shuffle([...BASIC,...CIVIL].filter(x=>x!==v&&ok(x)&&fits(k,t,x)).map(x=>t.f(x)).filter(x=>x!==a)).slice(0,2);
   return {v,civ,q:t.q(v),cue:t.cue,ja:v[2],a,w,full:a,fullja:v[2]+"｜"+t.cue};
 }
+/* 今日の単語を混ぜる：ONなら、話すの5問ともアドリブ（今日の単語 × 今の型）。単語がまだ無ければ、決まった文 */
+let MIX=store.get("dk-mix",false);
+function adQueue(ws){
+  return [0,1,2,3,4].map(i=>{
+    let k=curSet().k;if(k==="mix")k=shuffle(["past","present","future"])[0];
+    const fr=shuffle(adFrames(k,LV))[0];
+    return fr?{ad:true,w:ws[i%ws.length],...fr}:null;
+  }).filter(Boolean);
+}
+function paintMix(has){$("mix").setAttribute("aria-checked",String(MIX));set$("mix-note",!MIX?"OFF：決まった文だけ":has?"ON：今日の単語でアドリブ":"ON：単語の画面で今日の単語を始めると、ここでアドリブになります");}
+$("mix").addEventListener("click",()=>{MIX=!MIX;store.set("dk-mix",MIX);startRound();});
 function startRound(){
   const k=curSet().k;
   const ok=v=>!((k==="who"||k==="rel")&&/\bmy\b/.test(v[1]));   /* Who・関係代名詞には my の付く動作を出さない */
@@ -1541,6 +1550,9 @@ function startRound(){
   /* 5問（分野ONなら分野の動作を3問、onAll なら5問とも）。不自然な文を外すと足りない型は、ある分だけ */
   const qc=CIV?mk(c,true,CFG.onAll?5:3):[];
   queue=shuffle([...qc,...(CIV&&CFG.onAll?[]:mk(b,false,5-qc.length))]);
+  const ws=MIX?todayWords().slice(0,5):[],aq=ws.length?adQueue(ws):[];
+  if(aq.length)queue=aq;
+  paintMix(aq.length>0);
   if(!queue.length){clearInterval(timer);paintPips();set$("ask","このレベルでは、この型の問題がありません。ほかの型かレベルを選んでください。");
     $("stem").hidden=true;$("qja").hidden=$("cue").hidden=true;set$("pic","");$("choices").innerHTML="";view("quiz");return;}
   qi=0;score=0;log=[];adl=[];FIX=null;micStop();paintRev();askQ();
@@ -1553,11 +1565,7 @@ function startAdlib(){
   if(!ws.length){openTab("wd");$("w-adnote").hidden=false;$("w-adnote").scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"center"});return;}
   $("w-adnote").hidden=true;
   openTab("sp");
-  const q=[0,1,2,3,4].map(i=>{
-    let k=curSet().k;if(k==="mix")k=shuffle(["past","present","future"])[0];
-    const fr=shuffle(adFrames(k,LV))[0];
-    return fr?{ad:true,w:ws[i%ws.length],...fr}:null;
-  }).filter(Boolean);
+  const q=adQueue(ws);
   if(!q.length)return;   /* この型・レベルに使える型が無い（ふつうは無い） */
   queue=q;clearInterval(timer);qi=0;score=0;log=[];adl=[];FIX=null;micStop();paintRev();askQ();
   $("v-adlib").closest(".card").scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"start"});
@@ -1820,17 +1828,16 @@ function stat(d){
   d.words.forEach(w=>{const s=SRS[kOf(d,w)];if(!s)fresh++;else{if(s[0]>STEPS.length)mastered++;else learning++;if(s[1]<=t)due++;}});
   return {due,learning,mastered,fresh};
 }
-function renderDaily(){
-  $("w-daily").innerHTML=DAILY_OPTS.map(n=>'<button data-daily="'+n+'" aria-pressed="'+(n===DAILY)+'">'+n+'</button>').join("");
-  segSlide("w-daily");
-}
-$("w-daily").addEventListener("click",e=>{const b=e.target.closest("[data-daily]");if(!b)return;setDaily(+b.dataset.daily);});
+/* 単語帳は小さいタブ（短い名前）。進み具合は下の一行に */
+const SHORT={b3:"中3",b4:"高1",h1:"高校 初級",h2:"高校 中級",biz200:"ビジネス",ielts55:"IELTS",toefl60:"TOEFL",eikenp2:"英検®",native:"ネイティブ",slang:"スラング"};
 function renderDecks(){
   $("w-decks").innerHTML=SHOWN().map(d=>{
     const s=stat(d);
-    return '<button class="deck" data-deck="'+d.id+'" aria-pressed="'+(d.id===deckId)+'"><b>'+esc(d.name)+'</b><span>覚えた '+s.mastered+'・学習中 '+s.learning+' / '+d.words.length+(s.due?'　<em>復習 '+s.due+'</em>':'')+'</span></button>';
+    return '<button class="chip" data-deck="'+d.id+'" aria-pressed="'+(d.id===deckId)+'">'+esc(SHORT[d.id]||d.name.replace(/単語$/,""))+(s.due?'<span class="n">'+s.due+'</span>':'')+'</button>';
   }).join("");
-  set$("w-decknote",(CIV&&CFG.onAll?CFG.field.longLabel+"ON：分野の単語帳だけ出ます。":"")+deck().note);
+  const st=stat(deck());
+  set$("w-sub",deck().name);
+  set$("w-decknote","覚えた "+st.mastered+"・学習中 "+st.learning+" / "+deck().words.length +"語");
 }
 $("w-decks").addEventListener("click",e=>{const b=e.target.closest("[data-deck]");if(!b)return;sendWords();deckId=b.dataset.deck;store.set("dk-deck",deckId);extra=0;buildDeck();});
 /* 今日のカードを作る */
@@ -1841,14 +1848,7 @@ function buildDeck(){
   const room=Math.max(0,DAILY+extra-newToday());
   const fresh=ws.filter(w=>!SRS[key(w)]).slice(0,room);   /* 新しい語は単語帳の順（よく使う順） */
   wq=[...due,...fresh];
-  renderDecks();renderToday();showWord();renderList();
-}
-function renderToday(){
-  const t=dayNum(),ws=deck().words;
-  const dueLeft=ws.filter(w=>{const s=SRS[key(w)];return s&&s[1]<=t;}).length;
-  const nt=newToday(),goal=DAILY+extra;
-  $("w-today").innerHTML='<span>今日の復習 <b>'+dueLeft+'</b>語のこり</span><span>新しい語 <b>'+Math.min(nt,goal)+'</b> / '+goal+'</span>';
-  $("w-bar").style.width=(goal?Math.min(100,nt/goal*100):0)+"%";
+  renderDecks();showWord();renderList();
 }
 function showWord(){
   if(!wq.length){finish();return;}
@@ -1916,7 +1916,7 @@ $("w-next").addEventListener("click",()=>{
     wq.splice(Math.min(3,wq.length),0,w);
   }
   store.set("dk-srs",SRS);
-  counted();renderDecks();renderToday();showWord();
+  counted();renderDecks();showWord();
 });
 function setMode(m){wmode=m;$("w-mode-card").setAttribute("aria-pressed",String(m==="card"));$("w-mode-list").setAttribute("aria-pressed",String(m==="list"));segSlide("w-mode");$("w-card").hidden=(m!=="card");$("w-listwrap").hidden=(m!=="list");if(m==="list")renderList();}
 $("w-mode-card").addEventListener("click",()=>setMode("card"));
@@ -2033,7 +2033,7 @@ if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventLi
 /* start */
 /* 管理者の方へ：管理アプリ（kanri）を、この団体の場所で開く */
 $("to-admin").href="https://apush-training.web.app/?org="+encodeURIComponent(ORG.id||CFG.id||"");   /* ponytail: kanri.apush.jp ができたら差し替え */
-initStatic();renderLv();renderHint();renderChips();startRound();renderDaily();setMode("card");buildDeck();
+initStatic();renderLv();renderHint();renderChips();startRound();setMode("card");buildDeck();
 NET.init();paintStatus();paintPlan();flush();paintInstall();
 const t0=store.get("dk-tab","home");
 if(!ME){openTab(TABS.includes(t0)?t0:"home",true);openProfile();}else openTab(TABS.includes(t0)?t0:"home");
