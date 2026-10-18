@@ -208,6 +208,11 @@ a{color:inherit}
 .daily{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border-radius:var(--r);padding:12px 14px}
 .daily span{display:flex;flex-direction:column;line-height:1.35} .daily b{font-size:15px;font-weight:600} .daily small{font-size:11.5px;color:var(--mute)}
 #w-daily{flex:1;min-width:220px}
+.wset{background:var(--card);border-radius:var(--r);box-shadow:0 0 0 .5px var(--line2) inset}
+.wset summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:13px 16px;font-size:14.5px;font-weight:600;cursor:pointer}
+.wset summary::-webkit-details-marker{display:none}
+.wset summary span{font-size:13px;color:var(--mute);font-weight:500}
+.wset .daily{box-shadow:none;padding-top:0}
 .today{display:flex;flex-direction:column;gap:6px;padding:0 4px}
 .today-t{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mute)} .today-t b{font-family:var(--en);font-weight:900;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
 .today .bar{border-radius:4px;overflow:hidden}
@@ -638,6 +643,9 @@ a{color:inherit}
     <input class="search" id="w-q" type="search" placeholder="日本語か英語でさがす" aria-label="さがす" enterkeyhint="search" autocapitalize="none" autocorrect="off">
     <div class="list" id="w-list"></div>
   </div>
+  <details class="wset"><summary>単語の設定<span id="w-set-v"></span></summary>
+    <div class="daily"><span><b>毎日の新しい単語</b></span><div class="seg" id="w-daily" role="group" aria-label="毎日の新しい単語の数"></div></div>
+  </details>
   <p class="note" id="w-fieldnote"></p>
 </main>
 
@@ -1211,7 +1219,7 @@ function saveGoals(){
   store.set("dk-goals",G);
   set$("saved","保存しました");clearTimeout(saveGoals.t);saveGoals.t=setTimeout(()=>set$("saved",""),2000);
 }
-function setDaily(n){DAILY=n;store.set("dk-daily",DAILY);saveGoals();buildDeck();paintPlan();paintStatus();}
+function setDaily(n){DAILY=n;store.set("dk-daily",DAILY);saveGoals();renderDaily();buildDeck();paintPlan();paintStatus();}
 function markDone(){const d=dayStr(),x=LOG[d];if(!x||!(x.wn||x.wd))return;if(!x.wdDone){x.wdDone=1;store.set("dk-log",LOG);}}
 const wordsOf=(x,g)=>x.wdDone?Math.max(g,x.wn||0):(x.wn!=null?x.wn:(x.wd||0));
 const TASKS=[
@@ -1825,6 +1833,13 @@ function stat(d){
   d.words.forEach(w=>{const s=SRS[kOf(d,w)];if(!s)fresh++;else{if(s[0]>STEPS.length)mastered++;else learning++;if(s[1]<=t)due++;}});
   return {due,learning,mastered,fresh};
 }
+/* 単語の設定（たたんだ中）：毎日の新しい単語の数。計画のゴールと同じ数 */
+function renderDaily(){
+  $("w-daily").innerHTML=DAILY_OPTS.map(n=>'<button data-daily="'+n+'" aria-pressed="'+(n===DAILY)+'">'+n+'</button>').join("");
+  set$("w-set-v","1日 "+DAILY+"語 ›");segSlide("w-daily");
+}
+$("w-daily").addEventListener("click",e=>{const b=e.target.closest("[data-daily]");if(!b)return;setDaily(+b.dataset.daily);});
+$("w-daily").closest("details").addEventListener("toggle",()=>segSlide("w-daily"));
 /* 単語帳は小さいタブ（短い名前）。進み具合は下の一行に */
 const SHORT={b3:"中3",b4:"高1",h1:"高校 初級",h2:"高校 中級",biz200:"ビジネス",ielts55:"IELTS",toefl60:"TOEFL",eikenp2:"英検®",native:"ネイティブ",slang:"スラング"};
 function renderDecks(){
@@ -2030,7 +2045,7 @@ if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventLi
 /* start */
 /* 管理者の方へ：管理アプリ（kanri）を、この団体の場所で開く */
 $("to-admin").href="https://apush-training.web.app/?org="+encodeURIComponent(ORG.id||CFG.id||"");   /* ponytail: kanri.apush.jp ができたら差し替え */
-initStatic();renderLv();renderHint();renderChips();startRound();setMode("card");buildDeck();
+initStatic();renderLv();renderHint();renderChips();startRound();renderDaily();setMode("card");buildDeck();
 NET.init();paintStatus();paintPlan();flush();paintInstall();
 const t0=store.get("dk-tab","home");
 if(!ME){openTab(TABS.includes(t0)?t0:"home",true);openProfile();}else openTab(TABS.includes(t0)?t0:"home");
