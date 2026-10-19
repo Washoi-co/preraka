@@ -399,6 +399,15 @@ a{color:inherit}
 .why-play.on{background:var(--brand);color:#fff}
 .why-play:active{transform:scale(.95)}
 .why-ex small{font-size:12px;color:rgba(255,255,255,.6)}
+/* 今日の単語を混ぜる のスイッチ（無料版・本コースの ui.css と同じ見た目）2026-10-20 */
+.toggle-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--card);border-radius:var(--r);padding:12px 14px}
+.toggle-row div{display:flex;flex-direction:column;line-height:1.35;min-width:0}
+.toggle-row b{font-size:16px;font-weight:600}
+.toggle-row span{font-size:12.5px;color:var(--mute)}
+.switch{flex:none;width:51px;height:31px;border-radius:99px;background:var(--line2);position:relative;transition:background .2s}
+.switch i{position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:transform .3s var(--spring,cubic-bezier(.2,.8,.2,1))}
+.switch[aria-checked="true"]{background:var(--ok)}
+.switch[aria-checked="true"] i{transform:translateX(20px)}
 </style>
 </head>
 <body>
@@ -1597,7 +1606,12 @@ function adQueue(ws){
   }).filter(Boolean);
 }
 function paintMix(has){$("mix").setAttribute("aria-checked",String(MIX));set$("mix-note",!MIX?"OFF：決まった文だけ":has?"ON：今日の単語でアドリブ":"ON：単語の画面で今日の単語を始めると、ここでアドリブになります");}
-$("mix").addEventListener("click",()=>{MIX=!MIX;store.set("dk-mix",MIX);startRound();});
+$("mix").addEventListener("click",()=>{
+  MIX=!MIX;store.set("dk-mix",MIX);
+  /* ON にした瞬間に今日の単語でアドリブ5問（無料版と同じ）。今日の単語がまだ無ければ、単語の画面へ案内 */
+  if(MIX&&!todayWords().length){paintMix(false);openTab("wd");$("w-adnote").hidden=false;$("w-adnote").scrollIntoView({behavior:REDUCE?"auto":"smooth",block:"center"});return;}
+  startRound();
+});
 function startRound(){
   const k=curSet().k;
   const ok=v=>!((k==="who"||k==="rel")&&/\bmy\b/.test(v[1]));   /* Who・関係代名詞には my の付く動作を出さない */
