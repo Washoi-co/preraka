@@ -823,6 +823,12 @@ const NET={
       paintSync("団体とつながれませんでした。練習の記録はこの端末に残り、つながった時にまとめて送ります。",false);
     }
   },
+  /* ログイン（匿名）してから Cloud Functions を呼ぶ（添削）。Firebase が未設定・つながっていない団体では使えない */
+  async call(name,data){
+    if(!this.fb){const e=new Error("団体とつながっていません。電波の良い所で、もう一度。");e.code="functions/unavailable";throw e;}
+    const {Fn,app}=this.fb;
+    return Fn.httpsCallable(Fn.getFunctions(app,"asia-northeast1"),name)(data);
+  },
   /* この端末が生徒IDにひも付いているか（ひも付いていない間は、記録は端末にためておく） */
   on(){return this.ready&&!!ME&&!!ME.sid&&ME.linked===this.uid;},
   /* 生徒ID＋名前で入る（functions の student が名簿と照らし合わせる）。データは生徒IDにつながる＝スマホを替えても戻せる */
@@ -1550,9 +1556,8 @@ const LEVELS=[{n:1,label:"Lv1",sub:"中1"},{n:2,label:"Lv2",sub:"中2〜3"},{n:3
 const LIMIT={1:20,2:25,3:30};
 let PIC=store.get("dk-pic",false);   /* 絵だけ：日本語のヒントを出さない */
 const CIV=false;   /* 2026-10-19：話すは基礎の動作・決まった文だけ。アドリブは単語のあと（startAdlib） */
-/* アドリブの AI 添削（Cloud Functions の review）。モデルと考える深さは、ここで変える */
-/* 添削のモデル（Haiku）と月の上限（1アカウント100円）は、サーバー（review）がサイトを見て決める */
-const REVIEW_URL="https://asia-northeast1-apush-training.cloudfunctions.net/review";
+/* アドリブの AI 添削（Cloud Functions の review）。NET.call で、ログインしてから呼ぶ（2026-10-20）。
+   添削のモデル（Haiku）と月の上限（1人100円）は、サーバー（review）がサイトとログインの印を見て決める */
 let LV=store.get("dk-lv",1);if(![1,2,3].includes(LV))LV=1;
 let SI=0,queue=[],qi=0,score=0,log=[],taps=0,left=20,opts=[];
 const curSet=()=>SETS[SI];
@@ -1726,25 +1731,21 @@ function adSend(blob,sec){   /* 声（blob）か、打った文で添削を頼�
 }
 $("ad-next").addEventListener("click",()=>adSend(null));
 
-/* 添削。送るのは英文・型・単語・意味と、ハッシュにした生徒IDだけ。名前・声は送らない */
-/* 月の利用額を数えるための account：生徒IDをハッシュにしたもの（元のIDには戻せない形で送る） */
-const acctHash=s=>crypto.subtle.digest("SHA-256",new TextEncoder().encode("apush-review|"+s)).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""));
+/* 添削。送るのは英文・型・単語・意味と声だけ。名前は送らない（誰の分かは、サーバーがログインの印から名簿で決める） */
+const jaErr=e=>(e&&/^functions\//.test(e.code||"")&&e.code!=="functions/internal"&&e.message)||"添削できませんでした。電波の良い所で「もう一度」を押してください。";
 function review(it){
   it.r=null;it.err=null;
   if(!it.you&&!it.audio){it.err="英文が入っていません。";it.p=Promise.resolve();return it.p;}   /* 空は送らない */
-  const sig=window.AbortSignal&&AbortSignal.timeout?AbortSignal.timeout(80000):undefined;
   const b64=it.audio?new Promise(ok=>{const f=new FileReader();f.onload=()=>ok(String(f.result).split(",")[1]||"");f.readAsDataURL(it.audio);}):Promise.resolve("");
-  it.p=Promise.all([acctHash((ME&&ME.orgId||"")+":"+(ME&&(ME.sid||ME.uid)||"")),b64]).then(([account,audio])=>fetch(REVIEW_URL,{method:"POST",headers:{"Content-Type":"application/json"},signal:sig,
-      body:JSON.stringify({data:Object.assign({sentence:it.you,pattern:it.pattern,word:it.word,meaning:it.meaning,account},audio?{audio,mime:it.audio.type,sec:it.sec}:{})})}))
-    .then(async res=>{
-      const j=await res.json().catch(()=>({}));
-      const r=j.result;
-      if(!res.ok||!r||!String(r.corrected||"").trim()){const e=new Error();e.ja=j.error&&j.error.message;throw e;}
+  it.p=b64.then(audio=>NET.call("review",Object.assign({sentence:it.you,pattern:it.pattern,word:it.word,meaning:it.meaning},audio?{audio,mime:it.audio.type,sec:it.sec}:{})))
+    .then(res=>{
+      const r=res&&res.data;
+      if(!r||!String(r.corrected||"").trim())throw new Error("empty");
       it.r={ok:!!r.ok,corrected:String(r.corrected).trim(),note:String(r.note||"")};
       if(r.heard!=null)it.you=String(r.heard);
       saveRev(it);
     })
-    .catch(e=>{it.err=(e&&e.ja)||"添削できませんでした。電波の良い所で「もう一度」を押してください。";})
+    .catch(e=>{it.err=jaErr(e);})
     .then(()=>{if(FIX&&!FIX.review&&FIX.list[FIX.i]===it)paintFix();});
   return it.p;
 }
