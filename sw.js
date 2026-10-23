@@ -1,5 +1,5 @@
 /* 団体のトレーニング：オフラインでも開けるようにする（動画は保存しない）。CACHE の名前は build.py が毎回変える */
-const CACHE = "preraka-4ecce02d";
+const CACHE = "preraka-89d31af6";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
