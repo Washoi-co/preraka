@@ -1000,7 +1000,8 @@ function syncText(){
 let foundOrg=null;
 /* 自分で登録できる団体（CFG.selfJoin）：はじめての人は「国＋ニックネーム」で登録、IDを持っている人は「生徒ID＋名前」 */
 const SELF=USE_B&&!!CFG.selfJoin;
-const GATE=SELF&&isSet(ORG.code);   /* 団体コード（合言葉）：登録の時だけ聞く。URLを知っているだけの人が登録できないように */
+const GATE=SELF&&(ORG.gate===true||isSet(ORG.code));   /* 団体コード（合言葉）：登録の時だけ聞く。URLを知っているだけの人が登録できないように。
+   Firebaseの団体は「聞くかどうか」（org.gate）だけ持ち、合言葉そのものはサーバー（orgs/{場所}.code）だけが知る */
 let JOIN=false;
 function pfMode(join){
   JOIN=SELF&&join;
