@@ -941,14 +941,16 @@ const NET={
     if(!this.on()||!CFG.firebase.vapidKey||!isSet(CFG.firebase.vapidKey))return false;
     try{
       const M=await import(SDK+"firebase-messaging.js");
-      const reg=await navigator.serviceWorker.register("firebase-messaging-sw.js");
+      // 通知の仕組みは、オフライン用の sw.js と別の場所に登録する（同じ場所だと開くたびに上書きし合い、通知の鍵が作れなかった。2026-10-30）
+      const reg=await navigator.serviceWorker.register("firebase-messaging-sw.js",{scope:"firebase-cloud-messaging-push-scope"});
+      await new Promise(r=>{const w=reg.installing||reg.waiting;if(reg.active||!w)return r();w.addEventListener("statechange",()=>{if(w.state==="activated")r();});});
       const token=await M.getToken(M.getMessaging(this.fb.app),{vapidKey:CFG.firebase.vapidKey,serviceWorkerRegistration:reg});
       if(!token)return false;
       const {doc,updateDoc}=this.fb.F;
       await updateDoc(doc(this.fb.db,this.path()),{fcm:token});
       M.onMessage(M.getMessaging(this.fb.app),()=>{this.watchInbox();});
       return true;
-    }catch(e){return false;}
+    }catch(e){console.warn("[push]",e&&(e.code||e.message));return false;}
   }
 };
 
