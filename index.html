@@ -724,7 +724,7 @@ a{color:inherit}
     <label class="pf-l" for="pf-code">団体コード（幹部からもらった4〜6文字）</label>
     <input class="pf-code" id="pf-code" maxlength="12" placeholder="ABC123" inputmode="latin" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
     <div class="pf-found" id="pf-found" hidden><span class="m" aria-hidden="true">✓</span><span id="pf-found-t"></span></div>
-    <label class="pf-agree" id="pf-agree" hidden><input type="checkbox" id="pf-ok"><span id="pf-agree-t"></span></label>
+    <p class="pf-agree" id="pf-agree" hidden><span id="pf-agree-t"></span></p>
     <p class="note" id="pf-note"></p>
     <div class="acts"><button type="button" class="ghost" id="pf-cancel">あとで</button><button class="primary" id="pf-save" disabled>ログイン</button></div>
     <button type="button" class="ghost" id="pf-mode" hidden></button>
@@ -1036,7 +1036,7 @@ function openProfile(){
   setTimeout(()=>{try{$("pf-name").focus();}catch(e){}},50);
 }
 function checkPf(){
-  const ok=!!$("pf-name").value.trim()&&(JOIN?(!!$("pf-team").value&&$("pf-ok").checked&&(!GATE||$("pf-code").value.trim().length>=3)):USE_B?($("pf-code").value.trim().length>=3&&$("pf-ok").checked):(!NEED_CODE||foundOrg));
+  const ok=!!$("pf-name").value.trim()&&(JOIN?(!!$("pf-team").value&&(!GATE||$("pf-code").value.trim().length>=3)):USE_B?($("pf-code").value.trim().length>=3):(!NEED_CODE||foundOrg));
   $("pf-save").disabled=!ok;
 }
 function checkCode(){
@@ -1056,7 +1056,6 @@ function checkCode(){
 }
 $("pf-name").addEventListener("input",checkPf);
 $("pf-code").addEventListener("input",checkCode);
-$("pf-ok").addEventListener("change",checkPf);
 function pfErr(t){const f=$("pf-found");f.hidden=false;f.classList.add("bad");f.querySelector(".m").textContent="？";set$("pf-found-t",t);}
 $("pf-form").addEventListener("submit",async e=>{
   e.preventDefault();
@@ -1121,7 +1120,7 @@ function initStatic(){
   }
   set$("pf-note",CFG.record.note);
   if(CFG.loginRequired){$("pf-cancel").hidden=true;$("pf-x").hidden=true;set$("pf-h","ログインしてから始めます");}
-  set$("pf-agree-t","練習した日と回数が、名前と一緒に団体の幹部に見えることに同意します。メールや電話番号は聞きません。記録はA-PUSHのサーバー（日本・東京）に置かれます。");
+  set$("pf-agree-t","練習した日と回数が、名前と一緒に団体の幹部に届きます。メールや電話番号は聞きません。");   /* 同意のチェックは無し（kimi 2026-10-30） */
   $("me-edit").addEventListener("click",openProfile);
   $("pf-x").addEventListener("click",()=>$("pf-cancel").click());
   paintSync(syncText(),USE_A||USE_B);
