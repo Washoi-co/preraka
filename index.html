@@ -822,7 +822,7 @@ const NET={
       this.ready=true;
       if(ME&&ME.sid){
         if(ME.linked!==this.uid)await this.login(ME.sid,ME.name);
-        await this.pull();await this.saveMe();this.watchInbox();
+        await this.pull();await this.saveMe();this.watchInbox();pushNudge();
       }
       this.flush();
       paintSync(syncText(),true);
@@ -986,6 +986,27 @@ $("notif-go").addEventListener("click",()=>{
   if(Notification.permission==="granted"){openInbox();return;}
   Notification.requestPermission().then(()=>{paintNotif();NET.enablePush();});
 });
+/* 通知を受け取るか、画面の上（上から2割）で「はい／いいえ」を聞く（kimi 2026-10-30・study と同じ形）。
+   許可済みの端末は、開くたびに通知の鍵を登録し直す。「いいえ」は3日あけてまた聞く。iPhone はホーム画面のアプリの時だけ（Safari では許可できない） */
+function pushNudge(){
+  if(!USE_B||!NET.on()||!CFG.firebase.vapidKey||!isSet(CFG.firebase.vapidKey)||!window.Notification||!("serviceWorker" in navigator))return;
+  if(Notification.permission==="granted"){NET.enablePush();return;}
+  if(Notification.permission!=="default"||document.getElementById("push-bar"))return;
+  const ua=navigator.userAgent||"",app=window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone===true;
+  if((/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))&&!app)return;
+  if(Date.now()-(+store.get("dk-pushask",0)||0)<3*864e5)return;
+  store.set("dk-pushask",Date.now());
+  const bar=document.createElement("div");bar.id="push-bar";bar.setAttribute("role","dialog");
+  bar.style.cssText="position:fixed;left:0;right:0;top:0;z-index:2147483000;min-height:20vh;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 18px) 20px 18px;"+
+    "background:#fff;color:#111;box-shadow:0 8px 28px rgba(0,0,0,.18);display:flex;flex-direction:column;justify-content:center;gap:12px;font-size:16px;line-height:1.5";
+  const btn="flex:1;font:inherit;font-weight:700;border:0;border-radius:16px;padding:15px;cursor:pointer;";
+  bar.innerHTML='<b style="font-size:18px">通知を受け取りますか？</b><span>団体からのお知らせなどを、スマホの通知でお知らせします。「はい」の後に出る確認で「許可」を押してください。</span>'+
+    '<div style="display:flex;gap:10px"><button id="push-yes" style="'+btn+'background:var(--brand);color:#fff">はい</button><button id="push-no" style="'+btn+'background:var(--soft,#eef2ff);color:var(--brand)">いいえ</button></div>';
+  document.body.appendChild(bar);
+  const off=()=>bar.remove();
+  $("push-no").addEventListener("click",off);
+  $("push-yes").addEventListener("click",()=>{$("push-yes").disabled=true;Notification.requestPermission().then(p=>{paintNotif();if(p==="granted")NET.enablePush();off();});});
+}
 function paintSync(msg,on){
   const el=$("sync");el.classList.toggle("off",!on);set$("sync-t",msg);
 }
@@ -1075,7 +1096,7 @@ $("pf-form").addEventListener("submit",async e=>{
     PENDING.forEach(r=>{r.name=ME.name;});store.set("dk-pending",PENDING);
     await NET.pull();NET.saveMe();   /* 先に前の記録を戻してから（大きい方を取る）、今までの分をまとめて送る */
     NET._queue=Object.keys(LOG).map(d=>({d,x:{sp:LOG[d].sp|0,wd:LOG[d].wd|0,sh:LOG[d].sh|0,wn:LOG[d].wn|0}}));store.set("dk-fbq",NET._queue);
-    paintStatus();paintNotif();paintSync(syncText(),true);flush();
+    paintStatus();paintNotif();pushNudge();paintSync(syncText(),true);flush();
     if(JOIN){$("pf-form").hidden=true;$("pf-done").hidden=false;set$("pf-newid",ME.sid);return;}   /* 発行した生徒IDを見せてから始める */
     closeSheet("pf");resumeQuiz();maybeGuide(curTab);
     return;
@@ -1089,7 +1110,7 @@ $("pf-form").addEventListener("submit",async e=>{
   PENDING.forEach(r=>{r.name=ME.name;});store.set("dk-pending",PENDING);
   NET.saveMe();
   if(CFG.loginRequired){$("pf-cancel").hidden=false;$("pf-x").hidden=false;set$("pf-h","名前と団体コードでログイン");}
-  closeSheet("pf");paintStatus();paintNotif();paintSync(syncText(),USE_A||USE_B);flush();resumeQuiz();maybeGuide(curTab);
+  closeSheet("pf");paintStatus();paintNotif();pushNudge();paintSync(syncText(),USE_A||USE_B);flush();resumeQuiz();maybeGuide(curTab);
 });
 /* loginRequired（団体の設定）：ログインするまで閉じられない（団体の幹部が全員の進捗を見る前提で配るため） */
 const MUST_LOGIN=()=>!!CFG.loginRequired&&!ME;
