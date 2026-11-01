@@ -1,5 +1,5 @@
 /* 団体のトレーニング：オフラインでも開けるようにする（動画は保存しない）。CACHE の名前は build.py が毎回変える */
-const CACHE = "preraka-c32e6e77";
+const CACHE = "preraka-f5d30b18";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
@@ -12,7 +12,7 @@ self.addEventListener("fetch", e => {
   // ページは「まずネット、だめなら保存した物」。直した内容がすぐ届く
   if (req.mode === "navigate" || url.pathname.endsWith(".html") || url.pathname.endsWith("/")) {
     e.respondWith(fetch(req).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put(req, c)); return r; })
-      .catch(() => caches.match(req).then(r => r || caches.match("./index.html"))));
+      .catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match("./index.html")).then(r => r || fetch(req))));   // LINE→Safari（?openExternalBrowser=1）で保存が無くても、空の返事でエラー画面にしない
     return;
   }
   e.respondWith(caches.match(req).then(r => r || fetch(req).then(res => { const c = res.clone(); caches.open(CACHE).then(x => x.put(req, c)); return res; })));

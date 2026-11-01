@@ -311,7 +311,7 @@ a{color:inherit}
 .scrim{position:fixed;inset:0;z-index:30;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .25s}
 .scrim.on{pointer-events:auto}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;margin:0 auto;max-width:560px;max-height:calc(100dvh - env(safe-area-inset-top,0px) - 24px);display:flex;flex-direction:column;
-  background:var(--card);border-radius:24px 24px 0 0;padding:0 20px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(110%);will-change:transform;visibility:hidden;box-shadow:0 -8px 40px rgba(0,0,0,.18)}
+  background:var(--card);border-radius:24px 24px 0 0;padding:0 20px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(110%);visibility:hidden;box-shadow:0 -8px 40px rgba(0,0,0,.18)}
 .sheet.open{visibility:visible}
 .sh-top{padding:8px 0 4px;touch-action:none;cursor:grab}
 .grab{width:38px;height:5px;border-radius:5px;background:var(--line2);margin:0 auto 10px}
@@ -1041,7 +1041,7 @@ function pfMode(join){
 if(SELF){
   $("pf-team").innerHTML='<option value="">'+esc(CFG.groups.label||"グループ")+'を選ぶ</option>'+CFG.groups.items.map(g=>'<option value="'+esc(g[1])+'">'+esc(g[0]+" "+g[1])+'</option>').join("");
   set$("pf-team-l",CFG.groups.label||"グループ");
-  $("pf-team").addEventListener("change",checkPf);
+  $("pf-team").addEventListener("change",checkPf);$("pf-team").addEventListener("input",checkPf);
   $("pf-mode").addEventListener("click",()=>pfMode(!JOIN));
   $("pf-start").addEventListener("click",()=>{$("pf-done").hidden=true;$("pf-form").hidden=false;closeSheet("pf");resumeQuiz();maybeGuide(curTab);});
 }
@@ -1063,10 +1063,10 @@ function checkPf(){
   $("pf-save").disabled=!ok;
 }
 function checkCode(){
-  if(USE_B){$("pf-code").value=$("pf-code").value.toUpperCase();$("pf-found").hidden=true;$("pf-agree").hidden=false;checkPf();return;}   /* 生徒ID：確かめるのは「ログイン」を押した時 */
+  /* 入力中に value を書き換えない（iPhoneで変換中に書き換えると「E」が「EEE」になる）。大文字は CSS で見せ、使う時に直す */
+  if(USE_B){$("pf-found").hidden=true;$("pf-agree").hidden=false;checkPf();return;}   /* 生徒ID：確かめるのは「ログイン」を押した時 */
   if(!NEED_CODE){$("pf-found").hidden=true;$("pf-agree").hidden=true;checkPf();return;}
   const code=$("pf-code").value.trim().toUpperCase();
-  $("pf-code").value=code;
   if(code.length<4){foundOrg=null;$("pf-found").hidden=true;$("pf-agree").hidden=true;checkPf();return;}
   NET.lookupCode(code).then(o=>{
     foundOrg=o;
@@ -1246,7 +1246,7 @@ const rubber=(x,d,c=.55)=>(x*d*c)/(d+c*x);
 function sheetCtl(id){
   if(SHEETS[id])return SHEETS[id];
   const el=$(id),st={id,el,y:0,v:0,raf:0,open:false,H:600};SHEETS[id]=st;
-  st.set=y=>{st.y=y;el.style.transform="translateY("+y+"px)";if(STACK[STACK.length-1]===st)$("scrim").style.opacity=String(Math.max(0,Math.min(1,1-y/st.H)));};
+  st.set=y=>{st.y=y;el.style.transform=y?"translateY("+y+"px)":"none";if(STACK[STACK.length-1]===st)$("scrim").style.opacity=String(Math.max(0,Math.min(1,1-y/st.H)));};   /* 止まったら transform を外す（will-change と付けっぱなしだと、iPhoneで選んだ国が表示に出ないことがある） */
   st.spring=(to,v0,done)=>{
     cancelAnimationFrame(st.raf);st.v=v0||0;
     if(REDUCE){st.set(to);if(done)done();return;}
