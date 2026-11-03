@@ -754,7 +754,7 @@ const ORG=CFG.org||{};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-function speak(t){try{if(!("speechSynthesis" in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.9;speechSynthesis.speak(u);}catch(e){}}
+function speak(t){if(window.apSay)return apSay(t);try{if(!("speechSynthesis" in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.9;speechSynthesis.speak(u);}catch(e){}}
 let timer=null;
 const store={get(k,d){try{const v=localStorage.getItem(k.replace(/^dk-/,P));return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k.replace(/^dk-/,P),JSON.stringify(v));}catch(e){}}};
 const set$=(id,t)=>{const e=$(id);if(e)e.textContent=t;};
@@ -2139,6 +2139,6 @@ NET.init();paintStatus();paintPlan();flush();paintInstall();
 const t0=store.get("dk-tab","home");
 if(!ME){openTab(TABS.includes(t0)?t0:"home",true);openProfile();}else openTab(TABS.includes(t0)?t0:"home");
 </script>
-<script src="install.js" defer></script>  <!-- ホーム画面に追加の案内・LINEから来た人・記録の引き継ぎ -->
+<script src="say.js"></script><script src="install.js" defer></script>  <!-- ホーム画面に追加の案内・LINEから来た人・記録の引き継ぎ -->
 </body>
 </html>
