@@ -307,6 +307,37 @@ a{color:inherit}
 .tab:active svg{transform:scale(.88)}
 .tab[aria-selected="true"]{color:var(--brand)}
 
+/* テストのページ・話すの切り替え（study・training と同じ形。2026-11-04） */
+.seg.sp-kind{margin:0 0 14px}
+.seg.sp-kind button[aria-pressed="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.13),0 0 0 .5px rgba(0,0,0,.04)}
+.mh{margin:18px 2px 8px;font-size:13px;font-weight:700;color:var(--mute);letter-spacing:.04em}
+.mlist{display:grid;gap:10px}
+.mcard{display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:var(--ink);background:var(--card);border-radius:18px;padding:16px;transition:transform .1s ease-out}
+.mcard:active{transform:scale(.98)}
+.mcard b{display:block;font-size:17px;line-height:1.3}
+.mcard small{display:block;color:var(--mute);font-size:13px;margin-top:3px;line-height:1.4}
+.mcard .go{font-family:var(--en);font-weight:900;color:var(--brand);font-size:18px;flex:none}
+.mcard.main{background:var(--brand);color:var(--on)}.mcard.main small,.mcard.main .go{color:var(--on)}
+.mtwo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mtwo .mcard{flex-direction:column;align-items:flex-start;gap:6px;min-height:96px}
+.mtwo .mcard .go{align-self:flex-end;margin-top:auto}
+/* パソコン：下のタブを左の縦メニューに（study・training と同じ） */
+@media (min-width:1024px){
+  body{padding-left:232px}
+  .tabbar{top:0;bottom:0;left:0;right:auto;width:232px;padding:88px 14px 24px;box-shadow:.5px 0 0 var(--line2);background:var(--card)}
+  .tabbar div{display:flex;flex-direction:column;gap:4px;max-width:none}
+  .tab{grid-auto-flow:column;justify-content:start;align-items:center;gap:14px;padding:12px 14px;border-radius:12px;font-size:15px;letter-spacing:0}
+  .tab svg{width:22px;height:22px}
+  .tab[aria-selected="true"]{background:var(--soft)}
+  .tab:hover{background:var(--soft)}
+  .mlist{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  .mtwo{grid-template-columns:repeat(2,minmax(0,420px))}
+  .mcard:hover{box-shadow:0 0 0 1.5px var(--brand) inset}
+  .screen{max-width:none;padding-left:48px;padding-right:48px;padding-bottom:56px}
+  .nav{margin-left:-48px;margin-right:-48px;padding-left:48px;padding-right:48px}
+  .large{font-size:40px}
+}
+
 /* 下から出るシート */
 .scrim{position:fixed;inset:0;z-index:30;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .25s}
 .scrim.on{pointer-events:auto}
@@ -513,6 +544,7 @@ a{color:inherit}
 <main class="screen" id="p-sp" role="tabpanel" aria-labelledby="tab-sp" hidden>
   <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 228.41 58.35" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">話す</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="sp">やり方</button></div>
   <h1 class="large">話す</h1>
+  <div class="seg sp-kind" role="group" aria-label="話すの種類"><button data-go="sp" aria-pressed="true">A-PUSHメソッド</button><button data-go="sh" aria-pressed="false">シャドーイング</button></div>
   <div class="inst" id="rev-card" hidden>
     <span class="inst-ic" aria-hidden="true">🔁</span>
     <p><b>今日の復習：添削した文 <span id="rev-n" class="en"></span>文</b></p>
@@ -605,7 +637,8 @@ a{color:inherit}
 <!-- シャドーイング -->
 <main class="screen" id="p-sh" role="tabpanel" aria-labelledby="tab-sh" hidden>
   <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 228.41 58.35" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">シャドーイング</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="sh">やり方</button></div>
-  <h1 class="large">シャドーイング</h1>
+  <h1 class="large">話す</h1>
+  <div class="seg sp-kind" role="group" aria-label="話すの種類"><button data-go="sp" aria-pressed="false">A-PUSHメソッド</button><button data-go="sh" aria-pressed="true">シャドーイング</button></div>
   <div class="shl" id="sh-list"></div>
   <p class="credit">動画：VOA Learning English（learningenglish.voanews.com）・NASA Goddard Space Flight Center。いずれも公開素材を、出典を示して使っています。NASAがこのサイトを推薦しているものではありません。</p>
 </main>
@@ -666,6 +699,24 @@ a{color:inherit}
 </main>
 
 <!-- 本コース（A-PUSH の本コースの説明と、このアプリとのちがい） -->
+<main class="screen" id="p-ts" role="tabpanel" aria-labelledby="tab-ts" hidden>
+  <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 228.41 58.35" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">テスト</span></span><button class="pill" data-go="co">本コース</button></div>
+  <h1 class="large">テスト</h1>
+  <p class="sub">試験のトレーニングと毎日の英語（A-PUSH トレーニングで開きます）</p>
+  <p class="mh">毎日：スピーキング＆ライティング</p>
+  <div class="mtwo">
+    <a class="mcard main" href="https://training.apush.jp/exam/?daily=speaking"><span><b>🎤 話す</b><small>今日のことを30秒〜2分</small></span><span class="go">→</span></a>
+    <a class="mcard main" href="https://training.apush.jp/exam/?daily=writing"><span><b>✍️ 書く</b><small>今日のことを50〜150語</small></span><span class="go">→</span></a>
+  </div>
+  <p class="mh">試験のトレーニング</p>
+  <div class="mlist">
+    <a class="mcard" href="https://training.apush.jp/exam/?exam=toeic"><span><b>TOEIC L&amp;R</b><small>10分・チャレンジ・チャプター別</small></span><span class="go">→</span></a>
+    <a class="mcard" href="https://training.apush.jp/exam/?exam=ielts"><span><b>IELTS Academic</b><small>10分・チャレンジ・チャプター別</small></span><span class="go">→</span></a>
+    <a class="mcard" href="https://training.apush.jp/exam/?exam=toefl"><span><b>TOEFL iBT</b><small>10分・チャレンジ・チャプター別</small></span><span class="go">→</span></a>
+    <a class="mcard" href="https://training.apush.jp/exam/?group=eiken"><span><b>英検®</b><small>4級〜1級 ・ 10分・チャレンジ・チャプター別</small></span><span class="go">→</span></a>
+  </div>
+</main>
+
 <main class="screen" id="p-co" hidden>
   <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 228.41 58.35" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">本コース</span></span></div>
   <h1 class="large">本コース</h1>
@@ -698,10 +749,10 @@ a{color:inherit}
 </main>
 
 <nav class="tabbar" role="tablist" aria-label="トレーニング"><div>
-  <button class="tab" role="tab" id="tab-home" aria-controls="p-home" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.4"/><path d="M3.5 10h17M8.5 3v4M15.5 3v4"/><path d="M8.5 14.5l2 2 4-4"/></svg>今日＆計画</button>
+  <button class="tab" role="tab" id="tab-home" aria-controls="p-home" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.4"/><path d="M3.5 10h17M8.5 3v4M15.5 3v4"/><path d="M8.5 14.5l2 2 4-4"/></svg>計画</button>
   <button class="tab" role="tab" id="tab-sp" aria-controls="p-sp" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17.5V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v6.5a3 3 0 0 1-3 3H9.5L5 20z"/><path d="M9 10.5h6"/></svg>話す</button>
-  <button class="tab" role="tab" id="tab-sh" aria-controls="p-sh" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3.5" y="13.5" width="4" height="6.5" rx="1.6"/><rect x="16.5" y="13.5" width="4" height="6.5" rx="1.6"/></svg>シャドーイング</button>
   <button class="tab" role="tab" id="tab-wd" aria-controls="p-wd" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="12.5" height="14" rx="2.2"/><path d="M8 3.5h9.5a2.5 2.5 0 0 1 2.5 2.5v11"/></svg>単語</button>
+  <button class="tab" role="tab" id="tab-ts" aria-controls="p-ts" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2.2"/><path d="M9 3.5h6v3H9z"/><path d="M8.5 12.5l2 2 4-4"/><path d="M8.5 17.5h7"/></svg>テスト</button>
 </div></nav>
 
 <div class="scrim" id="scrim"></div>
@@ -1217,12 +1268,12 @@ const TOURS={
   wd:[["#w-decks","単語帳を選びます。"],["#w-mode","カードと一覧を切り替えられます。"],["#w-card","ここで1語ずつ覚えます。"]]
 };
 /* ---- タブ（下のバー・4つ）。今のタブをもう一度押すと一番上へ ---- */
-const TABS=["home","sp","sh","wd","co"];   /* co＝本コースの説明 */
+const TABS=["home","sp","sh","wd","ts","co"];   /* co＝本コースの説明。sh（シャドーイング）は「話す」の中 */
 const scrollPos={};
 let curTab=null;
 function openTab(k,silent){
   if(curTab)scrollPos[curTab]=window.scrollY;
-  TABS.forEach(n=>{const t=$("tab-"+n);if(t)t.setAttribute("aria-selected",String(n===k));$("p-"+n).hidden=(n!==k);});   /* co（本コース）は下のタブが無い。上の「本コース」から開く */
+  const sel=k==="sh"?"sp":k;TABS.forEach(n=>{const t=$("tab-"+n);if(t)t.setAttribute("aria-selected",String(n===sel));$("p-"+n).hidden=(n!==k);});   /* co（本コース）は下のタブが無い。上の「本コース」から開く */
   curTab=k;store.set("dk-tab",k);
   window.scrollTo(0,scrollPos[k]||0);navStuck();
   if(k!=="sp")clearInterval(timer);
