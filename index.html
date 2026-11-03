@@ -1607,7 +1607,7 @@ $("sp-lv").addEventListener("click",e=>{const b=e.target.closest("[data-lv]");if
 function renderChips(){
   const g=curSet().g;
   $("sp-grp").innerHTML=GROUPS.map(x=>'<button data-g="'+x.g+'" aria-pressed="'+(x.g===g)+'">'+esc(x.label)+'</button>').join("")
-    +(window.apLockedTabs?apLockedTabs(["疑問詞（5W1H）","時制"].concat(CFG.relative?["関係代名詞"]:[])):"");segSlide("sp-grp");   /* 本コースの文法は鍵付き */
+    +(window.apLockedTabs?apLockedTabs(["疑問詞（5W1H）","現在形","過去形","未来（will）"].concat(CFG.relative?["関係代名詞"]:[])):"");segSlide("sp-grp");   /* 本コースの文法は鍵付き */
   const cs=SETS.map((s,i)=>[s,i]).filter(([s])=>s.g===g);
   $("sp-chips").hidden=cs.length<2;
   $("sp-chips").innerHTML=cs.map(([s,i])=>'<button class="chip" data-s="'+i+'" aria-pressed="'+(i===SI)+'">'+esc(s.label)+'</button>').join("");
