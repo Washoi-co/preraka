@@ -853,13 +853,48 @@ function flushA(){
 function flush(){flushA();NET.flush();}
 function logEvent(kind,detail,count){
   const d=dayStr(),k={"スピーキング":"sp","単語":"wd","シャドーイング":"sh"}[kind];
-  LOG[d]=LOG[d]||{sp:0,wd:0,sh:0};LOG[d][k]+=count;store.set("dk-log",LOG);
+  LOG[d]=LOG[d]||{sp:0,wd:0,sh:0};LOG[d][k]+=count;
+  if(count>0)(LOG[d].last=LOG[d].last||{})[k]=String(detail).slice(0,40);   /* その練習で、今日最後にやった所（幹部の管理アプリの「どこまで」） */
+  store.set("dk-log",LOG);
   if(ME&&USE_A){PENDING.push({ts:new Date().toISOString(),day:d,name:ME.name,group:ME.han||"",uid:ME.uid,kind,detail,count});store.set("dk-pending",PENDING);}
   NET.markDay(d,LOG[d]);
   flush();paintStatus();paintPlan();
 }
 window.addEventListener("online",flush);
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){sendWords();flush();}});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){sendWords();tick();sendTime();flush();}else lastTick=lastAct=Date.now();});
+
+/* ============ 練習の時間（2026-11-05 kimi）============
+   画面が見えていて、2分以内に触っている間だけ秒を数える。どの画面か（単語・話す・シャドーイング・AI添削）でも分ける。
+   LOG[日].s＝{all,wd,sp,sh,ad}（秒）・first＝その日に最初に開いた時刻・last＝練習ごとに最後にやった所。
+   送るのは分にして、今の days の1件に足す（dayDoc）。送るのは3分に1回と、画面を離れた時だけ。練習した日だけ送る（開いただけの日は「やった日」にしない） */
+const IDLE=120000;
+let lastAct=Date.now(),lastTick=Date.now(),lastSent=0;
+["pointerdown","keydown","scroll","touchstart"].forEach(e=>addEventListener(e,()=>{lastAct=Date.now();},{passive:true,capture:true}));
+const practiced=x=>!!(x&&(x.sp||x.wd||x.sh||x.wn));
+function screenKind(){
+  if(curTab==="wd"||curTab==="sh")return curTab;
+  if(curTab==="sp")return $("v-adlib").hidden&&$("v-fix").hidden?"sp":"ad";   /* アドリブ・添削・添削した文の復習＝AI添削 */
+  return "";   /* 今日＆計画・本コースの説明：滞在にだけ入る */
+}
+function tick(){
+  const now=Date.now(),dt=Math.min(now-lastTick,10000)/1000;lastTick=now;   /* スマホが寝ていた間（タイマーが止まる）は足さない */
+  if(document.visibilityState!=="visible"||now-lastAct>IDLE)return;
+  const d=dayStr(),x=LOG[d]=LOG[d]||{sp:0,wd:0,sh:0},s=x.s=x.s||{all:0},k=screenKind();
+  if(!x.first){const t=new Date();x.first=pad(t.getHours())+":"+pad(t.getMinutes());}
+  s.all+=dt;if(k)s[k]=(s[k]||0)+dt;
+  store.set("dk-log",LOG);
+  if(now-lastSent>180000)sendTime();
+}
+function sendTime(){const d=dayStr();if(practiced(LOG[d])){lastSent=Date.now();NET.markDay(d,LOG[d]);}}
+setInterval(tick,5000);
+/* 送る1日の形：数 {sp,wd,sh,wn}＋時間 {min 滞在（分）, first, mins:{wd,sp,sh,ad}（分）, last:{…}}。名前・声・書いた文は入れない（firestore.rules が形と大きさを見る） */
+function dayDoc(x){
+  const o={sp:x.sp|0,wd:x.wd|0,sh:x.sh|0,wn:x.wn|0},s=x.s,m=v=>Math.min(1440,Math.round(v/60));
+  if(s){o.min=m(s.all);o.mins={};["wd","sp","sh","ad"].forEach(k=>{if(s[k]>=30)o.mins[k]=m(s[k]);});}
+  if(x.first)o.first=x.first;
+  if(x.last)o.last=x.last;
+  return o;
+}
 
 /* ============ 団体とつながる部分（B＝Firebase）============
    ここは入れ替えやすいように1か所にまとめてある。Firebaseが未設定なら全部なにもしない。 */
@@ -930,7 +965,11 @@ const NET={
       const {collection,getDocs}=this.fb.F;
       const snap=await getDocs(collection(this.fb.db,this.path()+"/days"));
       snap.forEach(d=>{const v=d.data(),x=LOG[d.id]=LOG[d.id]||{sp:0,wd:0,sh:0};
-        ["sp","wd","sh","wn"].forEach(k=>{if(v[k]||x[k])x[k]=Math.max(x[k]||0,v[k]||0);});});
+        ["sp","wd","sh","wn"].forEach(k=>{if(v[k]||x[k])x[k]=Math.max(x[k]||0,v[k]||0);});
+        /* 時間も大きい方（同じ日に2台で使った時は足さない） */
+        if(v.min!=null){const s=x.s=x.s||{all:0};s.all=Math.max(s.all,v.min*60);Object.keys(v.mins||{}).forEach(k=>{s[k]=Math.max(s[k]||0,v.mins[k]*60);});}
+        if(v.first&&(!x.first||v.first<x.first))x.first=v.first;
+        if(v.last)x.last=Object.assign({},v.last,x.last);});
       store.set("dk-log",LOG);paintStatus();paintPlan();
     }catch(e){}
   },
@@ -964,7 +1003,7 @@ const NET={
   markDay(d,x){
     if(!USE_B||!ME)return;
     this._queue=this._queue.filter(q=>q.d!==d);
-    this._queue.push({d,x:{sp:x.sp|0,wd:x.wd|0,sh:x.sh|0,wn:x.wn|0}});
+    this._queue.push({d,x:dayDoc(x)});
     store.set("dk-fbq",this._queue);
     this.flush();
   },
@@ -1164,7 +1203,7 @@ $("pf-form").addEventListener("submit",async e=>{
     b.textContent="ログイン";
     PENDING.forEach(r=>{r.name=ME.name;});store.set("dk-pending",PENDING);
     await NET.pull();NET.saveMe();   /* 先に前の記録を戻してから（大きい方を取る）、今までの分をまとめて送る */
-    NET._queue=Object.keys(LOG).map(d=>({d,x:{sp:LOG[d].sp|0,wd:LOG[d].wd|0,sh:LOG[d].sh|0,wn:LOG[d].wn|0}}));store.set("dk-fbq",NET._queue);
+    NET._queue=Object.keys(LOG).filter(d=>practiced(LOG[d])||LOG[d].ad).map(d=>({d,x:dayDoc(LOG[d])}));store.set("dk-fbq",NET._queue);
     paintStatus();paintNotif();pushNudge();paintSync(syncText(),true);flush();
     if(JOIN){$("pf-form").hidden=true;$("pf-done").hidden=false;set$("pf-newid",ME.sid);return;}   /* 発行した生徒IDを見せてから始める */
     closeSheet("pf");resumeQuiz();maybeGuide(curTab);
@@ -1885,7 +1924,7 @@ $("f-dots").addEventListener("click",e=>{if(e.target.closest("[data-f]"))fixTap(
 $("f-retry").addEventListener("click",()=>{review(FIX.list[FIX.i]);paintFix();});
 function fixNext(){
   if(FIX.review)revDone(FIX.list[FIX.i].id);
-  else if(FIX.taps>=3){const d=dayStr();LOG[d]=LOG[d]||{sp:0,wd:0,sh:0};LOG[d].ad=(LOG[d].ad||0)+1;store.set("dk-log",LOG);}   /* アドリブ1枚＝添削を3回言えた */
+  else if(FIX.taps>=3){const d=dayStr();LOG[d]=LOG[d]||{sp:0,wd:0,sh:0};LOG[d].ad=(LOG[d].ad||0)+1;(LOG[d].last=LOG[d].last||{}).ad="アドリブ "+LOG[d].ad+"文";store.set("dk-log",LOG);}   /* アドリブ1枚＝添削を3回言えた */
   if(++FIX.i<FIX.list.length){paintFix();return;}
   if(FIX.review)endReview();else showResult();
 }
@@ -1960,7 +1999,7 @@ let deckId=store.get("dk-deck",DECKS[0].id);
 if(!DECKS.some(d=>d.id===deckId))deckId=DECKS[0].id;
 let SRS=store.get("dk-srs",{});        /* {"c1:shovel":[段階, 次に出す日]} */
 let NEWDAY=store.get("dk-newday",{});  /* {"2026-10-14":{"c1":7}} 今日はじめて出した語の数（冊ごと） */
-let wmode="card",wq=[],wtaps=0,wcount=0,extra=0,wopts=[],wright=null;
+let wmode="card",wq=[],wtaps=0,wcount=0,wfar=0,extra=0,wopts=[],wright=null;
 const deck=()=>DECKS.find(d=>d.id===deckId);
 const SHOWN=()=>CIV&&CFG.onAll?DECKS.filter(d=>d.field):DECKS;   /* onAll：ONなら単語も分野の単語帳だけ */
 const key=w=>deckId+":"+w.en;
@@ -2060,7 +2099,7 @@ $("w-dots").addEventListener("click",e=>{
   const d=e.target.closest("[data-d]");if(!d)return;const n=+d.dataset.d;if(n>wtaps)return;
   d.classList.add("on");buzz(wtaps===2?[10,40,14]:8);wtaps=Math.max(wtaps,n+1);speak(wq[0].en);if(wtaps>=3)$("w-next").disabled=false;
 });
-function sendWords(){if(wcount>0){logEvent("単語",deck().name,wcount);wcount=0;}}
+function sendWords(){if(wcount>0){logEvent("単語",deck().name+" No."+wfar,wcount);wcount=wfar=0;}}   /* No.＝単語帳の何語目まで進んだか */
 function counted(){wcount++;if(wcount>=10)sendWords();}
 function markNew(w){
   if(SRS[key(w)])return;
@@ -2070,7 +2109,7 @@ function markNew(w){
   LOG[d]=LOG[d]||{sp:0,wd:0,sh:0};LOG[d].wn=(LOG[d].wn||0)+1;store.set("dk-log",LOG);
 }
 $("w-next").addEventListener("click",()=>{
-  const w=wq.shift();markNew(w);
+  const w=wq.shift();markNew(w);wfar=Math.max(wfar,deck().words.indexOf(w)+1);
   if(wright){
     const s=SRS[key(w)]||[0,0],lv=Math.min(s[0]+1,STEPS.length+1);
     SRS[key(w)]=[lv,dayNum()+(lv<=STEPS.length?STEPS[lv-1]:60)];
