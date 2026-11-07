@@ -493,6 +493,7 @@ a{color:inherit}
 
   <hr class="hr">
   <h2 class="sect" id="plan-sec">計画</h2>
+  <div id="ap-book"></div>  <!-- コーチと気楽に英語学習の相談をする（book.js。2026-11-08） -->
   <div class="calbox">
     <div class="calhd"><button id="cal-prev" aria-label="前の月">‹</button><b id="cal-title"></b><button id="cal-next" aria-label="次の月">›</button></div>
     <div class="cal" id="cal-grid"></div>
@@ -2243,6 +2244,7 @@ NET.p=NET.init();paintStatus();paintPlan();flush();paintInstall();
 const t0=store.get("dk-tab","home");
 if(!ME){openTab(TABS.includes(t0)?t0:"home",true);openProfile();}else openTab(TABS.includes(t0)?t0:"home");
 </script>
+<script src="book.js" defer onload="APushBook.mount(document.getElementById('ap-book'),{call:function(n,d){return NET.call(n,d)}})"></script>
 <script src="install.js" defer></script>  <!-- ホーム画面に追加の案内・LINEから来た人・記録の引き継ぎ -->
 </body>
 </html>
