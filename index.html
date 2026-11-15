@@ -20,12 +20,13 @@
 <title>インド研修 ビジネス英語トレーニング</title>
 <style>
 /* 型：iPhoneのアプリに近い形。下に4つのタブ（今日＆計画・話す・シャドーイング・単語）、上は大きな見出し→スクロールですりガラスのバー。
-   お知らせと通知は「今日＆計画」から。色は団体の色1つ（--brand）＋白。暗い画面の設定では濃紺。文字は端末の文字（iPhoneならヒラギノ）。 */
+   お知らせと通知は「今日＆計画」から。色は黒・白＋赤1か所（A-PUSH。study・training の ui.css と同じ。2026-11-15）。文字は端末の文字（iPhoneならヒラギノ）。 */
 :root{
-  --brand:#C2410C;
-  --bg:#F2F4F8; --card:#FFFFFF; --ink:#0F1E3D; --mute:#667391; --line:rgba(15,30,61,.10); --line2:rgba(15,30,61,.17);
-  --soft:#FEEEE7; --soft2:#FDD6C7; --mid:#F89D77;
-  --on:#FFFFFF; --ok:#16A34A; --warn:#B45309; --ng:#DC2626; --bar:rgba(255,255,255,.72); --scrim:rgba(15,30,61,.32); --dark:#0F1E3D;
+  /* A-PUSH の赤・黒・白（2026-11-11）。選ぶ・強調は黒（--brand＝--ink）。赤（--accent）は主なボタン（.primary）と大きな数字（.big）とロゴだけ。団体の色（groups/*.json の color）はもう使わない */
+  --brand:#0B0B0C; --accent:#FF2D16; --accent2:#D41B06;
+  --bg:#F4F4F5; --card:#FFFFFF; --ink:#0B0B0C; --mute:#5C5C64; --line:rgba(11,11,12,.08); --line2:rgba(11,11,12,.13);
+  --soft:#EEEEF0; --soft2:#D4D4D8; --mid:#8C8C94;
+  --on:#FFFFFF; --ok:#16A34A; --warn:#B45309; --ng:#D41B06; --bar:rgba(255,255,255,.75); --scrim:rgba(11,11,12,.32); --dark:#0B0B0C;
   /* 本文・見出し＝Zen Kaku Gothic New／数字と英語＝Archivo。届かない時（オフライン）は端末の文字に戻る */
   --f:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",system-ui,sans-serif;
   --fd:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
@@ -41,7 +42,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
 button,a,[role="button"],.tap{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select{font:inherit;font-size:16px;color:inherit}
-:focus-visible{outline:3px solid var(--mid);outline-offset:2px;border-radius:8px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:8px}
 a{color:inherit}
 
 /* 画面 */
@@ -56,7 +57,7 @@ a{color:inherit}
 .nav.stuck .mini{opacity:1}
 /* A-PUSHのロゴ（どの団体のサイトでも一番上・左）。スクロールすると、ロゴがその画面の名前に入れ替わる */
 .navl{position:relative;display:flex;align-items:center;min-width:0;height:38px}
-.aplogo{display:block;height:20px;width:auto;color:#FF2D16;transition:opacity .2s}
+.aplogo{display:block;height:20px;width:auto;color:var(--accent);transition:opacity .2s}
 .nav.stuck .aplogo{opacity:0}
 .navl .mini{position:absolute;left:0;white-space:nowrap}
 .navr{display:flex;align-items:center;gap:8px}
@@ -65,11 +66,11 @@ a{color:inherit}
 .bell svg{width:21px;height:21px}
 .bell .badge{position:absolute;top:-2px;right:-2px;min-width:19px;height:19px;border-radius:99px;background:var(--ng);color:#fff;font-size:11px;font-weight:800;
   display:grid;place-items:center;padding:0 5px;box-shadow:0 0 0 2px var(--bg)}
-.eyebrow{margin:6px 2px 0;font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--brand);text-transform:uppercase}
+.eyebrow{margin:6px 2px 0;font-family:var(--en);font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--mute);text-transform:uppercase}
 .large{font-family:var(--fd);font-size:34px;font-weight:900;letter-spacing:-.028em;line-height:1.12;margin:0 2px;text-wrap:balance}
 .sub{color:var(--mute);font-size:15px;margin:-6px 2px 4px}
 .sub button{color:var(--brand);font-weight:600}
-.label{font-size:13px;color:var(--mute);margin:14px 4px -4px;font-weight:500}
+.label{font-size:12px;color:var(--mute);margin:16px 4px -4px;font-weight:700;letter-spacing:.08em}
 .hr{height:1px;background:var(--line2);margin:22px 2px 6px;border:0}
 .sect{font-family:var(--fd);font-size:25px;font-weight:900;letter-spacing:-.025em;margin:4px 2px 0}
 .note{margin:0 4px;font-size:12.5px;color:var(--mute)}
@@ -113,17 +114,19 @@ a{color:inherit}
 .apush{display:grid;grid-template-columns:1fr auto;grid-template-areas:"k c" "n c";align-items:center;gap:2px 12px;text-decoration:none;color:#fff;background:var(--dark);border-radius:20px;padding:16px 18px;margin-top:8px}
 .ap-k{grid-area:k;font-size:12px;color:rgba(255,255,255,.75);font-weight:600}
 .ap-n{grid-area:n;font-family:var(--en);font-weight:900;font-size:28px;line-height:1.05;letter-spacing:-.015em}
-.ap-c{grid-area:c;font-size:13px;font-weight:600;background:var(--brand);color:var(--on);border-radius:99px;padding:9px 14px;white-space:nowrap}
+.ap-c{grid-area:c;font-size:13px;font-weight:700;background:#fff;color:var(--dark);border-radius:99px;padding:9px 14px;white-space:nowrap}
 .foot{font-size:12px;color:var(--mute);padding:8px 4px 0;display:flex;flex-direction:column;gap:6px}
 .foot .by{letter-spacing:.12em;font-weight:600}
 
 /* 話す */
-.seg{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--line);border-radius:10px;padding:2px}
-.seg .sl{position:absolute;top:2px;bottom:2px;left:2px;border-radius:8px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.13),0 0 0 .5px rgba(0,0,0,.04);
+.seg{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--line);border-radius:999px;padding:2px}
+.seg .sl{position:absolute;top:2px;bottom:2px;left:2px;border-radius:999px;background:var(--ink);box-shadow:0 2px 6px rgba(11,11,12,.16);
   transition:transform .32s var(--spring),width .32s var(--spring);pointer-events:none}
-.seg button{position:relative;z-index:1;border-radius:8px;padding:7px 4px;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.2;transition:color .2s,transform .1s ease-out}
+.seg button{position:relative;z-index:1;border-radius:999px;padding:8px 6px;font-size:13.5px;font-weight:700;color:var(--mute);line-height:1.2;transition:color .2s,transform .1s ease-out}
 .seg button:active{transform:scale(.96)}
-.seg button[aria-pressed="true"]{color:var(--brand)}
+.seg button[aria-pressed="true"]{color:var(--on);background:var(--ink)}
+.seg:has(> .sl:not([hidden])) [aria-pressed="true"]{background:none}   /* 板（.sl）がある時は板が黒を運ぶ */
+.seg [aria-pressed="true"] small{color:inherit;opacity:.72}
 .seg.lv button{display:flex;flex-direction:column;align-items:center;padding:6px 4px}
 .seg.lv b{font-family:var(--en);font-weight:900;font-size:17px}
 .seg.lv small{font-size:11px;color:var(--mute);font-weight:500}
@@ -136,15 +139,15 @@ a{color:inherit}
 .tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--soft);color:var(--brand);margin-left:6px;vertical-align:2px}
 
 /* 問題のカード */
-.card{background:var(--card);border-radius:22px;overflow:hidden}
+.card{background:var(--card);border-radius:20px;overflow:hidden}
 .bar{height:4px;background:var(--soft)}
 .bar i{display:block;height:100%;width:100%;background:var(--brand);transition:width 1s linear;border-radius:0 4px 4px 0}
-.bar i.low{background:var(--ink)}
+.bar i.low{background:var(--ng)}
 .cin{padding:18px 16px;display:flex;flex-direction:column;gap:12px}
 .meta{display:flex;justify-content:space-between;align-items:center;font-family:var(--en);font-size:13px;color:var(--mute);font-weight:700;font-variant-numeric:tabular-nums}
 .pips{display:flex;gap:5px}
 .pip{width:22px;height:5px;border-radius:3px;background:var(--line2)}
-.pip.y{background:var(--brand)} .pip.n{background:var(--mid)} .pip.cur{background:var(--ink)}
+.pip.y{background:var(--ink)} .pip.n{background:var(--mid)} .pip.cur{background:none;box-shadow:0 0 0 1.5px var(--ink) inset}
 .ask{margin:0;font-size:12.5px;font-weight:600;color:var(--mute)}
 .pic{font-size:clamp(54px,15vw,68px);line-height:1;text-align:center;padding:4px 0}
 .ja{margin:0;font-size:19px;font-weight:700;line-height:1.5;text-align:center;text-wrap:balance}
@@ -152,7 +155,7 @@ a{color:inherit}
 .stem{margin:0;text-align:center;font-family:var(--en);font-size:19px;font-weight:700;line-height:1.4;text-wrap:balance}
 .stem .spk{width:28px;height:28px;vertical-align:middle;margin-left:4px}
 .choices{display:flex;flex-direction:column;gap:9px}
-.ch{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--card);border-radius:14px;padding:14px;font-family:var(--en);font-size:16px;line-height:1.45;font-weight:600;
+.ch{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--card);border-radius:12px;padding:14px;font-family:var(--en);font-size:16px;line-height:1.45;font-weight:600;
   box-shadow:0 0 0 1px var(--line2) inset;transition:transform .1s ease-out,background .15s,box-shadow .15s,color .15s}
 .ch:active:not(:disabled){transform:scale(.98);background:var(--soft)}
 .ch .k{flex:none;width:22px;height:22px;border-radius:7px;background:var(--soft);color:var(--brand);font-weight:700;font-size:12px;display:grid;place-items:center;margin-top:1px}
@@ -171,12 +174,12 @@ a{color:inherit}
 .dot:active{transform:scale(.92)}
 .dot.on{background:var(--brand);color:var(--on)}
 .acts{display:flex;gap:8px;flex-wrap:wrap}
-.primary{flex:1;background:var(--brand);color:var(--on);border-radius:14px;padding:15px;font-weight:700;font-size:17px;transition:transform .1s ease-out,opacity .15s}
+.primary{flex:1;background:var(--accent);color:var(--on);border-radius:12px;padding:14px;font-weight:800;font-size:19px;letter-spacing:.02em;transition:transform .1s ease-out,opacity .15s}
 .primary:active:not(:disabled){transform:scale(.97)}
 .primary:disabled{opacity:.3;cursor:default}
-.ghost{flex:1;background:var(--soft);border-radius:14px;padding:14px;font-weight:600;font-size:16px;color:var(--brand);transition:transform .1s ease-out}
+.ghost{flex:1;background:var(--soft);border-radius:12px;padding:14px;font-weight:600;font-size:16px;color:var(--brand);transition:transform .1s ease-out}
 .ghost:active{transform:scale(.97)}
-.big{margin:0;text-align:center;font-family:var(--en);font-weight:900;font-size:72px;line-height:1;color:var(--brand);letter-spacing:-.03em}
+.big{margin:0;text-align:center;font-family:var(--en);font-weight:900;font-size:72px;line-height:1;color:var(--accent);letter-spacing:-.03em}
 .big em{font-style:normal;font-size:28px;color:var(--mute)}
 .rmsg{margin:0;text-align:center;font-weight:700}
 .recap{display:flex;flex-direction:column}
@@ -307,9 +310,12 @@ a{color:inherit}
 .tab:active svg{transform:scale(.88)}
 .tab[aria-selected="true"]{color:var(--brand)}
 
-/* テストのページ・話すの切り替え（study・training と同じ形。2026-11-04） */
-.seg.sp-kind{margin:0 0 14px}
-.seg.sp-kind button[aria-pressed="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.13),0 0 0 .5px rgba(0,0,0,.04)}
+/* 話すの種類（A-PUSHメソッド｜シャドーイング）：下の切り替えと見分けがつくよう、白い枠の大きなタブ＋絵文字＋ひとこと（study・training と同じ。2026-11-12 kimi） */
+.seg.sp-kind{margin:0 0 14px;padding:4px;background:var(--card);box-shadow:0 0 0 1px var(--line2) inset}
+.seg.sp-kind button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 10px 9px;font-size:15px;font-weight:800;letter-spacing:.02em;line-height:1.2}
+.seg.sp-kind button .ic{font-size:20px;line-height:1;margin-bottom:2px}
+.seg.sp-kind button small{font-size:11px;font-weight:500;opacity:.75;letter-spacing:0}
+.seg.sp-kind button[aria-pressed="true"] small{opacity:.8}
 .mh{margin:18px 2px 8px;font-size:13px;font-weight:700;color:var(--mute);letter-spacing:.04em}
 .mlist{display:grid;gap:10px}
 .mcard{display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:var(--ink);background:var(--card);border-radius:18px;padding:16px;transition:transform .1s ease-out}
@@ -347,11 +353,11 @@ a{color:inherit}
 .sh-top{padding:8px 0 4px;touch-action:none;cursor:grab}
 .grab{width:38px;height:5px;border-radius:5px;background:var(--line2);margin:0 auto 10px}
 .sh-head{display:flex;justify-content:space-between;align-items:center}
-.sh-title{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--brand)}
+.sh-title{font-size:12px;font-weight:800;letter-spacing:.16em;color:var(--mute)}
 .sh-x{width:32px;height:32px;border-radius:50%;background:var(--line);color:var(--mute);font-size:17px}
 .sh-body{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;padding:6px 0 4px}
 .g-body{min-height:290px;display:flex;flex-direction:column;gap:14px;justify-content:center}
-.g-img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);background:#F4F7FB}
+.g-img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);background:var(--bg)}
 .g-h{margin:0;font-family:var(--fd);font-size:clamp(25px,7vw,30px);font-weight:900;letter-spacing:-.025em;line-height:1.3;text-wrap:balance}
 .g-l{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
 .g-l li{font-size:16px;line-height:1.55;padding-left:18px;position:relative}
@@ -388,7 +394,8 @@ a{color:inherit}
 .pf-agree input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:var(--brand)}
 
 @media (hover:hover) and (pointer:fine){
-  .ch:hover:not(:disabled){box-shadow:0 0 0 1.5px var(--brand) inset}
+  .ch:hover:not(:disabled){box-shadow:0 0 0 1.5px var(--ink) inset}
+  .primary:hover:not(:disabled){background:var(--accent2)}
   .row:hover,.vid:hover,.deck:hover{filter:brightness(.98)}
   .pill:hover,.ghost:hover{filter:brightness(.97)}
 }
@@ -415,19 +422,19 @@ a{color:inherit}
 .why h2{text-wrap:balance;margin:0;font-family:var(--fd);font-size:25px;font-weight:900;letter-spacing:-.02em;line-height:1.3}
 .why p{margin:0;font-size:14.5px;line-height:1.75;color:rgba(255,255,255,.88)}
 .why .rh{display:flex;gap:6px;align-items:flex-end;height:34px;margin:4px 0 2px}
-.why .rh i{display:block;width:10px;border-radius:5px;background:var(--brand)}
+.why .rh i{display:block;width:10px;border-radius:5px;background:#fff}
 .why-top{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
 .why-me{display:flex;flex-direction:column;align-items:center;gap:8px}
 .why-face{width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.9)}
-.why-logo{display:block;height:13px;width:auto;color:#FF2D16}
+.why-logo{display:block;height:13px;width:auto;color:var(--accent)}
 .why-ex{display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.08);border-radius:14px;padding:12px 14px}
 .why-ex span{font-family:var(--en);font-size:14px;color:rgba(255,255,255,.65)}
 .why-ex b{font-family:var(--en);font-size:20px;font-weight:900;letter-spacing:-.01em;color:#fff;white-space:nowrap}
-.why-ex b::before{content:"→ ";color:var(--mid,#7799F8)}
+.why-ex b::before{content:"→ ";color:var(--mid)}
 .why-go{display:inline-block;margin-top:6px;font-size:17px;color:#fff}
 .why-l{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .why-play{flex:none;font:inherit;font-size:13px;font-weight:700;border:0;border-radius:99px;padding:7px 12px;cursor:pointer;background:rgba(255,255,255,.14);color:#fff}
-.why-play.on{background:var(--brand);color:#fff}
+.why-play.on{background:#fff;color:var(--dark)}
 .why-play:active{transform:scale(.95)}
 .why-ex small{font-size:12px;color:rgba(255,255,255,.6)}
 /* 今日の単語を混ぜる のスイッチ（無料版・本コースの ui.css と同じ見た目）2026-10-20 */
@@ -545,7 +552,7 @@ a{color:inherit}
 <main class="screen" id="p-sp" role="tabpanel" aria-labelledby="tab-sp" hidden>
   <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 228.41 58.35" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">話す</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="sp">やり方</button></div>
   <h1 class="large">話す</h1>
-  <div class="seg sp-kind" role="group" aria-label="話すの種類"><button data-go="sp" aria-pressed="true">A-PUSHメソッド</button><button data-go="sh" aria-pressed="false">シャドーイング</button></div>
+  <div class="seg sp-kind" role="group" aria-label="話すの種類"><button data-go="sp" aria-pressed="true"><span class="ic" aria-hidden="true">🎤</span>A-PUSHメソッド<small>話して添削</small></button><button data-go="sh" aria-pressed="false"><span class="ic" aria-hidden="true">🎧</span>シャドーイング<small>動画に重ねて言う</small></button></div>
   <div class="inst" id="rev-card" hidden>
     <span class="inst-ic" aria-hidden="true">🔁</span>
     <p><b>今日の復習：添削した文 <span id="rev-n" class="en"></span>文</b></p>
@@ -639,7 +646,7 @@ a{color:inherit}
 <main class="screen" id="p-sh" role="tabpanel" aria-labelledby="tab-sh" hidden>
   <div class="nav"><span class="navl"><svg class="aplogo" viewBox="0 0 228.41 58.35" fill="currentColor" role="img" aria-label="A-PUSH"><use href="#aplogo"/></svg><span class="mini">シャドーイング</span></span><button class="pill" data-go="co">本コース</button><button class="pill" data-guide="sh">やり方</button></div>
   <h1 class="large">話す</h1>
-  <div class="seg sp-kind" role="group" aria-label="話すの種類"><button data-go="sp" aria-pressed="false">A-PUSHメソッド</button><button data-go="sh" aria-pressed="true">シャドーイング</button></div>
+  <div class="seg sp-kind" role="group" aria-label="話すの種類"><button data-go="sp" aria-pressed="false"><span class="ic" aria-hidden="true">🎤</span>A-PUSHメソッド<small>話して添削</small></button><button data-go="sh" aria-pressed="true"><span class="ic" aria-hidden="true">🎧</span>シャドーイング<small>動画に重ねて言う</small></button></div>
   <div class="shl" id="sh-list"></div>
   <p class="credit">動画：VOA Learning English（learningenglish.voanews.com）・NASA Goddard Space Flight Center。いずれも公開素材を、出典を示して使っています。NASAがこのサイトを推薦しているものではありません。</p>
 </main>
@@ -1256,66 +1263,6 @@ function initStatic(){
   paintSync(syncText(),USE_A||USE_B);
 }
 
-/* ---- 初めて開いた時の案内（2026-10-18）：何がどこにあるかを、1つずつ光らせて説明する ----
-   apTour("キー", [["CSSセレクタ","説明"], ...])。1回見たら（スキップでも）もう出さない。
-   ほかの案内（やり方・アプリとして入れよう）が出ている間は待ち、最初の場所が見えてから始める。 */
-(function(){
-  var css=".aptour-spot{position:fixed;z-index:9998;border-radius:14px;box-shadow:0 0 0 9999px rgba(15,20,40,.62);transition:all .25s ease;pointer-events:none}"+
-    ".aptour-tip{position:fixed;z-index:9999;left:16px;right:16px;max-width:420px;margin:0 auto;background:#fff;color:#141a2e;border-radius:16px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:15px;line-height:1.6}"+
-    ".aptour-tip small{display:block;color:#6b7385;font-size:12px;margin-bottom:4px}"+
-    ".aptour-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}"+
-    ".aptour-row button{border-radius:99px;padding:8px 16px;font-size:14px;font-weight:700}"+
-    ".aptour-skip{background:transparent;color:#6b7385}.aptour-next{background:#141a2e;color:#fff}";
-  var busy=function(){ return [].some.call(document.querySelectorAll("dialog[open],.sheet.open,.api-scrim"),function(e){ var s=getComputedStyle(e); return s.display!=="none"&&s.visibility!=="hidden"; }); };
-  var shown=function(el){ if(!el) return false; var r=el.getBoundingClientRect(); return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=="hidden"; };
-  var running=false;
-  window.apTour=function(key,steps){
-    var k="apush-tour-"+key;
-    try{ if(localStorage.getItem(k)) return; }catch(e){ return; }
-    var tries=0,calm=0;
-    (function wait(){   // ほかの案内が無い状態が1.5秒続いてから始める
-      calm=(running||busy()||!shown(document.querySelector(steps[0][0])))?0:calm+1;
-      if(calm<3){ if(++tries<360) setTimeout(wait,500); return; }
-      start();
-    })();
-    function start(){
-      var list=steps.filter(function(s){ return shown(document.querySelector(s[0])); });
-      if(!list.length) return;
-      running=true;
-      if(!document.getElementById("aptour-css")){ var st=document.createElement("style"); st.id="aptour-css"; st.textContent=css; document.head.appendChild(st); }
-      var spot=document.createElement("div"); spot.className="aptour-spot";
-      var tip=document.createElement("div"); tip.className="aptour-tip"; tip.setAttribute("role","dialog"); tip.setAttribute("aria-live","polite");
-      document.body.appendChild(spot); document.body.appendChild(tip);
-      var i=0;
-      var guard=setInterval(function(){ var b=busy(); spot.style.display=tip.style.display=b?"none":""; if(!b) place(); },400);   // 途中でシートが出たら隠す
-      function end(){ try{ localStorage.setItem(k,"1"); }catch(e){} clearInterval(guard); spot.remove(); tip.remove(); running=false; removeEventListener("resize",place); }
-      function place(){
-        var el=document.querySelector(list[i][0]); if(!el) return;
-        var r=el.getBoundingClientRect(), p=6;
-        spot.style.left=(r.left-p)+"px"; spot.style.top=(r.top-p)+"px"; spot.style.width=(r.width+p*2)+"px"; spot.style.height=(r.height+p*2)+"px";
-        var below=r.bottom+p+12, h=tip.offsetHeight;
-        tip.style.top=(below+h<innerHeight-8?below:Math.max(8,r.top-p-12-h))+"px";
-      }
-      function show(){
-        var el=document.querySelector(list[i][0]);
-        el.scrollIntoView({block:"center"});
-        tip.innerHTML='<small>はじめての方へ　'+(i+1)+' / '+list.length+'</small>'+list[i][1]+
-          '<div class="aptour-row"><button class="aptour-skip" type="button">スキップ</button><button class="aptour-next" type="button">'+(i===list.length-1?"はじめる":"次へ")+'</button></div>';
-        tip.querySelector(".aptour-skip").onclick=end;
-        tip.querySelector(".aptour-next").onclick=function(){ if(++i>=list.length){ end(); return; } show(); };
-        setTimeout(place,350); place();
-      }
-      addEventListener("resize",place);
-      show();
-    }
-  };
-})();
-const TOURS={
-  home:[["#ring","今日のゴールの達成の様子です。"],["#today-list","今日やること。上から順に進めましょう。"],["#plan-sec","カレンダーと、1日の目標・月のゴールはここ。"],[".tabbar","下のタブで「今日＆計画・話す・シャドーイング・単語」を行き来します。"]],
-  sp:[["#p-sp h1.large","話すは、決まった文で質問に答える練習です。今日の単語で自分の文を作る「アドリブ5問」は、単語がおわったあとに出ます（添削されて、あとで復習に出ます）。"],["#sp-grp","練習する文法を選びます。"],["#sp-lv","レベルです。Lv1から。"],["#sp-chips","この中から型を1つ選びます。"],["#sp-hint","慣れたら「絵だけ」に。日本語のヒントが消えます。"],["#stem","英語の質問です。▶でもう一度聞けます。"],["#choices","絵と日本語に合う答えを選んだら、声に出して3回。"],["#p-sp [data-guide=sp]","やり方はいつでもここから。"]],
-  sh:[["#sh-list","動画を選びます。レベル1から順に。"],["#p-sh [data-guide=sh]","やり方はここから。"]],
-  wd:[["#w-decks","単語帳を選びます。"],["#w-mode","カードと一覧を切り替えられます。"],["#w-card","ここで1語ずつ覚えます。"]]
-};
 /* ---- タブ（下のバー・4つ）。今のタブをもう一度押すと一番上へ ---- */
 const TABS=["home","sp","sh","wd","ts","co"];   /* co＝本コースの説明。sh（シャドーイング）は「話す」の中 */
 const scrollPos={};
@@ -1330,7 +1277,6 @@ function openTab(k,silent){
   if(k==="sp")paintRev();
   if(k==="home"){paintStatus();paintPlan();ringIn();}
   if(!silent)maybeGuide(k);
-  if(TOURS[k]&&window.apTour)apTour(CFG.id+"-"+k,TOURS[k]);   /* 初めて開いたタブだけ、何がどこにあるかの案内 */
 }
 TABS.filter(n=>$("tab-"+n)).forEach(n=>$("tab-"+n).addEventListener("click",()=>{
   if(curTab===n){window.scrollTo({top:0,behavior:REDUCE?"auto":"smooth"});return;}
@@ -2154,36 +2100,35 @@ const FIG_LOAD='<figure class="gfig"><div class="lbar"><span class="lb-l">今</s
  '<figcaption>割合はイメージです</figcaption></figure>';
 const GUIDE={
   sp:{title:"A-PUSH Method",pages:[
-    {h:"話せる英語は、声に出した回数で決まる。",img:"02"},
-    {h:"英語を、九九にする。",img:"13",l:["7×8と聞かれて、計算する人はいない","何百回も声に出したから、口が答える"]},
-    {h:"英語も、同じにする。",img:"12",l:["Where did you…? と聞かれて答える。これを200回、300回と声に出す","型が口から勝手に出てくる","名詞の次は動詞、動詞の次は目的語。並びが体に入る"]},
+    {h:"話せる英語は、声に出した回数で決まる。"},
+    {h:"英語を、九九にする。",l:["7×8と聞かれて、計算する人はいない","何百回も声に出したから、口が答える"]},
+    {h:"英語も、同じにする。",l:["Where did you…? と聞かれて答える。これを200回、300回と声に出す","型が口から勝手に出てくる","名詞の次は動詞、動詞の次は目的語。並びが体に入る"]},
     {h:"何が身につく？",l:["5W1H ＋ 基本の時制（過去・現在・未来）"+(CFG.relative?" ＋ 関係代名詞":""),"質問を聞いて、すぐに答えられる"],
      ex:[["Where did you go?","過去"],["What do you do?","現在"],["When will you start?","未来"]]},
-    {h:"やり方",img:"07",steps:["英語の質問を聞く（文字も出ます）","絵と日本語に合う答えを選ぶ（20〜30秒）","答えを声に出して3回（ここが本番）"],
+    {h:"やり方",steps:["英語の質問を聞く（文字も出ます）","絵と日本語に合う答えを選ぶ（20〜30秒）","答えを声に出して3回（ここが本番）"],
      l:["1ラウンド5問・約2分","レベル1から。慣れたら「絵だけ」に","今日の単語のあとは「アドリブ5問」：単語で自分の文を言うと添削されて、3回言う"]}
   ]},
   sh:{title:"シャドーイング",pages:[
     {h:"聞いて、すぐ後を追う。",l:["お手本を聞きながら、少し遅れて、同じ音・同じ速さで言う"]},
-    {h:"聞き取りで頭がいっぱいだと、意味が入ってこない。",img:"11",l:["英語を聞く時、頭は「音の聞き取り」と「意味の理解」の2つの仕事をしている","頭の容量は限られている"],fig:FIG_LOAD,
+    {h:"聞き取りで頭がいっぱいだと、意味が入ってこない。",l:["英語を聞く時、頭は「音の聞き取り」と「意味の理解」の2つの仕事をしている","頭の容量は限られている"],fig:FIG_LOAD,
      src:"門田修平『シャドーイングと音読の科学』の考え方"},
     {h:"車の運転と同じ。",l:["覚えたては操作で精一杯。話す余裕がない","慣れると操作は自動。話しながら運転できる","シャドーイングは、英語の「運転操作」を自動にする練習"]},
-    {h:"やり方",img:"06",steps:["動画を3回聞く（最後まで聞くと1回）","質問に答える"],
+    {h:"やり方",steps:["動画を3回聞く（最後まで聞くと1回）","質問に答える"],
      tip:"コツ：意味は置いておいて、まず音に慣れる"}
   ]},
   wd:{title:"単語トレーニング",pages:[
-    {h:"まず慣れ。その次に専門用語。",img:"10"},
+    {h:"まず慣れ。その次に専門用語。"},
     {h:DECKS.map(d=>d.words.length).join(" ＋ ")+" ＝ "+DECKS.reduce((s,d)=>s+d.words.length,0)+"語",l:DECKS.map(d=>d.name+" "+d.words.length+"個")},
-    {h:"忘れる前に、もう一度。",img:"14",l:["復習しないと、すぐ忘れる","忘れかけた頃にもう一度見ると、忘れにくくなる"]},
-    {h:"やり方",img:"08",steps:["日本語を見て、英単語3つから選ぶ","声に出して3回","正解した語は 1日後→3日後→7日後→14日後→30日後 にもう一度出る"],
+    {h:"忘れる前に、もう一度。",l:["復習しないと、すぐ忘れる","忘れかけた頃にもう一度見ると、忘れにくくなる"]},
+    {h:"やり方",steps:["日本語を見て、英単語3つから選ぶ","声に出して3回","正解した語は 1日後→3日後→7日後→14日後→30日後 にもう一度出る"],
      l:["1日の新しい単語は5〜30語から選ぶ（最初は10）","まちがえた語は、その日のうちにもう一度出る","おわったら、今日の単語でアドリブ5問（毎日やること）"]},
-    {h:"言えた単語は、決まった日に戻ってくる。",img:"09"}
+    {h:"言えた単語は、決まった日に戻ってくる。"}
   ]}
 };
 let gKey=null,gPage=0;
 function renderGuide(){
   const g=GUIDE[gKey],p=g.pages[gPage],last=gPage===g.pages.length-1;
-  /* 画像のページ：画像の中に見出しがあるので、文字の見出しは出さない（読み上げ用に alt に入れる） */
-  let h=p.img?'<img class="g-img" src="howto/'+p.img+'.webp" alt="'+esc(p.h)+'" width="1600" height="900">':'<p class="g-h">'+esc(p.h)+'</p>';
+  let h='<p class="g-h">'+esc(p.h)+'</p>';   /* 画像（howto/*.webp）はやめた：文字だけ（study・training と同じ。2026-11-15） */
   if(p.steps)h+='<ol class="g-steps">'+p.steps.map(s=>'<li>'+esc(s)+'</li>').join("")+'</ol>';
   if(p.fig)h+=p.fig;
   if(p.l)h+='<ul class="g-l">'+p.l.map(s=>'<li>'+esc(s)+'</li>').join("")+'</ul>';
